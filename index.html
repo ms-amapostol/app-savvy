@@ -1,0 +1,844 @@
+<!doctype html>
+<html lang="en">
+<head>
+<meta charset="utf-8" />
+<meta name="viewport" content="width=device-width, initial-scale=1" />
+<title>App Savvy</title>
+<link rel="icon" href="data:image/svg+xml,%3Csvg%20xmlns%3D%27http%3A//www.w3.org/2000/svg%27%20viewBox%3D%270%200%2048%2048%27%3E%3Crect%20x%3D%272%27%20y%3D%272%27%20width%3D%2744%27%20height%3D%2744%27%20rx%3D%2711%27%20fill%3D%27%23ffffff%27/%3E%3Cpath%20d%3D%27M24%208a12%2012%200%200%201%207%2021.7c-1.4%201-2%202.2-2.2%203.5h-9.6c-.2-1.3-.8-2.5-2.2-3.5A12%2012%200%200%201%2024%208z%27%20fill%3D%27%232f8a72%27/%3E%3Crect%20x%3D%2719%27%20y%3D%2735%27%20width%3D%2710%27%20height%3D%273.4%27%20rx%3D%271.5%27%20fill%3D%27%232f8a72%27/%3E%3Cpath%20d%3D%27M35%2011l1.3%203%203%20.4-2.2%202.1.6%203-2.7-1.4-2.7%201.4.6-3-2.2-2.1%203-.4z%27%20fill%3D%27%23c2913a%27/%3E%3C/svg%3E">
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Playfair+Display:ital,wght@0,500;0,600;1,500;1,600&family=Inter:wght@400;500;600&display=swap" rel="stylesheet">
+<style>
+  :root{
+    --page:#eef3f1; --surface:#ffffff; --mint:#e9f4ef; --mint2:#f4faf7;
+    --line:#dce8e2; --mintline:#c4ddd1;
+    --teal:#2f8a72; --teal-deep:#226a58; --teal-ink:#1c5548;
+    --ink:#22302c; --muted:#5f6f68; --faint:#8a978f;
+    --gold:#c2913a; --gold-bg:#f6efe0;
+    --bad:#b0503b; --bad-bg:#f7ece8;
+    --radius:12px;
+    --serif:'Playfair Display',Georgia,serif;
+    --sans:'Inter',system-ui,-apple-system,Segoe UI,sans-serif;
+  }
+  *{box-sizing:border-box}
+  html,body{margin:0;background:var(--page);color:var(--ink);font-family:var(--sans);font-size:16px;line-height:1.6;-webkit-font-smoothing:antialiased}
+  .wrap{max-width:1040px;margin:0 auto;padding:16px 22px 70px}
+  h1,h2,h3{font-family:var(--serif);font-weight:600;letter-spacing:.01em;color:var(--ink)}
+  em{font-style:italic}
+  .caps{font-size:11px;letter-spacing:.15em;text-transform:uppercase;color:var(--teal);font-weight:600}
+  .muted{color:var(--muted)} .small{font-size:13px}
+  .sub{color:var(--muted);font-size:15px;margin:0 0 18px}
+  .lede{font-size:16.5px;color:var(--muted);line-height:1.7}
+  p{margin:0 0 14px}
+  a{color:var(--teal-deep)}
+
+  .topbanner{width:100%;height:auto;border-radius:16px;display:block;margin-bottom:14px;border:1.5px solid var(--mintline)}
+  header{display:flex;align-items:center;gap:12px;margin-bottom:14px}
+  .mark{width:44px;height:44px;border-radius:50%;background:#ffffff;border:1.5px solid var(--mintline);display:flex;align-items:center;justify-content:center;flex-shrink:0}
+  .brand h1{font-size:23px;line-height:1.05;margin:0}
+  .tagline{font-size:10.5px;letter-spacing:.16em;text-transform:uppercase;color:var(--faint);font-weight:600;margin-top:3px}
+  .levelchip{margin-left:auto;display:flex;align-items:center;gap:9px;background:var(--surface);border:1.5px solid var(--mintline);border-radius:30px;padding:5px 14px 5px 6px;cursor:pointer;font-family:inherit}
+  .levelchip:hover{border-color:var(--teal)}
+  .ringwrap{position:relative;width:30px;height:30px;display:flex;align-items:center;justify-content:center}
+  .ringwrap .lvlemoji{position:absolute;font-size:13px}
+  .lvltext{display:flex;flex-direction:column;line-height:1.15;text-align:left}
+  .lvltext b{font-size:13.5px;color:var(--ink)} .lvltext span{font-size:11px;color:var(--muted)}
+
+  .tabs{display:flex;gap:5px;background:var(--surface);border:1.5px solid var(--line);border-radius:30px;padding:5px;margin-bottom:12px;overflow-x:auto}
+  .tabs button{flex:1;white-space:nowrap;background:none;border:none;border-radius:24px;color:var(--muted);padding:8px 12px;cursor:pointer;font-family:inherit;font-size:13.5px;font-weight:500}
+  .tabs button:hover{color:var(--ink)}
+  .tabs button.on{background:var(--teal);color:#fff;font-weight:600}
+  .meta{font-size:13.5px;color:var(--muted);margin:0 4px 16px;font-style:italic}
+  .quotebar{display:flex;align-items:center;gap:11px;background:var(--mint2);border:1.5px solid var(--mintline);border-radius:14px;padding:10px 15px;margin-bottom:12px}
+  .quotebar .qmark{font-family:var(--serif);font-size:22px;color:var(--teal);line-height:1;flex-shrink:0}
+  .quotebar .qtext{flex:1;font-family:var(--serif);font-style:italic;font-size:14.5px;color:var(--teal-ink);transition:opacity .4s;line-height:1.4}
+  .quotebar .qref{background:none;border:none;color:var(--faint);cursor:pointer;font-size:16px;padding:4px;flex-shrink:0}
+  .quotebar .qref:hover{color:var(--teal)}
+
+  .card{background:var(--surface);border:1.5px solid var(--mintline);border-radius:16px;padding:22px 26px;margin-bottom:16px}
+  .card h2{font-size:24px;margin:0 0 10px}
+  .card h3.hd{font-size:16px;margin:22px 4px 10px}
+  .pilltag{display:inline-flex;align-items:center;gap:7px;border:1.5px solid var(--mintline);border-radius:30px;padding:4px 13px;font-size:11px;letter-spacing:.13em;text-transform:uppercase;color:var(--teal-deep);font-weight:600;margin-bottom:14px}
+
+  .btn{background:var(--teal);border:1.5px solid var(--teal);color:#fff;padding:11px 20px;border-radius:30px;cursor:pointer;font-family:inherit;font-size:14.5px;font-weight:600;display:inline-flex;align-items:center;gap:8px}
+  .btn:hover{background:var(--teal-deep);border-color:var(--teal-deep)}
+  .btn.ghost{background:var(--surface);color:var(--teal-deep);border-color:var(--mintline)}
+  .btn.ghost:hover{background:var(--mint2)}
+  .btn.mini{padding:8px 15px;font-size:13px}
+  .btn.big{padding:13px 26px;font-size:15.5px}
+  .prow{display:flex;gap:10px;flex-wrap:wrap;align-items:center}
+
+  .levelcard{display:flex;align-items:center;gap:22px}
+  .lc-ring{position:relative;width:92px;height:92px;flex-shrink:0;display:flex;align-items:center;justify-content:center}
+  .lc-ring .lc-emoji{position:absolute;font-size:34px}
+  .lc-body{flex:1}
+  .lc-body h2{margin:2px 0 10px}
+  .xpbar{height:9px;background:var(--mint2);border:1px solid var(--line);border-radius:6px;overflow:hidden;margin-bottom:6px}
+  .xpbar>i{display:block;height:100%;background:var(--teal)}
+
+  .snap{display:grid;grid-template-columns:repeat(4,1fr);gap:10px;margin-bottom:6px}
+  @media(max-width:520px){.snap{grid-template-columns:repeat(2,1fr)}}
+  .stat{background:var(--surface);border:1.5px solid var(--line);border-radius:14px;padding:12px;text-align:center}
+  .stat .se{font-size:18px} .stat b{display:block;font-size:20px;font-family:var(--serif);color:var(--teal-deep);margin:2px 0} .stat .sl{font-size:12px;color:var(--muted)}
+  .persona{font-size:13.5px;color:var(--muted);background:var(--mint2);border:1px solid var(--line);border-radius:12px;padding:10px 14px;margin:0 0 14px}
+  .caprow{padding:12px 0;border-bottom:1px solid var(--line)}
+  .caprow:last-of-type{border-bottom:none}
+  .caphead{display:flex;justify-content:space-between;align-items:center;gap:10px;font-size:15px;font-weight:500}
+  .captag{font-size:11px;padding:2px 10px;border-radius:30px;white-space:nowrap;font-weight:600}
+  .tag-have{background:var(--mint);color:var(--teal-deep);border:1px solid var(--mintline)}
+  .tag-build{background:var(--gold-bg);color:var(--gold);border:1px solid #e6d6ad}
+  .tag-edge{background:#f7ece8;color:var(--bad);border:1px solid #e6c7bf}
+  .capbar{display:flex;gap:5px;margin:7px 0 5px}
+  .capbar span{height:7px;flex:1;border-radius:4px;background:var(--mint2);border:1px solid var(--line)}
+  .capbar span.on{background:var(--teal);border-color:var(--teal)}
+  .capd{font-size:13px;color:var(--muted)}
+  .airead{font-size:15px;line-height:1.6;background:var(--mint2);border:1px solid var(--mintline);border-radius:12px;padding:12px 15px}
+  .tabs.locked{opacity:.45;pointer-events:none}
+  .grown{color:var(--teal-deep);font-weight:600;font-size:12px}
+  .capnudge{color:var(--gold);font-weight:500;font-size:12px}
+
+  .badges{display:grid;grid-template-columns:repeat(auto-fill,minmax(120px,1fr));gap:10px;margin-bottom:26px}
+  .badge2{border:1.5px solid var(--line);border-radius:14px;padding:12px 10px;text-align:center;background:var(--mint2);opacity:.55}
+  .badge2.on{opacity:1;border-color:var(--gold);background:var(--gold-bg)}
+  .badge2 span{font-size:24px;display:block} .badge2 b{font-size:12.5px;display:block;margin-top:4px;font-weight:600}
+
+  .testcard{background:var(--mint2)}
+  .up{color:var(--teal-deep);font-weight:600}
+
+  .how{display:grid;grid-template-columns:repeat(2,1fr);gap:12px}
+  @media(max-width:520px){.how{grid-template-columns:1fr}}
+  .howc{border:1.5px solid var(--line);border-radius:14px;padding:15px 17px;background:var(--mint2)}
+  .howc .he{font-size:22px} .howc b{display:block;font-family:var(--serif);font-size:17px;margin:6px 0 4px} .howc span{font-size:13.5px;color:var(--muted)}
+  .pair{display:grid;grid-template-columns:1fr 1fr;gap:16px;margin-bottom:16px}
+  .pair>.card{margin-bottom:0}
+  @media(max-width:640px){.pair{grid-template-columns:1fr}}
+  .howrow{display:flex;gap:10px;align-items:flex-start;padding:9px 0;border-bottom:1px solid var(--line)}
+  .howrow:last-child{border-bottom:none}
+  .howrow .he{font-size:18px;flex-shrink:0;line-height:1.3}
+  .howrow b{display:block;font-size:14.5px}
+  .howrow span{font-size:13px;color:var(--muted)}
+  .cta{margin-top:22px}
+
+  .reccard{display:flex;align-items:center;gap:16px;background:var(--mint2);border:1.5px solid var(--mintline);border-radius:14px;padding:16px 18px;flex-wrap:wrap}
+  .reccard>div{flex:1;min-width:180px}
+
+  details.curric{background:var(--surface);border:1.5px solid var(--line);border-radius:16px;padding:4px 8px;margin-bottom:16px}
+  details.curric summary{cursor:pointer;list-style:none;padding:14px 14px;display:flex;align-items:center;gap:8px}
+  details.curric summary::-webkit-details-marker{display:none}
+  .ulist{padding:0 6px 10px}
+  .urow{display:flex;align-items:center;gap:11px;width:100%;text-align:left;background:none;border:1px solid transparent;border-radius:12px;padding:10px 12px;cursor:pointer;font-family:inherit;font-size:14.5px;color:var(--ink)}
+  .urow:hover{background:var(--mint2);border-color:var(--line)}
+  .urow.on{background:var(--mint);border-color:var(--mintline)}
+  .unum{width:23px;height:23px;border-radius:50%;border:1.5px solid var(--mintline);color:var(--teal-deep);display:flex;align-items:center;justify-content:center;font-size:12px;font-weight:600;flex-shrink:0;background:var(--mint2)}
+  .ulbl{flex:1} .udone{font-size:12px;color:var(--teal)}
+
+  .vgrid{display:grid;grid-template-columns:1fr 1fr;gap:12px;margin-top:8px}
+  @media(max-width:560px){.vgrid{grid-template-columns:1fr}}
+  .vcard{background:var(--mint2);border:1px solid var(--line);border-radius:14px;padding:13px 16px}
+  .vcard b{font-weight:600}.vcard .d{font-size:13.5px;color:var(--muted);margin-top:3px}
+  .unlock{background:var(--gold-bg);border:1px solid #e6d6ad;border-radius:14px;padding:14px 18px;margin-top:18px;font-size:14.5px}
+  .unlock .caps{color:var(--gold)}
+  .actions{margin-top:18px;display:flex;justify-content:space-between;align-items:center;gap:10px;flex-wrap:wrap}
+
+  .dots,.qdots{display:flex;gap:6px;margin-bottom:16px}
+  .dots span,.qdots span{height:5px;flex:1;border-radius:3px;background:var(--line)}
+  .dots span.on,.qdots span.on{background:var(--teal)} .qdots span.done{background:var(--mintline)}
+  .prompt{font-size:18px;line-height:1.6;font-family:var(--serif)}
+  .doors{display:grid;grid-template-columns:1fr 1fr;gap:14px;margin-top:22px}
+  @media(max-width:560px){.doors{grid-template-columns:1fr}}
+  .door{text-align:left;padding:18px 20px;border:1.5px solid var(--mintline);border-radius:16px;background:var(--mint2);cursor:pointer;font-family:inherit}
+  .door:hover{border-color:var(--teal);background:var(--mint)}
+  .door .k{font-family:var(--serif);font-weight:600;font-size:17px}.door .s{font-size:13.5px;color:var(--muted);margin-top:3px}
+  textarea{width:100%;min-height:120px;border:1.5px solid var(--line);border-radius:14px;background:var(--mint2);color:var(--ink);padding:13px 15px;font-family:inherit;font-size:15px;line-height:1.55;resize:vertical}
+  textarea:focus{outline:none;border-color:var(--teal)}
+  input[type=password]{width:100%;border:1.5px solid var(--line);border-radius:14px;background:var(--mint2);color:var(--ink);padding:12px 15px;font-family:inherit;font-size:14.5px}
+  input:focus{outline:none;border-color:var(--teal)}
+  .pilllabel{display:inline-block;font-size:12px;padding:3px 11px;border-radius:30px;background:var(--mint2);border:1px solid var(--line);color:var(--muted)}
+  .rev{border-left:3px solid var(--mintline);padding:2px 0 2px 15px;margin-bottom:16px}
+  .rev.hl{border-color:var(--teal)}
+  .rev .lab{font-size:11px;letter-spacing:.09em;text-transform:uppercase;color:var(--muted);margin-bottom:3px;font-weight:600}
+  .rev .val{font-size:15.5px;line-height:1.55}
+  .badge{display:inline-block;font-size:11px;padding:2px 10px;border-radius:30px;font-weight:600}
+  .badge.draft{background:var(--gold-bg);color:var(--gold);margin-left:6px}
+  .badge.agree{background:var(--mint);color:var(--teal-deep);border:1px solid var(--mintline)}
+  .badge.differ{background:var(--gold-bg);color:var(--gold);border:1px solid #e6d6ad}
+  .probe{display:flex;gap:13px}
+  .probe .av{width:34px;height:34px;border-radius:50%;background:var(--mint);border:1.5px solid var(--mintline);flex-shrink:0;display:flex;align-items:center;justify-content:center;font-size:16px}
+  .thinking{color:var(--muted);font-style:italic}
+  .zoom{background:var(--mint2);border:1.5px solid var(--mintline);border-radius:16px;padding:20px 24px;margin-top:20px}
+  .zoom h3{margin:0 0 10px;font-size:18px}
+  .zoom .rec{background:var(--surface);border:1px solid var(--line);border-radius:12px;padding:11px 15px;font-size:14px;margin-top:14px;color:var(--teal-deep)}
+  .score{display:inline-flex;align-items:center;gap:8px;font-size:14px;color:var(--muted)}
+  .score .n{font-family:var(--serif);font-weight:600;color:var(--teal-deep);font-size:20px}
+
+  .opts{display:flex;flex-direction:column;gap:8px;margin-top:8px}
+  .opt{text-align:left;border:1.5px solid var(--mintline);border-radius:12px;background:var(--mint2);padding:12px 15px;cursor:pointer;font-family:inherit;font-size:14.5px;color:var(--ink)}
+  .opt:hover{border-color:var(--teal);background:var(--mint)}
+  .opt.sel{border-color:var(--teal);background:var(--mint);font-weight:500}
+  .code{background:#f4faf7;border:1px solid var(--line);border-radius:12px;padding:12px 6px;font-family:ui-monospace,Menlo,Consolas,monospace;font-size:13.5px;line-height:1.6;overflow-x:auto}
+  .cl{display:flex;gap:12px;padding:1px 12px;white-space:pre}
+  .cl .ln{color:var(--faint);user-select:none;min-width:16px;text-align:right}
+  .cl.bug{background:var(--bad-bg);border-radius:4px}
+  .val code{font-family:ui-monospace,Menlo,Consolas,monospace;font-size:13px;background:var(--mint2);padding:2px 6px;border-radius:5px}
+
+  .glossitem{border-bottom:1px solid var(--line);padding:14px 0}
+  .glossitem:last-child{border:none}
+  .glossitem .t{font-family:var(--serif);font-weight:600;font-size:17px}
+  .glossitem .d{color:var(--muted);font-size:14.5px;margin:3px 0}
+  .glossitem .from{font-size:12.5px;color:var(--faint)}
+  .gtag{font-size:11px;color:var(--teal-deep);background:var(--mint);border:1px solid var(--mintline);border-radius:30px;padding:1px 9px;margin-left:6px}
+  .cmap-row{margin-bottom:16px}
+  .cmap-row .rowtop{display:flex;justify-content:space-between;font-size:14.5px;margin-bottom:5px}
+  .cmap-row .rowtop .n{color:var(--muted)}
+  .bar{height:9px;background:var(--mint2);border:1px solid var(--line);border-radius:6px;overflow:hidden}
+  .bar>i{display:block;height:100%;background:var(--mintline)}.bar>i.hot{background:var(--teal)}
+  .empty{color:var(--muted);text-align:center;padding:34px 16px;font-size:15px}
+  .fw{display:flex;flex-direction:column;gap:14px}
+  .fwitem{font-size:14.5px;line-height:1.6;padding-left:14px;border-left:3px solid var(--mintline)}
+  .fwitem b{font-weight:600}
+  .fwitem a{white-space:nowrap;font-weight:500}
+  .keyrow{display:flex;gap:10px;align-items:center;margin-top:12px;flex-wrap:wrap}
+
+  .celebrate{position:fixed;inset:0;z-index:50;pointer-events:auto;overflow:hidden}
+  .confetti{position:absolute;top:-24px;width:9px;height:14px;border-radius:2px;animation:fall linear forwards}
+  @keyframes fall{to{transform:translateY(105vh) rotate(680deg);opacity:.2}}
+  .toast{position:absolute;left:50%;top:26%;transform:translateX(-50%);background:var(--surface);border:1.5px solid var(--mintline);border-radius:16px;padding:16px 20px;box-shadow:0 12px 40px rgba(20,60,50,.18);min-width:230px}
+  .tline{display:flex;align-items:center;gap:12px;padding:4px 0}
+  .tline .te{font-size:26px}.tline b{display:block;font-family:var(--serif);font-size:17px}.tline span{font-size:13px;color:var(--muted)}
+  footer{margin-top:30px;text-align:center;color:var(--faint);font-size:12px;line-height:1.7}
+</style>
+</head>
+<body>
+<div class="wrap">
+  <img class="topbanner" alt="">
+  <header>
+    <div class="mark"><svg viewBox="0 0 48 48" width="27" height="27" aria-hidden="true"><path d="M24 8a12 12 0 0 1 7 21.7c-1.4 1-2 2.2-2.2 3.5h-9.6c-.2-1.3-.8-2.5-2.2-3.5A12 12 0 0 1 24 8z" fill="#2f8a72"/><rect x="19" y="35" width="10" height="3.4" rx="1.5" fill="#2f8a72"/><rect x="20" y="39" width="8" height="3" rx="1.5" fill="#2f8a72"/><path d="M24 15 v6.5 M24 21.5 l-2.4 2.4 M24 21.5 l2.4 2.4" stroke="#ffffff" stroke-width="1.6" fill="none" stroke-linecap="round"/><path d="M35 11 l1.3 2.9 3.2.5 -2.3 2.2.6 3.1 -2.8-1.5 -2.8 1.5.6-3.1 -2.3-2.2 3.2-.5z" fill="#c2913a"/></svg></div>
+    <div class="brand"><h1>App Savvy</h1><div class="tagline">Speak software · build with confidence</div></div>
+    <button class="levelchip" id="levelChip"></button>
+  </header>
+  <div class="quotebar" id="quotebar"><span class="qmark">❝</span><span class="qtext" id="qtext"></span><button class="qref" id="qref" title="Another one" aria-label="New quote">↻</button></div>
+  <nav class="tabs" id="tabs">
+    <button data-tab="home" class="on">🏠 Home</button>
+    <button data-tab="learn">🎓 Learn</button>
+    <button data-tab="practice">🎯 Practice</button>
+    <button data-tab="reference">📚 Reference</button>
+    <button data-tab="key">🔑 AI &amp; Data</button>
+  </nav>
+  <div class="meta" id="meta"></div>
+  <div id="root"></div>
+  <footer>A free judgment-training tool, in the family of <a href="https://tinyurl.com/aafreeinterviewpractice" target="_blank" rel="noopener">Anastasia's Interview Practice</a>.<br>Everything stays in this browser. Built for vibecoders becoming fluent.</footer>
+</div>
+
+  <script>
+const APP_BANNER="data:image/jpeg;base64,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";
+const UNITS = [
+  { id:"u1", emoji:"🧱", title:"How an app is put together",
+    objective:"Describe where an app's pieces live and which piece does what — so “the frontend can't reach the backend” already means something to you.",
+    lesson:`<p>Almost every app is two halves talking to each other. The <b>frontend</b> is what runs in front of the user — the screen, the buttons, the typing — living on their device, in their browser or phone. The <b>backend</b> is the part that runs somewhere else, on a server you control, doing the work the user shouldn't see or can't be trusted with: holding the real data, checking permissions, keeping secrets.</p>
+    <p>Some apps have only a frontend. Your single-file apps are all frontend, which is exactly why they're so portable. The moment an app needs to remember something across users, keep a secret, or enforce a rule, it usually grows a backend. Knowing which half you're standing in tells you what's possible and what isn't.</p>`,
+    vocab:[{t:"Frontend",d:"What runs on the user's device — screen, buttons, input."},{t:"Backend",d:"What runs on a server you control — data, rules, secrets."},{t:"Client / server",d:"The device that asks (client) and the machine that answers (server)."},{t:"Static vs. dynamic",d:"Fixed files vs. an app that computes responses per request."}],
+    unlock:"When a client asks “can it do X,” you answer “yes, on the frontend” or “that needs a backend, here's why” — instantly, without deferring." },
+  { id:"u2", emoji:"🗄️", title:"Where the data lives",
+    objective:"Reason about where information is stored, who can reach it, and what happens when the same information exists in two places at once.",
+    lesson:`<p>Data has to physically sit somewhere, and every choice about <em>where</em> is a choice about speed, privacy, and trust. On the user's device (your localStorage) it's private and instant but trapped there. On a server it can follow the user across devices — but now you're responsible for protecting it.</p>
+    <p>The hardest problem in this unit appears the moment data lives in more than one place at once: which copy is the truth? When a user edits on their phone offline and their laptop offline, you have two truths, and something has to reconcile them. That reconciliation — how you merge, or which edit wins — is one of the most consequential and most overlooked decisions in any app that syncs.</p>`,
+    vocab:[{t:"Data locality",d:"Where data physically lives — and who can reach it from there."},{t:"localStorage",d:"A small store inside one browser on one device."},{t:"Sync",d:"Keeping copies of data in step across devices."},{t:"Conflict resolution",d:"How you reconcile two edits made to the same thing in two places."},{t:"Source of truth",d:"The copy everything else is expected to agree with."},{t:"Eventual consistency",d:"Copies may disagree briefly, as long as they converge."}],
+    unlock:"Data questions are where under-specified projects go to die. Being the one who asks “where does this live, and what happens when two people edit it at once” is a genuine superpower in solutions work." },
+  { id:"u3", emoji:"🔌", title:"How systems talk to each other",
+    objective:"Explain what an API is, what a request costs, and why the key that authorizes it is dangerous — well enough to design an integration on a whiteboard.",
+    lesson:`<p>An <b>API</b> is a doorway one system opens so another can ask it for things in a predictable way. When this app calls the AI model, it sends a <b>request</b> over the network and waits for a <b>response</b>; that round-trip takes time (<b>latency</b>) and can fail — which is why a good app has a fallback.</p>
+    <p>Every serious API asks <em>who are you</em>, answered with an <b>API key</b> — essentially a password that spends money or unlocks data. Integrations, the heart of forward-deployed work, are almost always this: teaching two systems that were never designed to talk to each other to exchange the right requests, safely, without falling over when one side is slow or down.</p>`,
+    vocab:[{t:"API",d:"A predictable doorway one system opens for another."},{t:"Request / response",d:"The ask sent over the network, and the answer that comes back."},{t:"Authentication",d:"Proving who you are before a system will answer you."},{t:"API key / token",d:"A secret that authorizes requests — often spends money."},{t:"Latency",d:"How long the round-trip takes."},{t:"Rate limit",d:"A cap on how many requests you may send in a window."}],
+    unlock:"“Make our tool talk to their system” is the sentence that starts most solutions projects. This is the unit that turns it from intimidating to routine." },
+  { id:"u4", emoji:"🤖", title:"AI as an engineering component",
+    objective:"Treat an AI model as an engineering part with known behaviors and failure modes — so you can design around it, bound it, and check its work.",
+    lesson:`<p>A generative model is a component you don't fully control, and the professional skill is <em>bounding</em> it well. The <b>system prompt</b> is your main lever — standing instructions that shape behavior. The model has no memory beyond what you hand it each time (its <b>context</b>), which is why <b>RAG</b> exists: you retrieve the relevant facts and feed them in, so the model answers from real data instead of guessing.</p>
+    <p>Because the same input can give different outputs (<b>non-determinism</b>), you can't just eyeball it once — you need <b>evaluation</b>, a repeatable way to check it's still doing the right thing. In 2026 this is the fastest-rising part of the FDE skill set: orchestrating AI, guarding it, and proving it works.</p>`,
+    vocab:[{t:"System prompt",d:"Standing instructions that shape how a model behaves."},{t:"Context window",d:"Everything the model can “see” for one response."},{t:"RAG",d:"Retrieval-augmented generation — feeding in real facts to answer from."},{t:"Non-determinism",d:"Same input, possibly different output each time."},{t:"Evaluation (evals)",d:"A repeatable check that the AI still does the right thing."},{t:"Guardrails",d:"Constraints that keep a flexible system inside bounds."}],
+    unlock:"This is the newest, least-crowded vertical of the T. Most people with your client skills can't speak it; most who can speak it lack your client skills. The overlap is where the market is paying." },
+  { id:"u5", emoji:"🔒", title:"Trust, secrets, and what breaks",
+    objective:"Spot the security and privacy tradeoff in a design before it becomes an incident — and speak to it plainly with a nervous client.",
+    lesson:`<p>Security is mostly two questions: what secrets does this system hold, and what happens if the wrong person reaches them. A <b>secret</b> is anything that unlocks money or data — an API key, a password, a token. The cardinal rule you already live by: a secret in the frontend is readable by anyone who opens their browser's developer tools, which is why this app keeps your key in localStorage and never in the shared file.</p>
+    <p><b>Privacy</b> is the sibling question — whose data is this, where does it live, who can see it. Clients hand FDEs access to sensitive systems, so being visibly careful here is how you earn the trust that lets you do the job at all.</p>`,
+    vocab:[{t:"Secret",d:"Anything that unlocks money or data if leaked."},{t:"Client-side exposure",d:"Frontend code is readable by anyone who looks."},{t:"Encryption",d:"Scrambling data so only the right key can read it."},{t:"Least privilege",d:"Giving each part only the access it truly needs."},{t:"Attack surface",d:"Every place a system could be poked at or broken in."}],
+    unlock:"“Is this safe?” is the question that stalls enterprise deals. An FDE who answers it honestly and specifically, without hand-waving, is worth their whole salary in that moment." },
+  { id:"u6", emoji:"📦", title:"Shipping, and the bill that comes later",
+    objective:"Weigh a decision by its cost over time, and name the debt a shortcut is quietly taking on.",
+    lesson:`<p>Everything you build has two prices: what it costs to make, and what it costs to keep. <b>Maintainability</b> is the second price, and it's the one beginners forget. A feature that's appealing today but taxes every future change (your rejected two-column layout) can be a net loss even if it works perfectly.</p>
+    <p><b>Technical debt</b> is the name for shortcuts that borrow speed now against pain later — sometimes a smart loan, sometimes a trap. The judgment is knowing which. Your instinct to keep things single-file and simple <em>is</em> this unit: you've been paying down maintenance cost by refusing to take it on.</p>`,
+    vocab:[{t:"Maintainability",d:"How cheaply a thing can be kept working and changed."},{t:"Cost of ownership",d:"The total ongoing cost of keeping a feature alive."},{t:"Technical debt",d:"Speed borrowed now, repaid later with interest."},{t:"Scalability",d:"Whether it still works as data or users grow."},{t:"Coupling",d:"How tangled two parts are — tangled means hard to change."},{t:"Separation of concerns",d:"Keeping distinct kinds of work in distinct places."}],
+    unlock:"FDEs build fast under deadline pressure — exactly when debt accrues. The one who can say “we can ship this shortcut, here's the interest we'll pay in Q3” is the one clients keep." },
+  { id:"u7", emoji:"🔍", title:"Reading the machine when it breaks",
+    objective:"Approach a broken system methodically — form a hypothesis, find where reality diverges from expectation, narrow it down — instead of guessing.",
+    lesson:`<p>Debugging is an investigation skill — the same one you'd use to find why a process is losing time on a factory floor. The method: reproduce the problem reliably, decide what you <em>expected</em> to happen, find the first place the machine disagreed with you, and narrow the search in half until you've cornered it.</p>
+    <p>The tools are just windows into the machine's actual behavior — <b>logs</b> (what it recorded doing), <b>errors</b> (where it gave up), the browser <b>console</b> (what the frontend is complaining about). You don't need to write the fix to locate the fault, and locating the fault is 80% of the work.</p>`,
+    vocab:[{t:"Reproduce",d:"Make the bug happen on demand — step one, always."},{t:"Logs",d:"The running record of what a system actually did."},{t:"Error / stack trace",d:"Where it gave up, and the trail that led there."},{t:"Console",d:"The browser's window into frontend complaints."},{t:"Root cause",d:"The real fault underneath the visible symptom."}],
+    unlock:"When a client's deployment is on fire, the person who calmly narrows the problem is the one who matters most in that moment. The method is already yours from operations.",
+    sabotage:true },
+  { id:"u8", emoji:"⚖️", title:"Judgment: naming the tradeoff",
+    objective:"Look at any design decision and articulate the real tradeoff underneath it in plain language — the meta-skill the whole deck trains.",
+    lesson:`<p>Almost every architectural decision comes down to a defensible answer you can justify. Strong technical judgment is naming what you're trading and choosing on purpose. Every other unit is a specific instance of this one: local vs. synced trades privacy against continuity, simple vs. built trades speed against scale, guardrails vs. freedom trades safety against range.</p>
+    <p>When you can hear a decision and immediately say “the real question here is X against Y,” you've become someone who can lead the conversation. This is also where taste lives — knowing when a change hasn't earned its place and undoing it, which your four reverts taught you better than any lecture could.</p>`,
+    vocab:[{t:"Tradeoff",d:"What you give up to get what you chose."},{t:"Failure mode",d:"The specific way a choice goes wrong when it does."},{t:"Defensible decision",d:"One you can justify by its tradeoff, right answer or not."},{t:"Premature optimization",d:"Solving a problem before you've confirmed it exists."},{t:"Taste as an input",d:"Judgment about feel, treated as real design data."}],
+    unlock:"This is the whole game. Solutions people are hired to make defensible calls in ambiguity on a client's behalf. Everything else is in service of you doing this one thing with confidence." }
+];
+const DECISIONS = [
+  { id:"api-key-location", units:["u3","u5"], project:"This app", when:"now", group:"APIs & secrets",
+    context:"Your app needs to call an AI model, which requires a secret API key. With no backend, you can only store that key in the browser. You can ship it that way and accept the exposure, or stand up a small server whose only job is to hold the key and forward requests.",
+    doorA:{k:"Key in the browser", s:"No backend, key is exposed"},
+    doorB:{k:"Key behind a server", s:"A backend guards the secret"},
+    chosen:"A",
+    downstream:"[DRAFT — your call] For a personal tool only you use, a browser-side key is a reasonable, bounded risk — it spends only your credits and this app keeps it out of the shared file. The day you let strangers use it, that same choice becomes a liability and you'd want a server.",
+    downstreamDraft:true,
+    otherDoorCost:"A server keeps the secret truly private and lets many people share the tool safely — but it's real cost, setup, and something to keep patched and running, which a static app cleverly avoids.",
+    principle:"Where a secret lives is a security decision. Frontend-only is simplest and free but can't keep a secret; a backend keeps secrets but adds cost and upkeep. The right call scales with who will use the tool and what the key can spend.",
+    terms:[{t:"Client-side secret",d:"A key stored in the browser — visible to anyone who looks."},{t:"Proxy server",d:"A small backend that holds the secret and forwards requests for you."}] },
+  { id:"journal-storage", units:["u2","u5"], project:"Moment by Moment", when:"month 1", group:"Data locality & sync",
+    context:"You're building a journaling app that people use daily on both phone and laptop. Their entries are personal. You can store entries in the browser on each device, or sync them through a server so they follow the user around.",
+    doorA:{k:"Local storage per device", s:"Entries live in each browser"}, doorB:{k:"Server sync", s:"Entries follow the user"}, chosen:"B",
+    downstream:"Sync worked, but two devices editing offline collided in month three. You solved it with a merge strategy. The privacy cost was real: entries now live on a server you have to protect.", downstreamDraft:true,
+    otherDoorCost:"Local storage keeps data private by default, but “my entry vanished between devices” is the fastest way to lose a daily user's trust.",
+    principle:"Any time data must exist in two places at once, you choose between one source of truth (sync, with conflict cost) and many sources of truth (local, with reconciliation cost). Every version has a cost; the choice is which one you'd rather pay. Privacy sits on top as a separate axis.",
+    terms:[{t:"Data locality",d:"Where data physically lives — and who can reach it from there."},{t:"Sync conflict resolution",d:"How you reconcile two edits made to the same thing in two places."}] },
+  { id:"backup-merge", units:["u2"], project:"Moment by Moment", when:"month 3", group:"Data locality & sync",
+    context:"Your synced journal runs on two devices that are sometimes offline. A user writes on the train, then writes again on the laptop before the phone reconnects. Both edits are real. You can let the last write win, or merge the two versions.",
+    doorA:{k:"Last write wins", s:"Newest edit overwrites"}, doorB:{k:"Merge both versions", s:"Reconcile the two truths"}, chosen:"B",
+    downstream:"You built a merge strategy so no entry is silently lost. It's more code and more edge cases, but a journal that eats an entry is one people stop trusting.", downstreamDraft:true,
+    otherDoorCost:"Last-write-wins is a few lines and ships today, but it quietly deletes real writing the moment two devices disagree.",
+    principle:"When two copies of the truth diverge, you either pick a winner (simple, lossy) or reconcile them (complex, complete). The choice depends on how expensive a silently-lost change is. For irreplaceable content, reconciliation usually earns its cost.",
+    terms:[{t:"Merge strategy",d:"The rule that decides how two conflicting versions become one."},{t:"Eventual consistency",d:"Copies may disagree briefly, as long as they converge."}] },
+  { id:"plans-as-data", units:["u2","u6"], project:"Moment by Moment", when:"structure", group:"Content separated from logic",
+    context:"Your app has reading plans. You can express each plan as data — a list the app reads — or bake it into the code as logic. Data is easier to change; code can do more.",
+    doorA:{k:"Plans as data", s:"Edit a list, not code"}, doorB:{k:"Plans as code", s:"More power, more coupling"}, chosen:"A",
+    downstream:"You kept reading plans as data, separate from logic. Adding or changing a plan means editing a list — no code changes, less risk, easier to reason about.", downstreamDraft:true,
+    otherDoorCost:"Plans-as-code can express richer behavior, but it tangles content into logic so every content change becomes a code change with all the risk that carries.",
+    principle:"Separate content from logic wherever you can. When the things that change often (content) live as data apart from the things that change rarely (logic), edits get safer and cheaper. It's why this very app keeps its doors in an editable list, separate from the code.",
+    terms:[{t:"Separation of concerns",d:"Keeping distinct kinds of work in distinct places."},{t:"Data-driven design",d:"Behavior controlled by editable data rather than hardcoded logic."}] },
+  { id:"single-file", units:["u1","u6"], project:"Moment by Moment", when:"start", group:"Simplicity vs. maintainability",
+    context:"You're starting a new app. You could keep everything — HTML, CSS, JavaScript — in one file you open by double-clicking, or set up a proper build system with separate files, bundling, and a dev server.",
+    doorA:{k:"Single-file HTML", s:"One file, no tooling"}, doorB:{k:"A proper build setup", s:"Bundler, modules, tooling"}, chosen:"A",
+    downstream:"Single-file kept the whole project portable and let you ship without ceremony. The cost shows up only if the app grows past what one file can hold clearly.", downstreamDraft:false,
+    otherDoorCost:"A build setup pays off at scale — code splitting, dependencies, testing — but it's hours of config before you write a line that matters, and a barrier every time you want to just open the thing.",
+    principle:"Tooling is leverage you pay for upfront. For small or fast-moving projects, no build step means no maintenance surface and instant portability. The build setup wins only once the project is big enough that its absence hurts more than its presence.",
+    terms:[{t:"Build step",d:"A process that turns source files into what the browser actually runs."},{t:"Portability",d:"How easily a thing runs somewhere new with nothing extra installed."}] },
+  { id:"base64-images", units:["u6"], project:"Moment by Moment", when:"early", group:"Simplicity vs. maintainability",
+    context:"Your single-file app needs images. You can embed them directly in the file as Base64 text, so the file is fully self-contained, or link to separate image files that load over the network.",
+    doorA:{k:"Base64-embedded", s:"Images inside the file"}, doorB:{k:"Linked assets", s:"Separate image files"}, chosen:"A",
+    downstream:"Embedding kept the app a single self-contained artifact — email it, host it anywhere, it just works. The file got heavier and slower to load as images piled up.", downstreamDraft:true,
+    otherDoorCost:"Linked assets keep the file small and let images cache separately, but you lose the one-file magic and add network requests that can fail.",
+    principle:"Self-containment trades against size and load time. Embedding buys portability and offline-readiness at the cost of a heavier payload that can't be cached piece by piece. Below a certain image budget the simplicity wins; above it, the weight does.",
+    terms:[{t:"Base64 encoding",d:"A way to write binary data (like an image) as plain text."},{t:"Asset caching",d:"The browser reusing a file it already downloaded instead of refetching."}] },
+  { id:"two-column", units:["u6"], project:"Moment by Moment", when:"design", group:"Simplicity vs. maintainability",
+    context:"A two-column layout looked appealing for showing more at once. Building and maintaining it responsively across phone and laptop is real ongoing work. You can add it, or stay single-column.",
+    doorA:{k:"Two-column layout", s:"More on screen"}, doorB:{k:"Single column", s:"Simpler forever"}, chosen:"B",
+    downstream:"You rejected two columns on maintenance cost. Every layout that reflows across screen sizes is a permanent tax on future changes, and the appeal didn't justify it.", downstreamDraft:true,
+    otherDoorCost:"Two columns can use wide screens better, but responsive multi-column is a recurring cost every time you touch the layout again.",
+    principle:"Judge a feature by its cost of ownership over time. Appeal is a one-time feeling; maintenance is paid on every future edit. A feature that looks good but taxes every change forever is often a net loss.",
+    terms:[{t:"Cost of ownership",d:"The total ongoing cost of keeping a feature alive over time."},{t:"Responsive layout",d:"A layout that rearranges itself to fit different screen sizes."}] },
+  { id:"journal-search", units:["u6"], project:"Moment by Moment", when:"as data grew", group:"Performance as data grows",
+    context:"Your journal keeps growing. Search was instant at fifty entries. At some point, naive search over everything will start to lag. You can keep the simple approach until it hurts, or build for scale now.",
+    doorA:{k:"Simple search now", s:"Fast to build, may lag later"}, doorB:{k:"Build for scale", s:"Indexing, more upfront work"}, chosen:"A",
+    downstream:"[DRAFT — your call] Likely you kept it simple and watched performance as the data grew, addressing it if and when search actually slowed.", downstreamDraft:true,
+    otherDoorCost:"Building for scale upfront (indexing, pagination) is real work spent on a problem you may never hit — premature optimization is its own cost.",
+    principle:"Performance is a function of data size, and data grows under you. The judgment is whether to pay for scale now or wait until the simple version actually hurts. Too early wastes effort; too late ships a slow product. Measuring beats guessing.",
+    terms:[{t:"Premature optimization",d:"Solving a performance problem before you've confirmed it exists."},{t:"Search indexing",d:"Pre-organizing data so lookups stay fast as it grows."}] },
+  { id:"theological-guardrails", units:["u4"], project:"Moment by Moment", when:"AI feature", group:"Constraining a generative system",
+    context:"Your app uses a generative AI whose output you don't fully control. For a feature touching sensitive material, you can constrain it heavily through the system prompt, or give it room and trust it to stay appropriate.",
+    doorA:{k:"Heavy guardrails", s:"Tightly constrain the model"}, doorB:{k:"Light touch", s:"Trust, more freedom"}, chosen:"A",
+    downstream:"You wrote guardrails into the system prompt to keep a generative system inside boundaries you care about. The price is some flexibility and the occasional over-refusal.", downstreamDraft:true,
+    otherDoorCost:"A lighter touch gives richer, more flexible output, but a generative system without guardrails will eventually produce something off-boundary in front of a real user.",
+    principle:"When you deploy a generative system you don't fully control, the system prompt is your main lever for bounding its behavior. Tighter constraints trade range and surprise for predictability and safety. How tight to go scales with how costly a bad output would be.",
+    terms:[{t:"System prompt",d:"Standing instructions that shape how an AI behaves across a session."},{t:"Guardrails",d:"Constraints that keep a flexible system inside acceptable bounds."}] },
+  { id:"github-pages", units:["u1","u5"], project:"Moment by Moment", when:"hosting", group:"Simplicity vs. maintainability",
+    context:"You need to host the app somewhere. GitHub Pages is free and dead simple but gives you a static site with little control. A real server gives you more power — backends, config, scaling — at the cost of money and setup.",
+    doorA:{k:"GitHub Pages", s:"Free, static, simple"}, doorB:{k:"A real server", s:"More control, more cost"}, chosen:"A",
+    downstream:"GitHub Pages meant zero cost and near-zero ops, which fit a static single-file app perfectly. The ceiling is real: no server-side logic, so anything sensitive (like an API key) has to live in the browser.", downstreamDraft:false,
+    otherDoorCost:"A real server unlocks backend logic and secret-keeping, but you pay in money, setup, patching, and uptime worry — overkill for a static app.",
+    principle:"Hosting is a cost-vs-control tradeoff. Static hosting is free and maintenance-light but can't keep secrets or run server logic. You only need a server when the app genuinely needs one — until then, its absence is a feature.",
+    terms:[{t:"Static hosting",d:"Serving fixed files with no server-side code running per request."},{t:"Client-side secret",d:"A key stored in the browser — visible to anyone who looks."}] },
+  { id:"content-width", units:["u8"], project:"Moment by Moment", when:"design", group:"Taste as a design input",
+    context:"You're setting the reading width for a text-heavy app. A wider column (900px) fits more per line and feels spacious; a narrower one (720px) keeps lines short and easy for the eye to track.",
+    doorA:{k:"900px wide", s:"Roomy, denser lines"}, doorB:{k:"720px wide", s:"Shorter, calmer lines"}, chosen:"A",
+    downstream:"You chose 900 for reading comfort in your context. Line length is a real readability lever — too long and the eye loses its place returning to the next line.", downstreamDraft:true,
+    otherDoorCost:"720 hits the classic ~66-character line typography favors, but can feel cramped for a spacious reading experience.",
+    principle:"Line length is a measurable legibility variable. There's a comfortable band (roughly 50–75 characters); past it, the eye struggles to find the next line's start. The right width depends on font size and feel, but it's a measurable tradeoff.",
+    terms:[{t:"Measure (line length)",d:"How many characters fit on one line — a core readability control."},{t:"Readability vs. density",d:"Fitting more on screen against making each line easy to read."}] },
+  { id:"serif-font", units:["u8"], project:"Moment by Moment", when:"design, reverted", group:"Taste as a design input",
+    context:"You tried a serif font for the body text to give the app a warmer, more literary feel. After living with it, you weren't sure it earned its place. You can keep it, or revert to the previous font.",
+    doorA:{k:"Keep the serif", s:"Warmer, literary"}, doorB:{k:"Revert it", s:"Back to before"}, chosen:"B",
+    downstream:"You reverted. The serif didn't earn its place once you lived with it, and knowing when to undo a change you liked in the abstract is its own skill.", downstreamDraft:true,
+    otherDoorCost:"Keeping it would have committed you to a look you weren't sure of, letting an unearned change harden into the design.",
+    principle:"Taste is a legitimate design input, and reverting is a legitimate move. A change that looked good in theory but doesn't feel right in use should be undone without guilt. The discipline is noticing the doubt and acting on it.",
+    terms:[{t:"Reverting",d:"Undoing a change deliberately once it proves not worth keeping."},{t:"Sunk-cost bias",d:"Keeping something because you invested in it, even once it stops being good."}] },
+  { id:"gold-accent", units:["u8"], project:"Moment by Moment", when:"design, reverted", group:"Taste as a design input",
+    context:"You added a gold accent color to lift the palette. Living with it, it felt like more than the design needed. You can keep the accent or pull it back out.",
+    doorA:{k:"Keep the gold", s:"Richer palette"}, doorB:{k:"Revert it", s:"Quieter palette"}, chosen:"B",
+    downstream:"You reverted the gold accent. Same lesson as the serif: a decorative addition that doesn't earn its attention quietly subtracts from the design.", downstreamDraft:true,
+    otherDoorCost:"Keeping it would have added visual noise the design didn't ask for, competing with the content for attention.",
+    principle:"Decoration should earn its attention or come out. Restraint is a design choice as active as addition — often the harder one, because removing something you made takes more nerve than adding it.",
+    terms:[{t:"Visual restraint",d:"Deliberately using less so what remains carries more."},{t:"Accent color",d:"A single stand-out color used sparingly to draw the eye."}] },
+  { id:"portrait-cards", units:["u8"], project:"Moment by Moment", when:"design, reverted", group:"Taste as a design input",
+    context:"You designed portrait-style gate-cards as an entry visual. After seeing them in place, they didn't hold up. You can keep them or revert to a simpler entry.",
+    doorA:{k:"Keep the cards", s:"Distinctive entry"}, doorB:{k:"Revert them", s:"Simpler entry"}, chosen:"B",
+    downstream:"You reverted the portrait gate-cards. Another case of testing an idea in reality and trusting your read of it over the idea's appeal on paper.", downstreamDraft:true,
+    otherDoorCost:"Keeping them would have preserved a distinctive touch that, in practice, didn't hold up to daily use.",
+    principle:"Ship the idea into reality before you trust it. Concepts that excite on paper often deflate in use, and the honest move is to believe the lived version over the imagined one.",
+    terms:[{t:"Design in context",d:"Judging an element in the real product, where it will actually be used."},{t:"Kill your darlings",d:"Cutting a favorite idea when it doesn't serve the whole."}] },
+  { id:"swing-animation", units:["u8"], project:"Moment by Moment", when:"design, reverted", group:"Taste as a design input",
+    context:"You added a swing animation for a touch of delight. In daily use, the motion started to feel like a distraction rather than a pleasure. You can keep it or remove it.",
+    doorA:{k:"Keep the swing", s:"A moment of delight"}, doorB:{k:"Revert it", s:"Calmer, stiller"}, chosen:"B",
+    downstream:"You reverted the swing animation. Delight that repeats every session turns into friction; motion has to still feel good at the hundredth viewing.", downstreamDraft:true,
+    otherDoorCost:"Keeping it trades a first-impression flourish for a small recurring distraction every single time.",
+    principle:"Delight and distraction are the same motion seen once versus a hundred times. Anything that repeats every session must be judged at the hundredth viewing. Animation earns its place only if it still feels good when it's routine.",
+    terms:[{t:"Motion budget",d:"How much animation a product can carry before it distracts."},{t:"Delight vs. friction",d:"A flourish that pleases once can annoy on repeat."}] }
+];
+const SABOTAGE=[
+ { id:"stringify", blurb:"Saving your journal to the browser.",
+   lines:['function save(entries){','  localStorage.setItem("journal", entries);','}','function load(){','  return JSON.parse(localStorage.getItem("journal"));','}'],
+   fixLine:1, fix:'localStorage.setItem("journal", JSON.stringify(entries));',
+   options:[
+     {t:'save() stores the array without JSON.stringify, so it saves as “[object Object]” and load() then throws.',ok:true,why:'localStorage only holds text. Passing an object saves the literal string “[object Object]”, and load() chokes trying to JSON.parse that back.'},
+     {t:'load() forgot a fallback for when nothing is saved yet.',ok:false},
+     {t:'The two functions use different storage keys.',ok:false},
+     {t:'localStorage is not supported, so it fails.',ok:false}],
+   method:"Reproduce, then look at the stored value itself — seeing “[object Object]” points straight at a missing stringify.",
+   term:{t:"Serialization",d:"Turning a live object into text you can store, and back again."} },
+ { id:"assign", blurb:"Deciding whether today continues the streak.",
+   lines:['function updateStreak(state, today){','  if(state.lastDay = today){','    return state.streak;','  }','  state.streak += 1;','  return state.streak;','}'],
+   fixLine:1, fix:'if(state.lastDay === today){',
+   options:[
+     {t:'The if uses = (assignment) instead of ===, so it is always true and quietly overwrites lastDay.',ok:true,why:'A single = assigns and returns the value, which is truthy here, so the branch always runs and lastDay gets clobbered. You meant === to compare.'},
+     {t:'The streak should start counting from 0.',ok:false},
+     {t:'It returns before it can increment.',ok:false},
+     {t:'today is never passed in.',ok:false}],
+   method:"When a branch always goes the same way, suspect the condition — a lone = where you meant === is the classic culprit.",
+   term:{t:"Assignment vs comparison",d:"= sets a value; === checks equality. Mixing them is a top-tier bug."} },
+ { id:"offbyone", blurb:"Grabbing the last five glossary terms.",
+   lines:['function lastFive(terms){','  var out = [];','  for(var i = terms.length; i > terms.length - 5; i--){','    out.push(terms[i]);','  }','  return out;','}'],
+   fixLine:2, fix:'for(var i = terms.length - 1; i >= terms.length - 5; i--){',
+   options:[
+     {t:'The loop starts at terms.length, one past the last index, so the first item pushed is undefined.',ok:true,why:'Valid indexes run 0 through length-1. Starting at length reads one slot too far and pushes undefined. Start at length-1.'},
+     {t:'It should sort the terms first.',ok:false},
+     {t:'out is never returned.',ok:false},
+     {t:'The number 5 should not be hardcoded.',ok:false}],
+   method:"Array indexes stop at length-1. An undefined sitting in the very first slot is the signature of an off-by-one.",
+   term:{t:"Off-by-one",d:"Landing one step past the right boundary — the most common counting bug."} },
+ { id:"await", blurb:"Getting the tutor's question from the AI.",
+   lines:['async function probe(reasoning){','  var q = callModel(reasoning);','  return q.text;','}'],
+   fixLine:1, fix:'var q = await callModel(reasoning);',
+   options:[
+     {t:'callModel returns a Promise but is not awaited, so q is a Promise and q.text is undefined.',ok:true,why:'An async call hands back a Promise, not the value. Without await, q is that Promise, and reading .text on it gives undefined.'},
+     {t:'reasoning is declared but never used.',ok:false},
+     {t:'It needs a loop to retry on failure.',ok:false},
+     {t:'async cannot be used on this function.',ok:false}],
+   method:"An undefined property on the result of an async call almost always means a missing await.",
+   term:{t:"await",d:"Pause until a Promise resolves, then use its real value."} },
+ { id:"datauri", blurb:"Showing an image embedded as Base64.",
+   lines:['function show(b64){','  var img = document.createElement("img");','  img.src = b64;','  document.body.appendChild(img);','}'],
+   fixLine:2, fix:'img.src = "data:image/png;base64," + b64;',
+   options:[
+     {t:'The Base64 has no data:image/...;base64, prefix, so the browser can not read it as an image.',ok:true,why:'A raw Base64 string is just text. The browser needs the data: URI prefix to know it is a PNG it should decode.'},
+     {t:'createElement should be passed "image", not "img".',ok:false},
+     {t:'appendChild is spelled wrong.',ok:false},
+     {t:'The image needs an explicit width to appear.',ok:false}],
+   method:"A blank image fed valid-looking data usually means the data: URI prefix is missing.",
+   term:{t:"Data URI",d:"A way to put a file's bytes directly into a src as text."} }
+];
+const QUOTES=[
+ {t:"It always seems impossible until it's done.",a:"Nelson Mandela"},
+ {t:"Fall seven times, stand up eight.",a:"Japanese proverb"},
+ {t:"It does not matter how slowly you go, as long as you do not stop.",a:"Confucius"},
+ {t:"Our greatest glory is not in never falling, but in rising every time we fall.",a:"Confucius"},
+ {t:"Success is the sum of small efforts, repeated day in and day out.",a:"Robert Collier"},
+ {t:"Perseverance is not a long race; it is many short races one after another.",a:"Walter Elliot"},
+ {t:"Continuous effort — not strength or intelligence — is the key to unlocking our potential.",a:"Winston Churchill"},
+ {t:"Courage doesn't always roar. Sometimes it's the quiet voice at day's end saying, 'I will try again tomorrow.'",a:"Mary Anne Radmacher"},
+ {t:"You don't have to be great to start, but you have to start to be great.",a:"Zig Ziglar"},
+ {t:"Ambition is the path to success; persistence is the vehicle you arrive in.",a:"Bill Bradley"},
+ {t:"Energy and persistence conquer all things.",a:"Benjamin Franklin"},
+ {t:"Well done is better than well said.",a:"Benjamin Franklin"},
+ {t:"Many of life's failures are people who did not realize how close they were to success when they gave up.",a:"Thomas Edison"},
+ {t:"Genius is one percent inspiration and ninety-nine percent perspiration.",a:"Thomas Edison"},
+ {t:"I have not failed. I've just found 10,000 ways that won't work.",a:"Thomas Edison"},
+ {t:"Nothing in this world can take the place of persistence.",a:"Calvin Coolidge"},
+ {t:"Patience and perseverance have a magical effect before which difficulties disappear and obstacles vanish.",a:"John Quincy Adams"},
+ {t:"Start where you are. Use what you have. Do what you can.",a:"Arthur Ashe"},
+ {t:"The journey of a thousand miles begins with a single step.",a:"Lao Tzu"},
+ {t:"Great works are performed not by strength but by perseverance.",a:"Samuel Johnson"},
+ {t:"Believe you can and you're halfway there.",a:"Theodore Roosevelt"},
+ {t:"It's not that I'm so smart, it's just that I stay with problems longer.",a:"Albert Einstein"},
+ {t:"Anyone who has never made a mistake has never tried anything new.",a:"Albert Einstein"},
+ {t:"Learning never exhausts the mind.",a:"Leonardo da Vinci"},
+ {t:"There are no shortcuts to any place worth going.",a:"Beverly Sills"},
+ {t:"Rivers know this: there is no hurry. We shall get there some day.",a:"A. A. Milne"},
+ {t:"Do not be embarrassed by your failures, learn from them and start again.",a:"Richard Branson"},
+ {t:"Practice isn't the thing you do once you're good. It's the thing you do that makes you good.",a:"Malcolm Gladwell"},
+ {t:"The cave you fear to enter holds the treasure you seek.",a:"Joseph Campbell"},
+ {t:"Every master was once a disaster.",a:"T. Harv Eker"},
+ {t:"A river cuts through rock not because of its power, but its persistence.",a:"James N. Watkins"},
+ {t:"You don't have to see the whole staircase, just take the first step.",a:"Martin Luther King Jr."},
+ {t:"Perseverance is the secret of all triumphs.",a:"Victor Hugo"},
+ {t:"Little by little, one travels far.",a:"Proverb"},
+ {t:"A little every day beats a lot someday.",a:"Proverb"},
+ {t:"With ordinary talent and extraordinary perseverance, all things are attainable.",a:"Thomas Foxwell Buxton"},
+ {t:"Fluency is built one honest question at a time.",a:""},
+ {t:"Every tradeoff you can name is one you'll never be bluffed on again.",a:""},
+ {t:"Ask the dumb question — it's how the smart ones get answered.",a:""},
+ {t:"You don't need to write the code; you need to know what good looks like.",a:""},
+ {t:"Understanding compounds. Keep showing up.",a:""},
+ {t:"Confidence is just familiarity you earned.",a:""},
+ {t:"Direction beats speed — keep pointing at fluent.",a:""},
+ {t:"You're always a beginner at the thing you're getting better at.",a:""},
+ {t:"The person who keeps asking ends up in the room.",a:""},
+ {t:"You learn the language by using it, badly, until you don't.",a:""},
+ {t:"Slow progress is still progress.",a:""},
+ {t:"Persistence is a talent you can practice.",a:""},
+ {t:"Courage is asking 'why does it work that way?' out loud.",a:""},
+ {t:"Mistakes are just data. Keep collecting.",a:""}
+];
+</script>
+<script>
+(function(){var t=document.querySelector(".topbanner");if(t&&typeof APP_BANNER!=="undefined")t.src=APP_BANNER;})();
+/* ===== CONTENT (preserved) ===== */
+
+/* ===== STORAGE ===== */
+const LS="app-savvy-v1";
+const GAS=(typeof google!=="undefined"&&google.script&&google.script.run);
+let AI_ON=false;
+const blank=()=>({streak:0,lastDay:null,faced:0,history:[],glossary:[],learned:[],xp:0,badges:[],profile:null,onboarded:false,pre:null,post:null,shippedIntegration:false,capSnapshot:null,aiRead:null,apiKey:""});
+function gcall(fn){var a=[].slice.call(arguments,1);return new Promise(function(res,rej){var r=google.script.run.withSuccessHandler(res).withFailureHandler(rej);r[fn].apply(r,a);});}
+function loadStateAsync(){if(GAS){return gcall("loadState").then(function(r){return r?Object.assign(blank(),JSON.parse(r)):blank();}).catch(blank);}
+  try{return Promise.resolve(Object.assign(blank(),JSON.parse(localStorage.getItem(LS)||"{}")));}catch(e){return Promise.resolve(blank());}}
+function save(){if(GAS){gcall("saveState",JSON.stringify(state)).catch(function(){});return;}try{localStorage.setItem(LS,JSON.stringify(state));}catch(e){}}
+let state=blank();
+function todayStr(){return new Date().toISOString().slice(0,10);}
+function bumpStreak(){const t=todayStr();if(state.lastDay===t)return;const y=new Date(Date.now()-864e5).toISOString().slice(0,10);state.streak=(state.lastDay===y)?state.streak+1:1;state.lastDay=t;}
+
+/* ===== AI ===== */
+async function callClaude(system,user,maxTokens){if(GAS){try{var t=await gcall("aiCall",system,user,maxTokens||300);return t||null;}catch(e){return null;}} if(!state.apiKey)return null; try{const r=await fetch("https://api.anthropic.com/v1/messages",{method:"POST",headers:{"content-type":"application/json","x-api-key":state.apiKey,"anthropic-version":"2023-06-01","anthropic-dangerous-direct-browser-access":"true"},body:JSON.stringify({model:"claude-sonnet-5",max_tokens:maxTokens||300,system:system,messages:[{role:"user",content:user}]})}); if(!r.ok)return null; const j=await r.json(); return(j.content&&j.content[0]&&j.content[0].text)?j.content[0].text.trim():null; }catch(e){return null;}}
+
+/* ===== GAMIFICATION ===== */
+const RANKS=[{n:"Curious",xp:0},{n:"Tinkerer",xp:60},{n:"Builder",xp:150},{n:"Sense-Maker",xp:300},{n:"Fluent",xp:500},{n:"Solutions-Minded",xp:780},{n:"Solutions-Ready",xp:1100}];
+function rankFor(xp){let r=RANKS[0],nx=null;for(let i=0;i<RANKS.length;i++){if(xp>=RANKS[i].xp){r=RANKS[i];nx=RANKS[i+1]||null;}}return {r:r,nx:nx};}
+function rankEmoji(n){return {"Curious":"🌱","Tinkerer":"🔧","Builder":"🧱","Sense-Maker":"🧭","Fluent":"💡","Solutions-Minded":"🛠️","Solutions-Ready":"🚀"}[n]||"⭐";}
+function addXP(n){state.xp=(state.xp||0)+n;}
+const BADGES=[
+ {id:"first-door",e:"🚪",t:"First Door",d:"Walked your first decision door.",test:s=>s.history.some(h=>!h.type)},
+ {id:"bug-hunter",e:"🐛",t:"Bug Hunter",d:"Caught a sabotage bug correctly.",test:s=>s.history.some(h=>h.type==="sab"&&h.correct)},
+ {id:"week-one",e:"🔥",t:"Week One",d:"Kept a 7-day streak.",test:s=>s.streak>=7},
+ {id:"well-read",e:"📖",t:"Well Read",d:"Read all eight lessons.",test:s=>s.learned.length>=8},
+ {id:"every-door",e:"🗝️",t:"Every Door",d:"Walked all fifteen doors.",test:s=>new Set(s.history.filter(h=>!h.type).map(h=>h.id)).size>=DECISIONS.length},
+ {id:"exterminator",e:"🧹",t:"Exterminator",d:"Cleared every sabotage round.",test:s=>new Set(s.history.filter(h=>h.type==="sab").map(h=>h.id)).size>=SABOTAGE.length},
+ {id:"wordsmith",e:"✍️",t:"Wordsmith",d:"Earned 10 glossary terms.",test:s=>s.glossary.length>=10},
+ {id:"fluent-vocab",e:"📚",t:"Fluent Vocabulary",d:"Earned 25 terms — a success milestone.",test:s=>s.glossary.length>=25},
+ {id:"fluent-rank",e:"⭐",t:"Fluent",d:"Reached the Fluent rank.",test:s=>s.xp>=500},
+ {id:"forward",e:"🚀",t:"Solutions-Ready",d:"Reached the top rank.",test:s=>s.xp>=1100},
+ {id:"integrator",e:"🔌",t:"Integrator",d:"Shipped an app that calls a real API.",test:s=>!!s.shippedIntegration}];
+function checkBadges(){let earned=[];BADGES.forEach(b=>{if(state.badges.indexOf(b.id)<0&&b.test(state)){state.badges.push(b.id);earned.push(b);}});return earned;}
+function commitProgress(prevXp){
+  const before=rankFor(prevXp).r.n, after=rankFor(state.xp).r.n;
+  const nb=checkBadges();
+  const capMsgs=capMovement();
+  save();refreshStats();
+  let msgs=[];
+  if(after!==before) msgs.push({big:"Level up!",small:"You're now "+after,e:rankEmoji(after)});
+  nb.forEach(b=>msgs.push({big:"Badge unlocked",small:b.t,e:b.e}));
+  capMsgs.forEach(m=>msgs.push(m));
+  if(msgs.length) celebrate(msgs);
+}
+function celebrate(list){
+  const wrap=document.createElement("div");wrap.className="celebrate";
+  let conf="";const cols=["#2f8a72","#c2913a","#7fc0a5","#e9b04a"];
+  for(let i=0;i<36;i++){conf+=`<span class="confetti" style="left:${(Math.random()*100).toFixed(1)}%;background:${cols[i%4]};animation-duration:${(1.5+Math.random()*1.3).toFixed(2)}s;animation-delay:${(Math.random()*0.4).toFixed(2)}s"></span>`;}
+  wrap.innerHTML=conf+`<div class="toast">${list.map(m=>`<div class="tline"><span class="te">${m.e}</span><div><b>${esc(m.big)}</b><span>${esc(m.small)}</span></div></div>`).join("")}</div>`;
+  document.body.appendChild(wrap);
+  const kill=()=>{if(wrap.parentNode)wrap.remove();};
+  wrap.onclick=kill;setTimeout(kill,2800);
+}
+
+/* ===== QUIZZES ===== */
+const INTAKE=[
+ {key:"role",multi:true,q:"Where are you coming from?",opts:[{t:"Product or project management",v:"product"},{t:"Operations",v:"ops"},{t:"Teaching or education",v:"edu"},{t:"Client success or account management",v:"client"},{t:"Sales",v:"sales"},{t:"Marketing, content, or design",v:"creative"},{t:"Founder or entrepreneur",v:"founder"},{t:"Student or career changer",v:"student"},{t:"Something else entirely",v:"other"}]},
+ {key:"cap_read",cap:true,q:"Can you tell what a client really needs, underneath what they ask for?",opts:[{t:"Not yet",v:0},{t:"Getting there",v:1},{t:"Confident",v:2}]},
+ {key:"cap_tradeoff",cap:true,q:"Can you look at a design and name what it's trading — and where it might break?",opts:[{t:"Not yet",v:0},{t:"Getting there",v:1},{t:"Confident",v:2}]},
+ {key:"cap_build",cap:true,q:"Can you turn a plan into a working app by directing AI?",opts:[{t:"Not yet",v:0},{t:"Getting there",v:1},{t:"Confident",v:2}]},
+ {key:"cap_connect",cap:true,q:"Can you make an app talk to another system's API?",opts:[{t:"Not yet",v:0},{t:"Getting there",v:1},{t:"Confident",v:2}]},
+ {key:"cap_explain",cap:true,q:"Can you explain a technical choice to a non-technical person?",opts:[{t:"Not yet",v:0},{t:"Getting there",v:1},{t:"Confident",v:2}]}
+];
+const DIAG=[
+ {q:"An app must show the same notes on a phone and a laptop. The first question worth asking is:",opts:[{t:"Which font should the notes use?"},{t:"Where does the data live, and what happens if both devices edit it?",ok:true},{t:"What color should the buttons be?"},{t:"Should it have a logo?"}]},
+ {q:"You need to call a paid AI service from a public website. The safer setup is:",opts:[{t:"Put the key in the browser so it's simple"},{t:"Keep the key on a small server that makes the call for you",ok:true},{t:"Email the key to yourself"},{t:"Hard-code the key into the page"}]},
+ {q:"A feature looks great today but will need reworking every time you touch the app. You should weigh its:",opts:[{t:"First impression"},{t:"Cost of ownership over time",ok:true},{t:"Color palette"},{t:"Loading animation"}]},
+ {q:"Two people edit the same document offline and both changes matter. The most careful approach is:",opts:[{t:"Let the last save overwrite the other"},{t:"Merge both versions so nothing is lost",ok:true},{t:"Pick one at random"},{t:"Delete both to be safe"}]},
+ {q:"Something in your app is broken. Your best first move is:",opts:[{t:"Change things until it works"},{t:"Reproduce it reliably, then narrow down where reality diverges",ok:true},{t:"Rewrite the whole app"},{t:"Wait and hope"}]}
+];
+
+/* ===== ENGINE ===== */
+const root=document.getElementById("root");
+let tab="home", learnUnit=null, sess=null, sab=null, quiz=null;
+let askState={q:"",a:"",loading:false};
+function esc(s){return(s||"").replace(/[&<>]/g,c=>({"&":"&amp;","<":"&lt;",">":"&gt;"}[c]));}
+function ring(pct,size,stroke){const r=(size-stroke)/2,c=2*Math.PI*r,off=c*(1-Math.max(0,Math.min(1,pct)));const h=size/2;return `<svg width="${size}" height="${size}" viewBox="0 0 ${size} ${size}"><circle cx="${h}" cy="${h}" r="${r}" fill="none" stroke="var(--line)" stroke-width="${stroke}"/><circle cx="${h}" cy="${h}" r="${r}" fill="none" stroke="var(--teal)" stroke-width="${stroke}" stroke-linecap="round" stroke-dasharray="${c.toFixed(1)}" stroke-dashoffset="${off.toFixed(1)}" transform="rotate(-90 ${h} ${h})"/></svg>`;}
+function refreshStats(){const {r,nx}=rankFor(state.xp);let pct=1;if(nx)pct=(state.xp-r.xp)/(nx.xp-r.xp);document.getElementById("levelChip").innerHTML=`<span class="ringwrap">${ring(pct,30,4)}<span class="lvlemoji">${rankEmoji(r.n)}</span></span><span class="lvltext"><b>${r.n}</b><span>${state.xp} XP</span></span>`;}
+function doorsForUnit(uid){return DECISIONS.filter(d=>d.units.indexOf(uid)>=0);}
+function doneCountUnit(uid){const ids=new Set(state.history.filter(h=>!h.type).map(h=>h.id));return doorsForUnit(uid).filter(d=>ids.has(d.id)).length;}
+function sabDoneCount(){return new Set(state.history.filter(h=>h.type==="sab").map(h=>h.id)).size;}
+function recommendStart(){if(!state.profile||state.profile.cap_tradeoff==null)return {id:"u1",why:"Start at the beginning: how an app fits together."};const t=state.profile.cap_tradeoff;if(t<=0)return {id:"u1",why:"We'll start with the big picture: how an app is put together."};if(t===1)return {id:"u2",why:"You've got the basics — let's go deeper into where the data lives."};return {id:"u3",why:"You're already naming tradeoffs — go where the FDE value is: APIs and AI."};}
+
+const METAS={home:"Your dashboard — how far you've come, and where to go next.",learn:"Read a lesson, then test it with a door. Your curriculum's at the bottom.",practice:"A quick decision or a bug to hunt — perfect for ten minutes. Earns XP.",reference:"Look things up: the terms you've earned, the tradeoffs that recur, and the thinking behind it all.",key:"Turn on the AI tutor and manage your synced data."};
+function setMeta(){const m=document.getElementById("meta");if(quiz){m.style.display="none";return;}m.style.display="block";m.textContent=METAS[tab]||"";}
+function syncTabs(){document.querySelectorAll("#tabs button").forEach(x=>x.classList.toggle("on",x.dataset.tab===tab));}
+function setTab(t){if(!state.onboarded)return;tab=t;quiz=null;sess=null;sab=null;syncTabs();render();window.scrollTo(0,0);}
+function render(){setMeta();var tb=document.getElementById("tabs");if(tb)tb.classList.toggle("locked",!state.onboarded);if(quiz){renderQuiz();return;}if(tab==="home")renderHome();else if(tab==="learn")renderLearn();else if(tab==="practice")renderPractice();else if(tab==="reference")renderReference();else if(tab==="key")renderKey();}
+
+/* ===== HOME ===== */
+function stat(e,v,l){return `<div class="stat"><span class="se">${e}</span><b>${v}</b><span class="sl">${l}</span></div>`;}
+function howCard(e,t,d){return `<div class="howc"><span class="he">${e}</span><b>${t}</b><span>${esc(d)}</span></div>`;}
+function howRow(e,t,d){return `<div class="howrow"><span class="he">${e}</span><div><b>${t}</b><span>${esc(d)}</span></div></div>`;}
+function testsCard(){
+ const pre=state.pre,post=state.post;let body;
+ if(!pre)body=`<p class="muted small" style="margin:0 0 10px">Take a quick 5-question baseline so you can watch your judgment sharpen over time.</p><button class="btn mini" id="takePre">Take the baseline ✦</button>`;
+ else if(!post)body=`<p class="muted small" style="margin:0 0 10px">Baseline: <b>${pre.score}/5</b>. After some doors, take it again to measure your growth.</p><button class="btn ghost mini" id="takePost">Take the growth check →</button>`;
+ else{const d=post.score-pre.score;body=`<p class="muted small" style="margin:0 0 10px">Baseline <b>${pre.score}/5</b> → now <b>${post.score}/5</b> ${d>0?`<span class="up">▲ +${d}</span>`:d<0?`<span class="muted">▼ ${d}</span>`:'<span class="muted">even</span>'}. ${d>0?'Measurable growth — nicely done.':'Keep going and retake anytime.'}</p><button class="btn ghost mini" id="takePost">Retake →</button>`;}
+ return `<div class="card testcard"><span class="pilltag">✦ Judgment check</span><h3 style="margin:6px 0 8px;font-size:18px">Your growth, measured</h3>${body}</div>`;
+}
+function wireTests(){const a=root.querySelector("#takePre");if(a)a.onclick=()=>{quiz={type:"diag",slot:"pre",i:0,answers:[]};render();window.scrollTo(0,0);};const b=root.querySelector("#takePost");if(b)b.onclick=()=>{quiz={type:"diag",slot:"post",i:0,answers:[]};render();window.scrollTo(0,0);};}
+const CAPS=[
+ {k:"read",e:"🔎",t:"Read the problem",d:"Understand what a client actually needs, underneath what they ask for.",tag:"you bring this",cls:"tag-have"},
+ {k:"tradeoff",e:"⚖️",t:"Name the tradeoff",d:"Look at a design and say what it's trading, and where it breaks.",tag:"App Savvy builds this",cls:"tag-build"},
+ {k:"build",e:"🛠️",t:"Build it with AI",d:"Turn a plan into a working thing by directing AI.",tag:"you bring this",cls:"tag-have"},
+ {k:"connect",e:"🔌",t:"Connect systems",d:"Make an app talk to another system's API.",tag:"your growth edge",cls:"tag-edge"},
+ {k:"explain",e:"💬",t:"Explain it simply",d:"Explain a technical choice to a non-technical person.",tag:"you bring this",cls:"tag-have"}
+];
+function selfCap(k){const v=state.profile?state.profile["cap_"+k]:null;return (v==null?0:v);}
+function doorsDone(){return new Set(state.history.filter(h=>!h.type).map(h=>h.id)).size;}
+function earnedCap(k){if(k==="tradeoff"){const d=doorsDone();if((state.post&&state.post.score>=4)||d>=8)return 2;if(d>=3||(state.pre&&state.pre.score>=3))return 1;return 0;}if(k==="connect")return state.shippedIntegration?2:0;return 0;}
+function effCap(k){return Math.max(selfCap(k),earnedCap(k));}
+function capVal(k){return effCap(k);}
+function capNudge(){const d=doorsDone();const e=effCap("tradeoff");if(e>=2)return"";if(e===0){const n=Math.max(1,3-d);return n+" more door"+(n===1?"":"s")+" to reach Getting there";}return"Hit 8 doors or a 4/5 growth check to reach Confident";}
+function capMovement(){if(!state.profile)return [];const snap=state.capSnapshot;const cur={};let msgs=[];CAPS.forEach(c=>{const e=effCap(c.k);cur[c.k]=e;if(snap&&snap[c.k]!=null&&e>snap[c.k]){msgs.push({big:c.t+" leveled up",small:e>=2?"Now Confident":"Now Getting there",e:c.e});}});state.capSnapshot=cur;return msgs;}
+function weakestCap(){if(!state.profile)return "connect";let best="connect",bv=9;CAPS.forEach(c=>{const v=capVal(c.k);if(v<bv){bv=v;best=c.k;}});return best;}
+function roadmapHTML(){return `<p class="muted small" style="margin:0 0 8px;line-height:1.6">What gets you into AI-era solutions work is demonstrated capability across five things. Three of these five you likely already bring from the business side. App Savvy moves <b>Name the tradeoff</b>. The one to go get on purpose is <b>Connect systems</b> — ship a small app that calls a real API. Then rehearse with your <a href="https://tinyurl.com/aafreeinterviewpractice" target="_blank" rel="noopener">Interview Practice</a> app. When you can name a tradeoff unprompted and point to one integration you built, you're ready to pursue the solutions roles above — honestly, as what you are: someone who speaks the language and ships with AI.</p>`;}
+function rolesHTML(){return `<p class="muted small" style="margin:0 0 8px;line-height:1.6"><b>Roles this actually fits:</b> AI Consultant · AI Solutions Consultant · Solutions Engineer (client-facing, pre-sale) · Technical Account Manager · AI Implementation &amp; Enablement. These weight business translation, requirement-gathering, and client trust — your strengths.<br><br><b>Where they live:</b> the solutions and consulting teams at AI platform vendors, SaaS companies adding AI, consultancies and system integrators, and AI implementation shops.<br><br><b>Not the target — yet:</b> roles that gate on a live coding screen (Palantir-style Forward Deployed Engineer, backend or AI engineer). Those need real Python and SQL. Fluency plus one shipped integration moves you toward the solutions family. Engineering interviews still require real coding, and this app stays honest about that.</p>`;}
+function readinessCard(){
+ if(!state.profile||state.profile.cap_read==null)return `<div class="card"><span class="pilltag">🧭 Your readiness</span><p class="muted" style="margin:0">Take the quick intro to see where you land on the five-capability map.</p><button class="btn mini" id="startIntake2" style="margin-top:12px">Place me on the map →</button></div>`;
+ const conf=CAPS.filter(c=>effCap(c.k)>=2).length;
+ const rows=CAPS.map(c=>{const self=selfCap(c.k),eff=effCap(c.k),grown=eff>self;const seg=[0,1,2].map(i=>`<span class="${i<eff?'on':''}"></span>`).join("");let note="";if(grown)note=` <span class="grown">▲ grown from practice</span>`;else if(c.k==="tradeoff"){const n=capNudge();if(n)note=` <span class="capnudge">${n}</span>`;}let action="";if(c.k==="connect"&&!state.shippedIntegration)action=`<button class="btn ghost mini" data-shipped style="margin-top:10px">✓ I shipped an app that calls an API</button>`;return `<div class="caprow"><div class="caphead"><span>${c.e} ${esc(c.t)}</span><span class="captag ${c.cls}">${esc(c.tag)}</span></div><div class="capbar">${seg}</div><div class="capd">${esc(c.d)}${note}</div>${action}</div>`;}).join("");
+ return `<div class="card"><span class="pilltag">🧭 Your readiness</span><h2>Where you stand</h2><p class="sub">App Savvy builds fluency and judgment for one kind of person: strong on the business or client side, getting conversant in how software works at the level a business role needs. It aims at the AI-era solutions family, where your client instincts are the rare advantage. Roles that require writing production code — software engineering, Palantir-style FDE — need coding this app leaves aside. <b>${conf} of 5</b> capabilities at Confident — this climbs as you practice.</p>${rows}<details class="curric" style="margin-top:16px"><summary><span class="caps">Honest targets — what this actually fits</span> <span class="muted small">— roles &amp; reality</span></summary><div style="padding:6px 14px 14px">${rolesHTML()}</div></details><details class="curric" style="margin-top:10px"><summary><span class="caps">How this gets you there</span> <span class="muted small">— the full path</span></summary><div style="padding:6px 14px 14px">${roadmapHTML()}</div></details></div>`;
+}
+function readCard(){
+ if(!state.profile||state.profile.cap_read==null)return "";
+ const sorted=[...CAPS].sort((a,b)=>effCap(b.k)-effCap(a.k));const strong=sorted[0];const weak=CAPS.find(c=>c.k===weakestCap());
+ const base=state.pre?("Your baseline judgment check came in at "+state.pre.score+"/5"+(state.post?(", now "+state.post.score+"/5"):"")+". "):"";
+ const rules="Your edge is the business side — the half most engineers never build. You're strongest at "+strong.t.toLowerCase()+", and your focus right now is "+weak.t.toLowerCase()+". "+base+"Honest target: the AI-era solutions family — AI consultant, solutions engineer, technical account manager, implementation and enablement — where client instincts win. Roles that gate on live coding still require writing code.";
+ const body=state.aiRead?`<div class="airead">✨ ${esc(state.aiRead)}</div>`:`<p style="margin:0">${esc(rules)}</p>`;
+ let btn="";if(AI_ON&&!state.aiRead)btn=`<button class="btn ghost mini" id="aiReadBtn" style="margin-top:12px">✨ Personalize this with AI</button>`;else if(state.aiRead)btn=`<button class="btn ghost mini" id="aiReadRe" style="margin-top:12px">✨ Rewrite</button>`;
+ return `<div class="card"><span class="pilltag">🪞 Your read</span><h2>Where you realistically stand</h2>${body}${btn}</div>`;
+}
+async function getAiRead(){
+ const b=document.getElementById("aiReadBtn")||document.getElementById("aiReadRe");if(b){b.textContent="✨ Writing your read…";b.disabled=true;}
+ const p=state.profile;const caps=CAPS.map(c=>c.t+": "+["not yet","getting there","confident"][effCap(c.k)]).join("; ");
+ const base=state.pre?("baseline judgment "+state.pre.score+"/5"):"no baseline yet";
+ const sys="You are an honest, warm career advisor for people from business or client backgrounds (sales, operations, account management) becoming fluent in software by directing AI — they are NOT becoming engineers and don't want to. In 3-4 sentences, second person, tell this person where they realistically stand today and the one thing to focus on next. Point them toward AI-era solutions roles (AI consultant, solutions engineer, technical account manager, implementation). Be honest that roles gating on live coding still need real code today. No hype, no false promises; warm and specific.";
+ const usr="Background: "+(Array.isArray(p.role)?p.role.join(", "):p.role)+". Self-rated capabilities — "+caps+". "+base+".";
+ const out=await callClaude(sys,usr,240);if(out){state.aiRead=out;save();}renderHome();
+}
+function growthEdgeHTML(){
+ const w=weakestCap();
+ const G={
+  read:"<b>Read the problem.</b> You sharpen this every time you dig past what a client asked for to what they actually need. Before your next build, write one sentence: what are they really trying to accomplish?",
+  tradeoff:"<b>Name the tradeoff.</b> This is exactly what the doors build — do a few and watch your pre/post score climb.",
+  build:"<b>Build it with AI.</b> Keep shipping small apps by directing AI. Each one makes you faster and harder to bluff.",
+  connect:"<b>Connect systems.</b> The one capability employers most want to see, and the only one App Savvy can't hand you: ship a small app that calls a real API — a weather lookup, a currency converter, anything that talks to another system and uses the answer. That project proves you can integrate, and becomes your interview story.",
+  explain:"<b>Explain it simply.</b> Practice explaining one decision from your apps to a non-technical friend in two sentences. If they get it, you've got it."
+ };
+ const lab={read:"🔎 Read the problem",tradeoff:"⚖️ Name the tradeoff",build:"🛠️ Build it with AI",connect:"🔌 Connect systems",explain:"💬 Explain it simply"}[w];
+ return `<div class="unlock" style="background:var(--gold-bg);border-color:#e6d6ad"><span class="caps" style="color:var(--gold)">Your growth edge — ${esc(lab)}</span><div style="margin-top:6px;line-height:1.6">${G[w]}</div></div>`;
+}
+function renderHome(){
+ const {r,nx}=rankFor(state.xp);const pct=nx?(state.xp-r.xp)/(nx.xp-r.xp):1;
+ const nextTxt=nx?`${nx.xp-state.xp} XP to ${nx.n}`:"Top rank reached 🎉";
+ const rec=recommendStart(),ru=UNITS.find(x=>x.id===rec.id);
+ root.innerHTML=`
+  <p class="persona">Built for people who run the client side — sales, accounts, operations — building real fluency in how software works, at the level a business role needs, to ship with confidence.</p>
+  <div class="card levelcard">
+    <div class="lc-ring">${ring(pct,92,8)}<div class="lc-emoji">${rankEmoji(r.n)}</div></div>
+    <div class="lc-body"><span class="caps">Your rank</span><h2>${r.n}</h2>
+      <div class="xpbar"><i style="width:${Math.round(pct*100)}%"></i></div>
+      <p class="muted small" style="margin:0">${state.xp} XP · ${nextTxt}</p></div>
+  </div>
+  <div class="snap">${stat("🔥",state.streak,"day streak")}${stat("🎯",state.faced,"decisions")}${stat("📖",state.glossary.length,"terms")}${stat("🎓",state.learned.length+"/8","lessons")}</div>
+  <h3 class="hd">Badges — ${state.badges.length}/${BADGES.length}</h3>
+  <div class="badges">${BADGES.map(b=>{const got=state.badges.indexOf(b.id)>=0;return `<div class="badge2 ${got?'on':''}" title="${esc(b.d)}"><span>${got?b.e:'🔒'}</span><b>${esc(b.t)}</b></div>`;}).join("")}</div>
+  ${readinessCard()}
+  <div class="pair">${readCard()}${testsCard()}</div>
+  <div class="pair"><div class="card"><span class="pilltag">🧭 How it works</span>${howRow("🎓","Learn","Read a lesson, then test it with a door.")}${howRow("🎯","Practice","A decision to reason through, or a bug to hunt.")}${howRow("📚","Reference","Terms you've earned and recurring tradeoffs.")}${howRow("⬆️","Level up","Everything climbs you toward Solutions-Ready.")}</div><div class="card"><span class="pilltag">🧭 Suggested next</span><h3 style="margin:4px 0;font-size:19px">${esc(ru.title)}</h3><p class="muted small" style="margin:0 0 14px">${esc(rec.why)}</p><div class="prow"><button class="btn big" id="goRec">${state.learned.length?'Keep going →':'Start here →'}</button>${state.onboarded?'<button class="btn ghost mini" id="reIntake">Redo intro</button>':''}</div></div></div>
+ `;
+ root.querySelector("#goRec").onclick=()=>{learnUnit=rec.id;setTab("learn");};
+ const ri=root.querySelector("#reIntake");if(ri)ri.onclick=()=>{quiz={type:"intake",i:0,answers:[]};render();window.scrollTo(0,0);};
+ const si=root.querySelector("#startIntake2");if(si)si.onclick=()=>{quiz={type:"intake",i:0,answers:[]};render();window.scrollTo(0,0);};
+ const sh=root.querySelector("[data-shipped]");if(sh)sh.onclick=()=>{state.shippedIntegration=true;const p=state.xp;addXP(40);commitProgress(p);render();};
+ const arb=root.querySelector("#aiReadBtn");if(arb)arb.onclick=getAiRead;
+ const arr=root.querySelector("#aiReadRe");if(arr)arr.onclick=()=>{state.aiRead=null;getAiRead();};
+ wireTests();
+}
+
+/* ===== QUIZ VIEW ===== */
+function renderQuiz(){
+ const isDiag=quiz.type==="diag";const bank=isDiag?DIAG:INTAKE;
+ if(quiz.i>=bank.length){finishQuiz();return;}
+ const q=bank[quiz.i];const multi=!isDiag&&q.multi;const sel=quiz.answers[quiz.i];
+ root.innerHTML=`<div class="card">
+   <div class="qdots">${bank.map((_,i)=>`<span class="${i<quiz.i?'done':i===quiz.i?'on':''}"></span>`).join("")}</div>
+   <span class="caps">${isDiag?(quiz.slot==="pre"?'Baseline · judgment check':'Growth check'):'A quick intro about you'}</span>
+   <h2 style="margin:8px 0 6px">${esc(q.q)}</h2>
+   <p class="muted small" style="margin:0 0 14px">${isDiag?'No wrong answers to sweat — this just measures where you are.':(multi?'Pick as many as fit — you can be several of these.':(q.cap?'Be honest — this just places you on the map, and stays private to you.':'Shapes how the app talks to you. Change it anytime.'))}</p>
+   <div class="opts">${q.opts.map((o,i)=>{const on=multi&&Array.isArray(sel)&&sel.indexOf(i)>=0;return `<button class="opt${on?' sel':''}" data-q="${i}">${on?'✓ ':''}${esc(o.t)}</button>`;}).join("")}</div>
+   <div class="prow" style="margin-top:14px">${multi?`<button class="btn" id="qNext">Continue →</button>`:''}${quiz.i>0?'<button class="btn ghost mini" id="qBack">← back</button>':''}${(isDiag&&quiz.onboarding)?'<button class="btn ghost mini" id="qSkip">Skip for now →</button>':''}</div>
+ </div>`;
+ if(multi){
+   root.querySelectorAll("[data-q]").forEach(b=>b.onclick=()=>{let arr=Array.isArray(quiz.answers[quiz.i])?quiz.answers[quiz.i]:[];const ix=parseInt(b.dataset.q),p=arr.indexOf(ix);if(p>=0)arr.splice(p,1);else arr.push(ix);quiz.answers[quiz.i]=arr;renderQuiz();});
+   const nx=root.querySelector("#qNext");if(nx)nx.onclick=()=>{const a=quiz.answers[quiz.i];if(!Array.isArray(a)||!a.length)return;quiz.i++;render();window.scrollTo(0,0);};
+ } else {
+   root.querySelectorAll("[data-q]").forEach(b=>b.onclick=()=>{quiz.answers[quiz.i]=parseInt(b.dataset.q);quiz.i++;render();window.scrollTo(0,0);});
+ }
+ const bk=root.querySelector("#qBack");if(bk)bk.onclick=()=>{quiz.i--;render();};
+ const sk=root.querySelector("#qSkip");if(sk)sk.onclick=()=>{quiz=null;tab="home";syncTabs();render();window.scrollTo(0,0);};
+}
+function finishQuiz(){
+ if(quiz.type==="intake"){
+   const p={};INTAKE.forEach((q,i)=>{const a=quiz.answers[i];if(q.multi){p[q.key]=(Array.isArray(a)?a:[]).map(ix=>q.opts[ix].v);}else{p[q.key]=q.opts[a].v;}});
+   state.profile=p;state.onboarded=true;state.capSnapshot=null;capMovement();save();syncTabs();if(!state.pre){quiz={type:"diag",slot:"pre",onboarding:true,i:0,answers:[]};}else{quiz=null;tab="home";}render();
+   celebrate([{big:"Nice — you're set up",small:state.pre?"Welcome in":"Now let's find your baseline",e:"🎉"}]);
+ } else {
+   let score=0;DIAG.forEach((q,i)=>{const o=q.opts[quiz.answers[i]];if(o&&o.ok)score++;});
+   const slot=quiz.slot;state[slot]={score:score,date:todayStr()};const prevXp=state.xp;addXP(15);
+   quiz=null;tab="home";syncTabs();commitProgress(prevXp);render();
+ }
+}
+
+/* ===== LEARN ===== */
+function askHTML(){
+ const disabled=!AI_ON;let ans="";
+ if(askState.loading)ans=`<div class="airead" style="margin-top:12px"><span class="thinking">✨ Thinking…</span></div>`;
+ else if(askState.a)ans=`<div class="airead" style="margin-top:12px">${esc(askState.a).replace(/\n/g,"<br>")}</div>`;
+ return `<div class="card"><span class="pilltag">✨ Ask anything</span><h2 style="font-size:20px;margin:0 0 6px">A question, answered on the spot</h2><p class="sub" style="margin:0 0 12px">Curious why something works the way it does? Ask right here — no need to leave the app.${disabled?' <b>Turn on the AI tutor in AI &amp; Data to use this.</b>':''}</p><textarea id="askQ" placeholder="e.g. Why are Google Apps Script HTML files usually called Index?" style="min-height:70px">${esc(askState.q)}</textarea><div class="actions"><span></span><button class="btn" id="askBtn"${disabled?' disabled':''}>✨ Ask</button></div>${ans}</div>`;
+}
+function wireAsk(){const b=root.querySelector("#askBtn");if(b)b.onclick=doAsk;}
+async function doAsk(){
+ const t=root.querySelector("#askQ");const qv=t?t.value.trim():"";if(!qv)return;
+ askState.q=qv;askState.loading=true;askState.a="";renderLearn();
+ const sys="You are App Savvy's built-in tutor. You explain software, architecture, and how apps work to someone from a business or client background who is becoming fluent by directing AI — they are not an engineer and don't want to be. Answer their question in plain language, warm and concrete, with a short example when it helps. A few short paragraphs, no jargon dumps, no code unless they ask. If the question isn't about software or building things, answer briefly and gently steer back.";
+ const out=await callClaude(sys,qv,600);
+ askState.loading=false;askState.a=out||"The AI tutor is off right now. Add your Anthropic key in the AI & Data tab (or run the app through Apps Script) to ask questions here.";
+ renderLearn();
+}
+function renderLearn(){
+ if(sab){root.innerHTML=renderSabotageHTML();wireSabotage();return;}
+ if(sess){root.innerHTML=renderDoorHTML();wireDoor();return;}
+ const main=(learnUnit===null)?learnLanding():lessonHTML(UNITS.find(u=>u.id===learnUnit));
+ root.innerHTML=askHTML()+main+curriculumHTML();
+ wireLearn();wireAsk();
+}
+function learnLanding(){const rec=recommendStart(),u=UNITS.find(x=>x.id===rec.id);return `<div class="card"><span class="pilltag">🎓 Learn</span><h2>Where to start</h2><p class="sub">Eight short lessons. Read one, then test it with a door. Pick from your curriculum below, or jump into the suggested one.</p><div class="reccard"><div><span class="caps">Suggested for you</span><h3 style="margin:4px 0;font-size:19px">${esc(u.title)}</h3><p class="muted small" style="margin:0">${esc(rec.why)}</p></div><button class="btn" data-open="${u.id}">Open →</button></div></div>`;}
+function curriculumHTML(){const open=(learnUnit===null);return `<details class="curric" ${open?'open':''}><summary><span class="caps">Your curriculum</span> <span class="muted small">— eight units, tap to open</span></summary><div class="ulist">${UNITS.map((u,i)=>{const dc=doneCountUnit(u.id),tot=doorsForUnit(u.id).length,lrn=state.learned.indexOf(u.id)>=0,cnt=u.sabotage?`${sabDoneCount()}/${SABOTAGE.length}`:(tot?`${dc}/${tot}`:'');return `<button class="urow ${learnUnit===u.id?'on':''}" data-open="${u.id}"><span class="unum">${i+1}</span><span class="ulbl">${u.emoji} ${esc(u.title)}</span><span class="udone">${lrn?'✓ ':''}${cnt}</span></button>`;}).join("")}</div></details>`;}
+function lessonHTML(u){const doors=doorsForUnit(u.id),dc=doneCountUnit(u.id),learned=state.learned.indexOf(u.id)>=0;return `<div class="card"><span class="pilltag">${u.emoji} Unit ${UNITS.indexOf(u)+1} · Lesson</span><h2>${esc(u.title)}</h2><p class="lede">${esc(u.objective)}</p><h3 style="font-size:18px;margin:22px 0 8px">The lesson</h3>${u.lesson}<h3 style="font-size:18px;margin:22px 0 8px">Vocabulary you'll earn</h3><div class="vgrid">${u.vocab.map(v=>`<div class="vcard"><b>${esc(v.t)}</b><div class="d">${esc(v.d)}</div></div>`).join("")}</div><div class="unlock"><span class="caps">What this unlocks in the room</span><div style="margin-top:6px">${esc(u.unlock)}</div></div><div class="actions"><button class="btn ghost mini" data-learned="${u.id}">${learned?'✓ Marked as learned':'Mark as learned (+15 XP)'}</button>${u.sabotage?`<button class="btn" data-sabotage="${u.id}">Try a sabotage round → <span class="small" style="opacity:.8">(${sabDoneCount()}/${SABOTAGE.length})</span></button>`:`<button class="btn" data-door-unit="${u.id}">Walk through a door → <span class="small" style="opacity:.8">(${dc}/${doors.length})</span></button>`}</div></div>`;}
+function wireLearn(){
+ root.querySelectorAll("[data-open]").forEach(b=>b.onclick=()=>{learnUnit=b.dataset.open;sess=null;sab=null;renderLearn();window.scrollTo(0,0);});
+ root.querySelectorAll("[data-learned]").forEach(b=>b.onclick=()=>{const id=b.dataset.learned;if(state.learned.indexOf(id)<0){state.learned.push(id);const p=state.xp;addXP(15);commitProgress(p);}renderLearn();});
+ root.querySelectorAll("[data-door-unit]").forEach(b=>b.onclick=()=>startDoor(pickDoor(b.dataset.doorUnit),b.dataset.doorUnit));
+ root.querySelectorAll("[data-sabotage]").forEach(b=>b.onclick=()=>startSabotage(b.dataset.sabotage));
+}
+
+/* ===== PRACTICE ===== */
+function renderPractice(){
+ if(sab){root.innerHTML=renderSabotageHTML();wireSabotage();return;}
+ if(sess){root.innerHTML=renderDoorHTML();wireDoor();return;}
+ root.innerHTML=`<div class="card"><span class="pilltag">🎯 Practice</span><h2>Build the missing muscle</h2><p class="sub">Each rep strengthens a specific capability on your readiness map.</p>${(state.profile&&state.profile.cap_read!=null)?growthEdgeHTML():''}<div class="prow" style="margin-top:16px"><button class="btn" id="pDoor">🚪 A decision door</button><button class="btn ghost" id="pSab">🔍 A sabotage round</button></div><p class="muted small" style="margin-top:10px">Doors build <b>Name the tradeoff</b>. Sabotage rounds build debugging fluency — part of speaking the language.</p></div>`;
+ root.querySelector("#pDoor").onclick=()=>startDoor(pickDoor(null),null);
+ root.querySelector("#pSab").onclick=()=>startSabotage(null);
+}
+
+/* ===== DOOR LOOP ===== */
+function pickDoor(uid){const pool=uid?doorsForUnit(uid):DECISIONS;const seen=new Set(state.history.filter(h=>!h.type).map(h=>h.id));const fresh=pool.filter(d=>!seen.has(d.id));const use=fresh.length?fresh:pool;return use[Math.floor(Math.random()*use.length)];}
+function startDoor(dec,fromUnit){sess={d:dec,fromUnit:fromUnit||null,step:0,pick:null,defend:"",probe:null,answer:"",score:null};tab=fromUnit?"learn":"practice";syncTabs();render();window.scrollTo(0,0);}
+function countGroup(group){const inHist=state.history.filter(h=>h.group===group).length;const already=state.history.some(h=>sess.d&&h.id===sess.d.id);return inHist+(already?0:1);}
+function renderDoorHTML(){
+ const d=sess.d;const dots=[0,1,2,3,4,5].map(i=>`<span class="${i<=sess.step?'on':''}"></span>`).join("");let inner="";
+ if(sess.step===0){inner=`<span class="caps">Step 1 · The decision arrives cold</span><div class="prompt" style="margin-top:8px">${esc(d.context)}</div><div class="doors"><button class="door" data-pick="A"><div class="k">Door A</div><div class="s">${esc(d.doorA.k)}</div></button><button class="door" data-pick="B"><div class="k">Door B</div><div class="s">${esc(d.doorB.k)}</div></button></div>`;}
+ else if(sess.step===1){const c=sess.pick==="A"?d.doorA.k:d.doorB.k;inner=`<span class="caps">Step 2 · Pick and defend</span><p class="muted small" style="margin:8px 0 10px">You picked <b style="color:var(--ink)">Door ${sess.pick} — ${esc(c)}</b>. Why? A couple of sentences, no word-count pressure.</p><textarea id="defend" placeholder="What's the real reason this door is right here?">${esc(sess.defend)}</textarea><div class="actions"><button class="btn ghost mini" data-back="0">← change door</button><button class="btn" id="go2">Submit reasoning →</button></div>`;}
+ else if(sess.step===2){inner=`<span class="caps">Step 3 · ✨ The tutor probes</span><div class="probe" style="margin-top:8px"><div class="av">💬</div><div class="prompt" id="probeText">${sess.probe?esc(sess.probe):'<span class="thinking">The tutor is reading your reasoning…</span>'}</div></div><textarea id="answer" placeholder="Answer once — just a single exchange." style="margin-top:16px">${esc(sess.answer)}</textarea><div class="actions"><span class="pilllabel">${AI_ON?'✨ live tutor':'offline tutor'}</span><button class="btn" id="go3">Answer &amp; reveal →</button></div>`;}
+ else if(sess.step===3){const c=d.chosen,ct=c==="A"?d.doorA.k:d.doorB.k,m=sess.pick===c;inner=`<span class="caps">Step 4 · The reveal</span><div class="rev hl" style="margin-top:10px"><div class="lab">What you actually chose</div><div class="val">Door ${c} — ${esc(ct)} · <span class="muted">${esc(d.project)}, ${esc(d.when)}</span> ${m?'<span class="badge agree">you agreed</span>':'<span class="badge differ">you differed</span>'}</div></div><div class="rev"><div class="lab">What happened downstream ${d.downstreamDraft?'<span class="badge draft">DRAFT — your call</span>':''}</div><div class="val">${esc(d.downstream)}</div></div><div class="rev"><div class="lab">What the other door would have cost</div><div class="val">${esc(d.otherDoorCost)}</div></div><div class="actions"><div class="score">✨ Reasoning score: <span class="n" id="scoreN">${sess.score!=null?sess.score:'…'}</span><span class="muted small">/ 5</span></div><button class="btn" id="go4">Zoom out →</button></div>`;}
+ else if(sess.step===4){const rc=countGroup(d.group);inner=`<span class="caps">Step 5 · Vocabulary &amp; principle</span><p class="muted small" style="margin:8px 0 4px">This decision was secretly about:</p><div class="vgrid">${d.terms.map(t=>`<div class="vcard"><b>${esc(t.t)}</b><div class="d">${esc(t.d)}</div></div>`).join("")}</div><div class="zoom"><h3>⤢ Zoom out — the principle</h3><div class="prompt" style="font-size:16px">${esc(d.principle)}</div><div class="rec">↻ You've hit “${esc(d.group)}” ${rc} ${rc===1?'time':'times'} now.${rc>=3?' When a shape shows up a third time, it\'s a pattern you own.':''}</div></div><div class="actions"><span class="muted small">session complete · ~10 min</span><button class="btn" id="done">Finish ✓</button></div>`;}
+ return `<div class="card"><div class="dots">${dots}</div>${inner}</div>`;
+}
+function fallbackProbe(d,pick){const other=pick==="A"?d.doorB.k:d.doorA.k;return `You've made the case for your door. What's the strongest reason someone would pick ${other} instead — and what does your choice cost you there?`;}
+function fallbackScore(s){const len=(s.defend+" "+s.answer).split(/\s+/).filter(Boolean).length;return len<15?2:len<40?3:4;}
+function wireDoor(){
+ root.querySelectorAll("[data-pick]").forEach(b=>b.onclick=()=>{sess.pick=b.dataset.pick;sess.step=1;render();});
+ const bk=root.querySelector("[data-back]");if(bk)bk.onclick=()=>{const t=root.querySelector("#defend");if(t)sess.defend=t.value;sess.step=0;render();};
+ const g2=root.querySelector("#go2");if(g2)g2.onclick=async()=>{sess.defend=root.querySelector("#defend").value.trim();if(!sess.defend){root.querySelector("#defend").focus();return;}sess.step=2;sess.probe=null;render();const d=sess.d;const sys="You are a sharp architecture tutor. The learner chose a door and defended it. Reply with ONE probing question — the strongest counter to their position, or the thing their reasoning skipped. One or two sentences. No preamble, no praise, just the question.";const usr=`Decision: ${d.context}\nDoor A: ${d.doorA.k}. Door B: ${d.doorB.k}.\nThey chose Door ${sess.pick}.\nReasoning: "${sess.defend}"`;const out=await callClaude(sys,usr,200);sess.probe=out||fallbackProbe(d,sess.pick);const pt=root.querySelector("#probeText");if(pt&&sess.step===2)pt.textContent=sess.probe;};
+ const g3=root.querySelector("#go3");if(g3)g3.onclick=async()=>{sess.answer=root.querySelector("#answer").value.trim();sess.step=3;sess.score=null;render();const d=sess.d;const sys="You are an architecture tutor scoring reasoning quality 1-5. Score whether the learner named the real tradeoff, considered the failure mode, and accounted for cost over time — NOT which door they picked. Reply with ONLY a single integer 1-5.";const usr=`Decision: ${d.context}\nChose Door ${sess.pick}. Reasoning: "${sess.defend}"\nProbe: "${sess.probe}"\nAnswer: "${sess.answer}"`;const out=await callClaude(sys,usr,10);let n=out?parseInt((out.match(/[1-5]/)||[])[0]):NaN;if(!(n>=1&&n<=5))n=fallbackScore(sess);sess.score=n;const el=root.querySelector("#scoreN");if(el)el.textContent=n;};
+ const g4=root.querySelector("#go4");if(g4)g4.onclick=()=>{sess.step=4;render();};
+ const dn=root.querySelector("#done");if(dn)dn.onclick=()=>finishSession();
+}
+function finishSession(){
+ const d=sess.d,fu=sess.fromUnit,prevXp=state.xp;
+ bumpStreak();state.faced+=1;addXP(20+(sess.score>=4?15:sess.score>=3?8:0));
+ state.history.push({id:d.id,group:d.group,pick:sess.pick,chosen:d.chosen,score:sess.score,date:todayStr()});
+ d.terms.forEach(t=>{if(!state.glossary.some(g=>g.t===t.t))state.glossary.push({t:t.t,d:t.d,from:d.id,fromLabel:`${d.project} · ${d.when}`,group:d.group});});
+ commitProgress(prevXp);sess=null;
+ root.innerHTML=`<div class="card"><span class="pilltag">✓ Door walked</span><h2>Nicely done.</h2><p class="lede">You reasoned it through and earned XP toward your next rank.</p><div class="prow">${fu?`<button class="btn ghost" id="back">← Back to the lesson</button>`:`<button class="btn ghost" id="again">Another →</button>`}<button class="btn" id="home2">See your progress →</button></div></div>`;
+ const bk=root.querySelector("#back");if(bk)bk.onclick=()=>{tab="learn";learnUnit=fu;syncTabs();render();window.scrollTo(0,0);};
+ const ag=root.querySelector("#again");if(ag)ag.onclick=()=>{tab="practice";syncTabs();renderPractice();};
+ const hm=root.querySelector("#home2");if(hm)hm.onclick=()=>setTab("home");
+}
+
+/* ===== SABOTAGE ===== */
+function startSabotage(uid){const seen=new Set(state.history.filter(h=>h.type==="sab").map(h=>h.id.replace("sab-","")));const fresh=SABOTAGE.filter(r=>!seen.has(r.id));const pool=fresh.length?fresh:SABOTAGE;sab={r:pool[Math.floor(Math.random()*pool.length)],from:uid,step:0,choice:null};tab=uid?"learn":"practice";syncTabs();render();window.scrollTo(0,0);}
+function renderSabotageHTML(){
+ const r=sab.r;const code=r.lines.map(function(ln,i){return `<div class="cl${(sab.step===1&&i===r.fixLine)?' bug':''}"><span class="ln">${i+1}</span><span>${esc(ln)}</span></div>`;}).join("");let inner;
+ if(sab.step===0){inner=`<span class="caps">🔍 Sabotage round</span><p class="muted small" style="margin:8px 0 12px">${esc(r.blurb)} <b style="color:var(--ink)">Exactly one thing here is broken — find it.</b></p><div class="code">${code}</div><p class="muted small" style="margin:16px 0 8px">What's wrong?</p><div class="opts">${r.options.map(function(o,i){return `<button class="opt" data-opt="${i}">${esc(o.t)}</button>`;}).join("")}</div>`;}
+ else{const o=r.options[sab.choice],ok=o.ok,correct=r.options.filter(function(x){return x.ok;})[0];inner=`<span class="caps">🔍 The fault</span><div class="code" style="margin-top:8px">${code}</div><div class="rev ${ok?'hl':''}" style="margin-top:16px"><div class="lab">${ok?'✓ You found it':'Not quite — the real bug is on line '+(r.fixLine+1)}</div><div class="val">${esc(correct.why)}</div></div><div class="rev"><div class="lab">The fix</div><div class="val"><code>${esc(r.fix)}</code></div></div><div class="zoom"><h3>🧭 The method</h3><div class="prompt" style="font-size:15.5px">${esc(r.method)}</div><div class="rec">New term earned — <b>${esc(r.term.t)}</b>: ${esc(r.term.d)}</div></div><div class="actions"><span class="muted small">${ok?'Nice debugging.':'Now you\'ll spot it next time.'}</span><button class="btn" id="sabDone">Finish ✓</button></div>`;}
+ return `<div class="card">${inner}</div>`;
+}
+function wireSabotage(){root.querySelectorAll("[data-opt]").forEach(function(b){b.onclick=function(){sab.choice=parseInt(b.dataset.opt);sab.step=1;render();window.scrollTo(0,0);};});const sd=root.querySelector("#sabDone");if(sd)sd.onclick=function(){finishSabotage();};}
+function finishSabotage(){
+ const r=sab.r,fu=sab.from,correct=!!r.options[sab.choice].ok,prevXp=state.xp;
+ bumpStreak();state.faced+=1;addXP(correct?20:10);
+ state.history.push({id:"sab-"+r.id,group:"Debugging by method",type:"sab",correct:correct,date:todayStr()});
+ if(!state.glossary.some(g=>g.t===r.term.t))state.glossary.push({t:r.term.t,d:r.term.d,from:r.id,fromLabel:"Sabotage · debugging",group:"Debugging by method"});
+ commitProgress(prevXp);sab=null;
+ if(fu){tab="learn";learnUnit=fu;syncTabs();render();}else{tab="practice";syncTabs();renderPractice();}
+ window.scrollTo(0,0);
+}
+
+/* ===== REFERENCE (glossary + concept map) ===== */
+function renderReference(){
+ let gl=state.glossary.length?[...state.glossary].sort((a,b)=>a.t.localeCompare(b.t)).map(g=>`<div class="glossitem"><div class="t">${esc(g.t)}${g.group?`<span class="gtag">${esc(g.group)}</span>`:''}</div><div class="d">${esc(g.d)}</div><div class="from">Earned in — ${esc(g.fromLabel||g.from)}</div></div>`).join(""):`<div class="empty">📖 No terms yet — they arrive as you finish doors and sabotage rounds.</div>`;
+ const c={};state.history.forEach(h=>{c[h.group]=(c[h.group]||0)+1;});const gs=Object.keys(c);let mp;
+ if(!gs.length)mp=`<div class="empty">🗺️ The concept map fills in as you play. When a tradeoff shows up three times, that's the pattern landing.</div>`;
+ else{const max=Math.max(...gs.map(g=>c[g]));mp=gs.sort((a,b)=>c[b]-c[a]).map(g=>{const n=c[g],hot=n>=3;return `<div class="cmap-row"><div class="rowtop"><span>${esc(g)}${hot?' ⭐':''}</span><span class="n">${n} ${n===1?'time':'times'}</span></div><div class="bar"><i class="${hot?'hot':''}" style="width:${Math.round(n/max*100)}%"></i></div></div>`;}).join("");}
+ root.innerHTML=`<div class="card"><span class="pilltag">📚 Glossary</span><h2>Your glossary</h2><p class="sub">${state.glossary.length} term${state.glossary.length===1?'':'s'}, each anchored to the decision that taught it.</p>${gl}</div><div class="card"><span class="pilltag">🗺️ Concept map</span><h2>Tradeoffs that keep recurring</h2><p class="sub">⭐ marks a pattern you've hit three or more times — that's the signal.</p>${mp}</div><div class="card"><span class="pilltag">🧠 The thinking</span><h2>Why App Savvy works this way</h2><p class="sub">Not invented on a whim — built on how judgment and expertise are actually formed.</p><div class="fw"><div class="fwitem"><b>Judgment you can defend.</b> Real architecture usually comes down to a defensible choice, justified by naming what you trade. That is how experienced engineers frame it. <a href="https://martinfowler.com/articles/microservice-trade-offs.html" target="_blank" rel="noopener">Fowler on trade-offs ↗</a></div><div class="fwitem"><b>Testing makes it stick.</b> Retrieving an answer under a little pressure builds durable understanding — the well-replicated “testing effect.” That is why every lesson ends at a door. <a href="https://pmc.ncbi.nlm.nih.gov/articles/PMC3983480/" target="_blank" rel="noopener">Retrieval-practice research ↗</a></div><div class="fwitem"><b>Deliberate practice.</b> Skill grows from focused reps on well-defined tasks with immediate feedback — exactly the shape of the door loop. <a href="https://royalsocietypublishing.org/doi/10.1098/rsos.190327" target="_blank" rel="noopener">Ericsson, revisited ↗</a></div><div class="fwitem"><b>Decisions as the unit.</b> Each door mirrors an Architecture Decision Record: a decision, its context, and its consequences — how real teams capture the reasoning behind a system. <a href="https://adr.github.io/" target="_blank" rel="noopener">Architecture Decision Records ↗</a></div><div class="fwitem"><b>Aimed at the role.</b> Forward Deployed Engineers turn messy client problems into sound systems — fluency in tradeoffs is the job itself. <a href="https://en.wikipedia.org/wiki/Forward_Deployed_Engineer" target="_blank" rel="noopener">What an FDE is ↗</a> · <a href="https://posthog.com/blog/forward-deployed-engineer" target="_blank" rel="noopener">Why they are in demand ↗</a></div></div></div>`;
+}
+
+/* ===== AI & DATA ===== */
+function renderKey(){
+ root.innerHTML=`<div class="card"><span class="pilltag">🔑 AI &amp; data</span><h2>Turn on the AI tutor</h2><p class="sub">Add your own Anthropic API key to unlock the ✨ features — the tutor's probe, the reasoning score, and Ask anything. 🔒 Your key is saved only in this browser. It is never part of the app's code, so nobody who opens the app or views its source can see it.</p><div class="keyrow"><input type="password" id="keyIn" placeholder="sk-ant-…" value="${esc(state.apiKey||'')}" autocomplete="off" style="flex:1;min-width:220px"><button class="btn" id="saveKey">Save</button></div><p class="small muted" id="keyMsg" style="margin-top:8px">${state.apiKey?'✓ Key saved — the live tutor is on.':'No key yet — the built-in tutor is on.'}</p><p class="small muted">Get one at <a href="https://console.anthropic.com" target="_blank" rel="noopener">console.anthropic.com</a> → API Keys, and add a few dollars of credit. Each ✨ action costs a fraction of a cent.</p><p class="small muted">✨ marks anything AI-powered. Without a key, those spots fall back to a built-in version, so nothing is ever blocked.</p><h2 style="font-size:22px;margin-top:30px">Your progress</h2><p class="sub">Everything lives in this browser. Export a backup before you clear your browser data, or to move your progress to another device.</p><div class="keyrow"><button class="btn ghost" id="dlBk">⬇ Download backup</button><button class="btn ghost" id="upBtn">⬆ Restore backup</button><input type="file" id="upFile" accept="application/json,.json" style="display:none"><button class="btn ghost" id="wipe" style="color:var(--bad);border-color:#e6c7bf">🗑 Reset all</button></div><p class="small muted" style="margin-top:12px">${state.faced} decisions · ${state.glossary.length} terms · ${state.xp} XP · streak ${state.streak}</p></div>`;
+ document.getElementById("saveKey").onclick=function(){state.apiKey=document.getElementById("keyIn").value.trim();AI_ON=!!state.apiKey;save();var m=document.getElementById("keyMsg");if(m)m.textContent=state.apiKey?'✓ Key saved — the live tutor is on.':'No key yet — the built-in tutor is on.';};
+ document.getElementById("dlBk").onclick=function(){try{var s=Object.assign({},state);delete s.apiKey;var b=new Blob([JSON.stringify(s,null,2)],{type:"application/json"});var a=document.createElement("a");a.href=URL.createObjectURL(b);a.download="app-savvy-backup.json";document.body.appendChild(a);a.click();a.remove();}catch(e){alert("Couldn't download the backup.");}};
+ document.getElementById("upBtn").onclick=function(){document.getElementById("upFile").click();};
+ document.getElementById("upFile").onchange=function(e){var fl=e.target.files[0];if(!fl)return;var rd=new FileReader();rd.onload=function(){try{var k=state.apiKey;state=Object.assign(blank(),JSON.parse(rd.result));state.apiKey=k;AI_ON=!!state.apiKey;save();refreshStats();renderKey();}catch(err){alert("That didn't parse as a backup file.");}};rd.readAsText(fl);};
+ document.getElementById("wipe").onclick=function(){if(confirm("Erase your progress and key from this browser?")){state=blank();AI_ON=false;save();refreshStats();renderKey();}};
+}
+/* ===== STARTUP ===== */
+document.querySelectorAll("#tabs button").forEach(b=>b.onclick=()=>setTab(b.dataset.tab));
+document.getElementById("levelChip").onclick=()=>setTab("home");
+let lastQ=-1;
+function showQuote(){const el=document.getElementById("qtext");if(!el)return;let i;do{i=Math.floor(Math.random()*QUOTES.length);}while(i===lastQ&&QUOTES.length>1);lastQ=i;const q=QUOTES[i];el.style.opacity=0;setTimeout(function(){el.innerHTML=esc(q.t)+(q.a?` <span style="color:var(--faint);font-style:normal">— ${esc(q.a)}</span>`:"");el.style.opacity=1;},300);}
+document.getElementById("qref").onclick=showQuote;
+showQuote();setInterval(showQuote,180000);
+loadStateAsync().then(function(s){state=s;AI_ON=!!state.apiKey;return GAS?gcall("hasKey").then(function(k){AI_ON=!!k;}).catch(function(){}):null;}).then(function(){refreshStats();if(!state.onboarded){quiz={type:"intake",i:0,answers:[]};}render();});
+</script>
+</body>
+</html>
