@@ -238,6 +238,24 @@
   .addterm input{flex:1;min-width:150px}
   .addrow input,.addterm input{border:1.5px solid var(--line);border-radius:10px;background:var(--surface);color:var(--ink);padding:9px 12px;font-family:inherit;font-size:14px}
   .addrow input:focus,.addterm input:focus{outline:none;border-color:var(--teal)}
+  .gacts{float:right;display:inline-flex;gap:12px}
+  .glnk{background:none;border:none;color:var(--faint);font-size:12.5px;cursor:pointer;padding:0;font-family:inherit}
+  .glnk:hover{color:var(--teal-deep);text-decoration:underline}
+  .glnk.del:hover{color:var(--bad)}
+  .glossitem.editing{background:var(--mint2);border:1px solid var(--mintline);border-radius:12px;padding:12px 14px}
+  .geT,.geD{width:100%;box-sizing:border-box;border:1.5px solid var(--line);border-radius:10px;background:var(--surface);color:var(--ink);padding:9px 12px;font-family:inherit;font-size:14px;margin-bottom:8px}
+  .geT:focus,.geD:focus{outline:none;border-color:var(--teal)}
+  .geD{min-height:56px;resize:vertical}
+  .gsg{margin-top:12px;background:var(--mint2);border:1px solid var(--mintline);border-radius:12px;padding:12px 14px}
+  .gsg .caps{display:block;margin-bottom:8px}
+  .gsrow{display:flex;gap:10px;align-items:flex-start;padding:9px 0;border-top:1px solid var(--line)}
+  .gsrow.first{border-top:none}
+  .gschk{padding-top:9px}
+  .gsf{flex:1;min-width:0;display:flex;flex-direction:column;gap:6px}
+  .gsname,.gsdef{width:100%;box-sizing:border-box;border:1.5px solid var(--line);border-radius:9px;background:var(--surface);color:var(--ink);padding:8px 11px;font-family:inherit;font-size:13.5px}
+  .gsname{font-weight:600}
+  .gsdef{min-height:44px;resize:vertical}
+  .gsname:focus,.gsdef:focus{outline:none;border-color:var(--teal)}
   .objbox{background:var(--gold-bg);border:1px solid #e6d6ad;border-radius:12px;padding:12px 16px;margin:12px 0 6px}
   .objbox .caps{display:block;color:var(--gold);margin-bottom:4px}
   .objbox>div{font-size:15.5px;line-height:1.5}
@@ -618,7 +636,7 @@ const DIAG=[
 /* ===== ENGINE ===== */
 const root=document.getElementById("root");
 let tab="home", learnUnit=null, sess=null, sab=null, quiz=null, teachSess=null;
-let askState={q:"",a:"",loading:false};let askOpen=false;
+let askState={q:"",a:"",loading:false,suggest:null};let askOpen=false;let glEdit=null;
 function esc(s){return(s||"").replace(/[&<>]/g,c=>({"&":"&amp;","<":"&lt;",">":"&gt;"}[c]));}
 function ring(pct,size,stroke){const r=(size-stroke)/2,c=2*Math.PI*r,off=c*(1-Math.max(0,Math.min(1,pct)));const h=size/2;return `<svg width="${size}" height="${size}" viewBox="0 0 ${size} ${size}"><circle cx="${h}" cy="${h}" r="${r}" fill="none" stroke="var(--line)" stroke-width="${stroke}"/><circle cx="${h}" cy="${h}" r="${r}" fill="none" stroke="var(--teal)" stroke-width="${stroke}" stroke-linecap="round" stroke-dasharray="${c.toFixed(1)}" stroke-dashoffset="${off.toFixed(1)}" transform="rotate(-90 ${h} ${h})"/></svg>`;}
 function refreshStats(){const {r,nx}=rankFor(state.xp);let pct=1;if(nx)pct=(state.xp-r.xp)/(nx.xp-r.xp);document.getElementById("levelChip").innerHTML=`<span class="ringwrap">${ring(pct,30,4)}<span class="lvlemoji">${rankEmoji(r.n)}</span></span><span class="lvltext"><b>${r.n}</b><span>${state.xp} XP</span></span>`;}
@@ -767,16 +785,45 @@ function renderAsk(){
  const el=document.getElementById("askBody");if(!el)return;
  const disabled=!AI_ON;let ans="";
  if(askState.loading)ans=`<div class="airead" style="margin-top:12px"><span class="thinking">✨ Thinking…</span></div>`;
- else if(askState.a)ans=`<div class="airead" style="margin-top:12px">${esc(askState.a).replace(/\n/g,"<br>")}</div><div class="addrow"><input type="text" id="askTermName" placeholder="Name a term to save…" autocomplete="off"><button class="addg" id="askAddTerm">+ glossary</button></div><div class="small muted" id="askAddMsg" style="margin-top:5px"></div>`;
+ else if(askState.a)ans=`<div class="airead" style="margin-top:12px">${esc(askState.a).replace(/\n/g,"<br>")}</div>${askAddHTML()}`;
  el.innerHTML=`<p class="muted small" style="margin:0 0 10px">Curious why something works the way it does? Ask — no need to leave the app.${disabled?' <b>Add your key in AI &amp; Data to switch this on.</b>':''}</p><textarea id="askQ" placeholder="e.g. Why are Google Apps Script HTML files usually called Index?" style="min-height:64px">${esc(askState.q)}</textarea><div class="actions"><span></span><button class="btn" id="askBtn"${disabled?' disabled':''}>✨ Ask</button></div>${ans}`;
  const b=document.getElementById("askBtn");if(b)b.onclick=doAsk;
- const at=document.getElementById("askAddTerm");if(at)at.onclick=function(){var n=(document.getElementById("askTermName").value||"").trim();if(!n)return;addGlossaryTerm(n,askState.a.slice(0,300),"From the Ask chat");var m=document.getElementById("askAddMsg");if(m)m.textContent="✓ Saved “"+n+"” to your glossary.";};
+ wireAskAdd();
+}
+function askAddHTML(){
+ var s=askState.suggest;
+ if(!s)return `<div class="addrow"><button class="addg" id="askAddTerm">＋ Add to glossary</button></div>`;
+ if(s.loading)return `<div class="gsg"><span class="thinking">✨ Pulling the terms out…</span></div>`;
+ if(s.error)return `<div class="gsg"><p class="small muted" style="margin:0 0 8px">${esc(s.error)}</p><button class="addg" id="askSugRetry">Try again</button></div>`;
+ if(s.done)return `<div class="gsg"><p class="small muted" style="margin:0">✓ Added to your glossary — see the Reference tab.</p></div>`;
+ if(!s.terms||!s.terms.length)return `<div class="gsg"><p class="small muted" style="margin:0 0 8px">No clear term to pull from that answer. You can still add one by hand in Reference.</p><button class="addg" id="askSugCancel">Close</button></div>`;
+ return `<div class="gsg"><span class="caps">Add to glossary — edit anything, then save</span>${s.terms.map(function(t,i){return `<div class="gsrow${i===0?' first':''}"><label class="gschk"><input type="checkbox" data-sug="${i}" ${t.on?'checked':''}></label><div class="gsf"><input type="text" class="gsname" data-sugt="${i}" value="${esc(t.t).replace(/"/g,'&quot;')}"><textarea class="gsdef" data-sugd="${i}">${esc(t.d)}</textarea></div></div>`;}).join("")}<div class="actions" style="margin-top:10px"><button class="btn ghost mini" id="askSugCancel">Cancel</button><button class="btn mini" id="askSugSave">Add selected</button></div></div>`;
+}
+function wireAskAdd(){
+ var a=document.getElementById("askAddTerm");if(a)a.onclick=function(){askState.suggest={loading:true};renderAsk();askExtractTerms();};
+ var r=document.getElementById("askSugRetry");if(r)r.onclick=function(){askState.suggest={loading:true};renderAsk();askExtractTerms();};
+ var c=document.getElementById("askSugCancel");if(c)c.onclick=function(){askState.suggest=null;renderAsk();};
+ var sv=document.getElementById("askSugSave");if(sv)sv.onclick=function(){
+   var n=0;document.querySelectorAll("[data-sug]").forEach(function(cb){if(!cb.checked)return;var i=cb.dataset.sug;var nm=(document.querySelector('.gsname[data-sugt="'+i+'"]').value||"").trim();var df=(document.querySelector('.gsdef[data-sugd="'+i+'"]').value||"").trim();if(nm){addGlossaryTerm(nm,df||"(from the Ask chat)","From the Ask chat");n++;}});
+   askState.suggest={done:true};renderAsk();
+ };
+}
+async function askExtractTerms(){
+ var sys="You extract glossary terms from a short Q&A for a business person becoming software-fluent. Return ONLY a JSON array (no prose, no code fence) of at most 4 objects, each {\"t\":\"term\",\"d\":\"plain one-sentence definition\"}. Pull the key technical terms that actually appear in the answer. If several distinct terms appear, return each separately. Keep every definition under 20 words and free of jargon. If there is no real technical term, return [].";
+ var out=await callClaude(sys,"Question: "+askState.q+"\n\nAnswer: "+askState.a,500);
+ if(!out){askState.suggest={error:(state.apiKey?("Couldn't reach the tutor. "+lastAIError):"Add your Anthropic key in AI & Data first.")};renderAsk();return;}
+ var terms=parseTerms(out);terms.forEach(function(t){t.on=true;});
+ askState.suggest={terms:terms};renderAsk();
+}
+function parseTerms(s){
+ try{var m=s.match(/\[[\s\S]*\]/);var arr=JSON.parse(m?m[0]:s);if(Array.isArray(arr))return arr.filter(function(x){return x&&x.t;}).map(function(x){return {t:String(x.t).trim(),d:String(x.d||"").trim()};}).slice(0,4);}catch(e){}
+ return [];
 }
 function toggleAsk(open){askOpen=(open==null)?!askOpen:open;const p=document.getElementById("askPanel");if(p)p.classList.toggle("open",askOpen);const f=document.getElementById("askFab");if(f)f.textContent=askOpen?"✕":"✨";if(askOpen)renderAsk();}
 function screenContext(){var r=document.getElementById("root");var t=r?(r.innerText||r.textContent||""):"";t=t.replace(/\s+/g," ").trim();if(t.length>2600)t=t.slice(0,2600)+"…";var tb=document.querySelector("#tabs button.on");return "Tab: "+(tb?tb.textContent.trim():"")+". Visible text: "+t;}
 async function doAsk(){
  const t=document.getElementById("askQ");const qv=t?t.value.trim():"";if(!qv)return;
- askState.q=qv;askState.loading=true;askState.a="";renderAsk();
+ askState.q=qv;askState.loading=true;askState.a="";askState.suggest=null;renderAsk();
  const sys="You are App Savvy's built-in tutor. Answer two kinds of questions: (1) how software and apps work, in plain language for a business or client person becoming fluent by directing AI (not an engineer), and (2) how to use App Savvy itself. About the app: App Savvy builds architectural judgment. Its tabs are Home (a dashboard with your rank, XP, badges, streak, a readiness map across five capabilities, a personalized read, and a pre/post baseline check), Learn (eight lesson units — read a lesson, then walk a Door to test it), Practice (a quick Door or a Sabotage debugging round, both earning XP), Reference (a glossary of terms you have earned, a concept map of recurring tradeoffs, and the sourced thinking behind the app), and AI & Data (your API key and backups). A Door is a real decision with two defensible options; you pick one, justify it, and a reveal shows what was actually chosen and the tradeoff. You earn XP and climb ranks from Curious to Solutions-Ready, unlocking badges. Progress saves in your browser, and the sparkle marks AI features that use your key. Answer warmly and concretely in a few short paragraphs, no jargon dumps. If a question is off-topic, answer briefly and steer back. The user's message may include the text currently on their screen (marked [Context — ...]); when they ask about 'this' or 'what does this mean', use that on-screen text to answer specifically.";
  const out=await callClaude(sys,qv+" [Context — what is on my screen right now, use it if my question is about this: "+screenContext()+"]",700);
  askState.loading=false;askState.a=out||(state.apiKey?("Couldn't get an answer. "+lastAIError+(/credit|balance/i.test(lastAIError)?" → Add credits at console.anthropic.com under Plans & Billing.":"")):"Add your Anthropic key in the AI & Data tab to ask questions here.");
@@ -939,12 +986,16 @@ function finishSabotage(){
 
 /* ===== REFERENCE (glossary + concept map) ===== */
 function renderReference(){
- let gl=state.glossary.length?[...state.glossary].sort((a,b)=>a.t.localeCompare(b.t)).map(g=>`<div class="glossitem"><div class="t">${esc(g.t)}${g.group?`<span class="gtag">${esc(g.group)}</span>`:''}</div><div class="d">${esc(g.d)}</div><div class="from">Earned in — ${esc(g.fromLabel||g.from)}</div></div>`).join(""):`<div class="empty">📖 No terms yet — they arrive as you finish doors and sabotage rounds.</div>`;
+ let gl=state.glossary.length?[...state.glossary].sort((a,b)=>a.t.localeCompare(b.t)).map(g=>{const key=esc(g.t).replace(/"/g,'&quot;');if(glEdit===g.t)return `<div class="glossitem editing"><input type="text" class="geT" value="${key}"><textarea class="geD">${esc(g.d)}</textarea><div class="actions"><button class="btn ghost mini" data-gcancel="1">Cancel</button><button class="btn mini" data-gsave="${key}">Save</button></div></div>`;return `<div class="glossitem"><div class="t">${esc(g.t)}${g.group?`<span class="gtag">${esc(g.group)}</span>`:''}<span class="gacts"><button class="glnk" data-gedit="${key}">Edit</button><button class="glnk del" data-gdel="${key}">Delete</button></span></div><div class="d">${esc(g.d)}</div><div class="from">Earned in — ${esc(g.fromLabel||g.from)}</div></div>`;}).join(""):`<div class="empty">📖 No terms yet — they arrive as you finish doors and sabotage rounds.</div>`;
  const c={};state.history.forEach(h=>{c[h.group]=(c[h.group]||0)+1;});const gs=Object.keys(c);let mp;
  if(!gs.length)mp=`<div class="empty">🗺️ The concept map fills in as you play. When a tradeoff shows up three times, that's the pattern landing.</div>`;
  else{const max=Math.max(...gs.map(g=>c[g]));mp=gs.sort((a,b)=>c[b]-c[a]).map(g=>{const n=c[g],hot=n>=3;return `<div class="cmap-row"><div class="rowtop"><span>${esc(g)}${hot?' ⭐':''}</span><span class="n">${n} ${n===1?'time':'times'}</span></div><div class="bar"><i class="${hot?'hot':''}" style="width:${Math.round(n/max*100)}%"></i></div></div>`;}).join("");}
  root.innerHTML=`<div class="card"><span class="pilltag">📚 Glossary</span><h2>Your glossary</h2><p class="sub">${state.glossary.length} term${state.glossary.length===1?'':'s'}, each anchored to where you met it.</p><div class="addterm"><input type="text" id="newTermT" placeholder="A term you picked up" autocomplete="off"><input type="text" id="newTermD" placeholder="What it means, in your words" autocomplete="off"><button class="btn ghost mini" id="newTermAdd">+ Add</button></div>${gl}</div><div class="card"><span class="pilltag">🗺️ Concept map</span><h2>Tradeoffs that keep recurring</h2><p class="sub">⭐ marks a pattern you've hit three or more times — that's the signal.</p>${mp}</div><div class="card"><span class="pilltag">🧠 The thinking</span><h2>Why App Savvy works this way</h2><p class="sub">Not invented on a whim — built on how judgment and expertise are actually formed.</p><div class="fw"><div class="fwitem"><b>Judgment you can defend.</b> Real architecture usually comes down to a defensible choice, justified by naming what you trade. That is how experienced engineers frame it. <a href="https://martinfowler.com/articles/microservice-trade-offs.html" target="_blank" rel="noopener">Fowler on trade-offs ↗</a></div><div class="fwitem"><b>Testing makes it stick.</b> Retrieving an answer under a little pressure builds durable understanding — the well-replicated “testing effect.” That is why every lesson ends at a door. <a href="https://pmc.ncbi.nlm.nih.gov/articles/PMC3983480/" target="_blank" rel="noopener">Retrieval-practice research ↗</a></div><div class="fwitem"><b>Deliberate practice.</b> Skill grows from focused reps on well-defined tasks with immediate feedback — exactly the shape of the door loop. <a href="https://royalsocietypublishing.org/doi/10.1098/rsos.190327" target="_blank" rel="noopener">Ericsson, revisited ↗</a></div><div class="fwitem"><b>Decisions as the unit.</b> Each door mirrors an Architecture Decision Record: a decision, its context, and its consequences — how real teams capture the reasoning behind a system. <a href="https://adr.github.io/" target="_blank" rel="noopener">Architecture Decision Records ↗</a></div><div class="fwitem"><b>Aimed at the role.</b> Forward Deployed Engineers turn messy client problems into sound systems — fluency in tradeoffs is the job itself. <a href="https://en.wikipedia.org/wiki/Forward_Deployed_Engineer" target="_blank" rel="noopener">What an FDE is ↗</a> · <a href="https://posthog.com/blog/forward-deployed-engineer" target="_blank" rel="noopener">Why they are in demand ↗</a></div></div></div>`;
  var na=document.getElementById("newTermAdd");if(na)na.onclick=function(){var t=(document.getElementById("newTermT").value||"").trim();var d=(document.getElementById("newTermD").value||"").trim();if(!t){document.getElementById("newTermT").focus();return;}addGlossaryTerm(t,d||"(your note)","Added by you");renderReference();};
+ root.querySelectorAll("[data-gedit]").forEach(function(b){b.onclick=function(){glEdit=b.dataset.gedit;renderReference();};});
+ root.querySelectorAll("[data-gcancel]").forEach(function(b){b.onclick=function(){glEdit=null;renderReference();};});
+ root.querySelectorAll("[data-gdel]").forEach(function(b){b.onclick=function(){var nm=b.dataset.gdel;if(confirm('Delete “'+nm+'” from your glossary?')){state.glossary=state.glossary.filter(function(g){return g.t!==nm;});glEdit=null;save();refreshStats();renderReference();}};});
+ root.querySelectorAll("[data-gsave]").forEach(function(b){b.onclick=function(){var item=b.closest(".glossitem");var nt=(item.querySelector(".geT").value||"").trim();var nd=(item.querySelector(".geD").value||"").trim();if(!nt){item.querySelector(".geT").focus();return;}var g=state.glossary.find(function(x){return x.t===b.dataset.gsave;});if(g){if(nt.toLowerCase()!==g.t.toLowerCase()&&state.glossary.some(function(x){return x.t.toLowerCase()===nt.toLowerCase();})){alert("You already have a term with that name.");return;}g.t=nt;g.d=nd||"(your note)";}glEdit=null;save();refreshStats();renderReference();};});
 }
 
 /* ===== AI & DATA ===== */
