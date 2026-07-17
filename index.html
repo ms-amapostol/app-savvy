@@ -221,6 +221,9 @@
   .lessonchip{display:inline-block;background:var(--mint);border:1px solid var(--mintline);border-radius:30px;padding:4px 12px;font-size:12.5px;color:var(--teal-deep);margin-top:8px}
   .askhint{background:var(--mint2);border:1px dashed var(--mintline);border-radius:12px;padding:10px 14px;margin:14px 0;font-size:13px;color:var(--muted);line-height:1.55}
   .askhint b{color:var(--teal-deep)}
+  .actcard{position:relative}
+  .exitbtn{position:absolute;top:12px;right:14px;background:none;border:1px solid var(--line);border-radius:20px;color:var(--muted);font-size:12px;padding:3px 11px;cursor:pointer;z-index:2}
+  .exitbtn:hover{color:var(--bad);border-color:#e6c7bf}
   .objbox{background:var(--gold-bg);border:1px solid #e6d6ad;border-radius:12px;padding:12px 16px;margin:12px 0 6px}
   .objbox .caps{display:block;color:var(--gold);margin-bottom:4px}
   .objbox>div{font-size:15.5px;line-height:1.5}
@@ -530,7 +533,7 @@ const QUOTES=[
 const LS="app-savvy-v1";
 const GAS=(typeof google!=="undefined"&&google.script&&google.script.run);
 let AI_ON=false;
-const blank=()=>({streak:0,lastDay:null,faced:0,history:[],glossary:[],learned:[],xp:0,badges:[],profile:null,onboarded:false,pre:null,post:null,shippedIntegration:false,capSnapshot:null,aiRead:null,apiKey:""});
+const blank=()=>({streak:0,lastDay:null,faced:0,history:[],glossary:[],learned:[],xp:0,badges:[],profile:null,onboarded:false,pre:null,post:null,shippedIntegration:false,capSnapshot:null,aiRead:null,apiKey:"",resume:null});
 function gcall(fn){var a=[].slice.call(arguments,1);return new Promise(function(res,rej){var r=google.script.run.withSuccessHandler(res).withFailureHandler(rej);r[fn].apply(r,a);});}
 function loadStateAsync(){if(GAS){return gcall("loadState").then(function(r){return r?Object.assign(blank(),JSON.parse(r)):blank();}).catch(blank);}
   try{return Promise.resolve(Object.assign(blank(),JSON.parse(localStorage.getItem(LS)||"{}")));}catch(e){return Promise.resolve(blank());}}
@@ -613,8 +616,11 @@ function recommendStart(){if(!state.profile||state.profile.cap_tradeoff==null)re
 const METAS={home:"Your dashboard — how far you've come, and where to go next.",learn:"Read a lesson, then test it with a door. Your curriculum's at the bottom.",practice:"A quick decision or a bug to hunt — perfect for ten minutes. Earns XP.",reference:"Look things up: the terms you've earned, the tradeoffs that recur, and the thinking behind it all.",key:"Turn on the AI tutor and manage your synced data."};
 function setMeta(){const m=document.getElementById("meta");if(quiz){m.style.display="none";return;}m.style.display="block";m.textContent=METAS[tab]||"";}
 function syncTabs(){document.querySelectorAll("#tabs button").forEach(x=>x.classList.toggle("on",x.dataset.tab===tab));}
-function setTab(t){if(!state.onboarded)return;if(window.speechSynthesis)window.speechSynthesis.cancel();tab=t;quiz=null;sess=null;sab=null;teachSess=null;syncTabs();render();window.scrollTo(0,0);}
-function render(){setMeta();var tb=document.getElementById("tabs");if(tb)tb.classList.toggle("locked",!state.onboarded);var fb=document.getElementById("askFab");if(fb)fb.style.display=state.onboarded?"flex":"none";if(!state.onboarded)toggleAsk(false);if(quiz){renderQuiz();return;}if(tab==="home")renderHome();else if(tab==="learn")renderLearn();else if(tab==="practice")renderPractice();else if(tab==="reference")renderReference();else if(tab==="key")renderKey();}
+function exitActivity(){if(window.speechSynthesis)window.speechSynthesis.cancel();sess=null;sab=null;teachSess=null;state.resume=null;save();render();}
+function setTab(t){if(!state.onboarded)return;if(window.speechSynthesis)window.speechSynthesis.cancel();tab=t;quiz=null;syncTabs();render();window.scrollTo(0,0);}
+function persistResume(){if(!(sess||sab||teachSess)&&!state.resume)return;if(sess)state.resume={kind:"door",tab:tab,learnUnit:learnUnit,sess:sess};else if(sab)state.resume={kind:"sab",tab:tab,learnUnit:learnUnit,sab:sab};else if(teachSess)state.resume={kind:"teach",tab:tab,teachSess:teachSess};else state.resume=null;save();}
+function restoreResume(){var R=state.resume;if(!R)return;try{if(R.kind==="door"){sess=R.sess;if(sess&&sess.d){var dd=DECISIONS.find(function(x){return x.id===sess.d.id;});if(dd)sess.d=dd;}tab=R.tab||"practice";learnUnit=R.learnUnit;}else if(R.kind==="sab"){sab=R.sab;if(sab&&sab.r){var rr=SABOTAGE.find(function(x){return x.id===sab.r.id;});if(rr)sab.r=rr;}tab=R.tab||"practice";learnUnit=R.learnUnit;}else if(R.kind==="teach"){teachSess=R.teachSess;if(teachSess&&teachSess.u){var uu=UNITS.find(function(x){return x.id===teachSess.u.id;});if(uu)teachSess.u=uu;}tab=R.tab||"practice";}syncTabs();}catch(e){state.resume=null;}}
+function render(){setMeta();persistResume();var tb=document.getElementById("tabs");if(tb)tb.classList.toggle("locked",!state.onboarded);var fb=document.getElementById("askFab");if(fb)fb.style.display=state.onboarded?"flex":"none";if(!state.onboarded)toggleAsk(false);if(quiz){renderQuiz();return;}if(tab==="home")renderHome();else if(tab==="learn")renderLearn();else if(tab==="practice")renderPractice();else if(tab==="reference")renderReference();else if(tab==="key")renderKey();}
 
 /* ===== HOME ===== */
 function stat(e,v,l){return `<div class="stat"><span class="se">${e}</span><b>${v}</b><span class="sl">${l}</span></div>`;}
@@ -762,8 +768,8 @@ async function doAsk(){
  renderAsk();
 }
 function renderLearn(){
- if(sab){root.innerHTML=renderSabotageHTML();wireSabotage();return;}
- if(sess){root.innerHTML=renderDoorHTML();wireDoor();return;}
+ if(sab&&sab.ownerTab==="learn"){root.innerHTML=renderSabotageHTML();wireSabotage();return;}
+ if(sess&&sess.ownerTab==="learn"){root.innerHTML=renderDoorHTML();wireDoor();return;}
  const main=(learnUnit===null)?learnLanding():lessonHTML(UNITS.find(u=>u.id===learnUnit));
  root.innerHTML=main+curriculumHTML();
  wireLearn();
@@ -817,13 +823,13 @@ function wireLearn(){
 
 /* ===== PRACTICE ===== */
 async function teachFeedback(concept,model,text){const sys="You are a warm teaching coach for a business person becoming fluent in software (not an engineer). They just explained a concept to a beginner colleague. In 2-3 short sentences: praise what landed, then one concrete way to make it clearer or more accurate. Plain language, encouraging, no jargon. End with a short verdict line.";const usr="Concept: "+concept+". A strong explanation would get across: "+model+". Their explanation: "+text;const out=await callClaude(sys,usr,260);return out||((state.apiKey&&lastAIError)?("(AI feedback unavailable — "+lastAIError+") "):"")+"Nice work. The real test: would a non-technical friend get it from what you wrote? Check that you named the core idea and why it matters, in plain words — if yes, you have it.";}
-function startTeach(){const cands=UNITS.filter(u=>!u.sabotage);const learned=cands.filter(u=>state.learned.indexOf(u.id)>=0);const pool=learned.length?learned:cands;const u=pool[Math.floor(Math.random()*pool.length)];teachSess={u:u,text:"",fb:""};tab="practice";syncTabs();render();window.scrollTo(0,0);}
-function renderTeachHTML(){const u=teachSess.u,x=EXTRAS[u.id]||{};return `<div class="card"><span class="pilltag">🗣 ✨ Teach it back</span><h2>Teach: ${esc(u.title)}</h2><p class="sub">Explain this to a colleague who has never seen it, in two or three sentences. Teaching it is how you truly own it.</p><div class="objbox"><span class="caps">The idea to get across</span><div>${esc(x.obj||u.objective)}</div></div><textarea id="teachT" placeholder="In your own words, no jargon…">${esc(teachSess.text||"")}</textarea><div class="actions"><span class="pilllabel">${AI_ON?'✨ live feedback':'self-check'}</span><button class="btn" id="teachSubmit">Get feedback →</button></div>${teachSess.fb?`<div class="airead" style="margin-top:14px">${esc(teachSess.fb)}</div><div class="actions"><button class="btn ghost" id="teachAgain">Teach another →</button><button class="btn" id="teachDone">Done ✓ (+15 XP)</button></div>`:""}</div>`;}
-function wireTeach(){const s=root.querySelector("#teachSubmit");if(s)s.onclick=async()=>{const t=root.querySelector("#teachT");teachSess.text=t?t.value.trim():"";if(!teachSess.text){if(t)t.focus();return;}s.textContent="✨ Reading…";s.disabled=true;const u=teachSess.u,x=EXTRAS[u.id]||{};teachSess.fb=await teachFeedback(u.title,(x.obj||u.objective),teachSess.text);renderPractice();};const a=root.querySelector("#teachAgain");if(a)a.onclick=()=>startTeach();const dn=root.querySelector("#teachDone");if(dn)dn.onclick=()=>{const p=state.xp;bumpStreak();addXP(15);commitProgress(p);teachSess=null;renderPractice();};}
+function startTeach(){const cands=UNITS.filter(u=>!u.sabotage);const learned=cands.filter(u=>state.learned.indexOf(u.id)>=0);const pool=learned.length?learned:cands;const u=pool[Math.floor(Math.random()*pool.length)];teachSess={u:u,text:"",fb:"",ownerTab:"practice"};tab="practice";syncTabs();render();window.scrollTo(0,0);}
+function renderTeachHTML(){const u=teachSess.u,x=EXTRAS[u.id]||{};return `<div class="card actcard"><button class="exitbtn" id="exitAct" title="Leave — you can start over later">✕ exit</button><span class="pilltag">🗣 ✨ Teach it back</span><h2>Teach: ${esc(u.title)}</h2><p class="sub">Explain this to a colleague who has never seen it, in two or three sentences. Teaching it is how you truly own it.</p><div class="objbox"><span class="caps">The idea to get across</span><div>${esc(x.obj||u.objective)}</div></div><textarea id="teachT" placeholder="In your own words, no jargon…">${esc(teachSess.text||"")}</textarea><div class="actions"><span class="pilllabel">${AI_ON?'✨ live feedback':'self-check'}</span><button class="btn" id="teachSubmit">Get feedback →</button></div>${teachSess.fb?`<div class="airead" style="margin-top:14px">${esc(teachSess.fb)}</div><div class="actions"><button class="btn ghost" id="teachAgain">Teach another →</button><button class="btn" id="teachDone">Done ✓ (+15 XP)</button></div>`:""}</div>`;}
+function wireTeach(){const s=root.querySelector("#teachSubmit");if(s)s.onclick=async()=>{const t=root.querySelector("#teachT");teachSess.text=t?t.value.trim():"";if(!teachSess.text){if(t)t.focus();return;}s.textContent="✨ Reading…";s.disabled=true;const u=teachSess.u,x=EXTRAS[u.id]||{};teachSess.fb=await teachFeedback(u.title,(x.obj||u.objective),teachSess.text);renderPractice();};const a=root.querySelector("#teachAgain");if(a)a.onclick=()=>startTeach();const dn=root.querySelector("#teachDone");if(dn)dn.onclick=()=>{const p=state.xp;state.resume=null;bumpStreak();addXP(15);commitProgress(p);teachSess=null;renderPractice();};var ex=root.querySelector("#exitAct");if(ex)ex.onclick=function(){exitActivity();};var tt=root.querySelector("#teachT");if(tt)tt.oninput=function(){teachSess.text=tt.value;persistResume();};}
 function renderPractice(){
  if(teachSess){root.innerHTML=renderTeachHTML();wireTeach();return;}
- if(sab){root.innerHTML=renderSabotageHTML();wireSabotage();return;}
- if(sess){root.innerHTML=renderDoorHTML();wireDoor();return;}
+ if(sab&&sab.ownerTab==="practice"){root.innerHTML=renderSabotageHTML();wireSabotage();return;}
+ if(sess&&sess.ownerTab==="practice"){root.innerHTML=renderDoorHTML();wireDoor();return;}
  root.innerHTML=`<div class="card"><span class="pilltag">🎯 Practice</span><h2>Build the missing muscle</h2><p class="sub">Each rep strengthens a specific capability on your readiness map.</p>${(state.profile&&state.profile.cap_read!=null)?growthEdgeHTML():''}<div class="prow" style="margin-top:16px"><button class="btn" id="pDoor">🚪 A decision door</button><button class="btn ghost" id="pSab">🔍 A sabotage round</button><button class="btn ghost" id="pTeach">🗣 Teach it back</button></div><p class="muted small" style="margin-top:10px">Doors build <b>Name the tradeoff</b>. Sabotage rounds build debugging fluency — part of speaking the language.</p><p class="muted small" style="margin-top:8px">🔎 See a term you do not know? Tap the <b>✨ bubble</b> and ask — leaning on it is how fluency builds, not a shortcut.</p></div>`;
  root.querySelector("#pDoor").onclick=()=>startDoor(pickDoor(null),null);
  root.querySelector("#pSab").onclick=()=>startSabotage(null);
@@ -832,7 +838,7 @@ function renderPractice(){
 
 /* ===== DOOR LOOP ===== */
 function pickDoor(uid){const pool=uid?doorsForUnit(uid):DECISIONS;const seen=new Set(state.history.filter(h=>!h.type).map(h=>h.id));const fresh=pool.filter(d=>!seen.has(d.id));const use=fresh.length?fresh:pool;return use[Math.floor(Math.random()*use.length)];}
-function startDoor(dec,fromUnit){sess={d:dec,fromUnit:fromUnit||null,step:0,pick:null,defend:"",probe:null,answer:"",score:null};tab=fromUnit?"learn":"practice";syncTabs();render();window.scrollTo(0,0);}
+function startDoor(dec,fromUnit){sess={d:dec,fromUnit:fromUnit||null,step:0,pick:null,defend:"",probe:null,answer:"",score:null,ownerTab:fromUnit?"learn":"practice"};tab=fromUnit?"learn":"practice";syncTabs();render();window.scrollTo(0,0);}
 function countGroup(group){const inHist=state.history.filter(h=>h.group===group).length;const already=state.history.some(h=>sess.d&&h.id===sess.d.id);return inHist+(already?0:1);}
 const SCAFFOLD='<div class="scaffold"><span class="caps">How to weigh it</span><ul><li>Who relies on this, and what matters most to them?</li><li>How does each door fail, and how much would that hurt?</li><li>What does each door cost over time?</li></ul></div>';
 function renderDoorHTML(){
@@ -843,7 +849,7 @@ function renderDoorHTML(){
  else if(sess.step===3){const c=d.chosen,ct=c==="A"?d.doorA.k:d.doorB.k,m=sess.pick===c;inner=`<span class="caps">Step 4 · The reveal</span><div class="rev hl" style="margin-top:10px"><div class="lab">What you actually chose</div><div class="val">Door ${c} — ${esc(ct)} · <span class="muted">${esc(d.project)}, ${esc(d.when)}</span> ${m?'<span class="badge agree">you agreed</span>':'<span class="badge differ">you differed</span>'}</div></div><div class="rev"><div class="lab">What happened downstream ${d.downstreamDraft?'<span class="badge draft">DRAFT — your call</span>':''}</div><div class="val">${esc(d.downstream)}</div></div><div class="rev"><div class="lab">What the other door would have cost</div><div class="val">${esc(d.otherDoorCost)}</div></div><div class="actions"><div class="score">✨ Reasoning score: <span class="n" id="scoreN">${sess.score!=null?sess.score:'…'}</span><span class="muted small">/ 5</span></div><button class="btn" id="go4">Zoom out →</button></div>`;}
  else if(sess.step===4){const rc=countGroup(d.group);inner=`<span class="caps">Step 5 · Vocabulary &amp; principle</span><p class="muted small" style="margin:8px 0 4px">This decision was secretly about:</p><div class="vgrid">${d.terms.map(t=>`<div class="vcard"><b>${esc(t.t)}</b><div class="d">${esc(t.d)}</div></div>`).join("")}</div><div class="zoom"><h3>⤢ Zoom out — the principle</h3><div class="prompt" style="font-size:16px">${esc(d.principle)}</div><div class="rec">↻ You've hit “${esc(d.group)}” ${rc} ${rc===1?'time':'times'} now.${rc>=3?' When a shape shows up a third time, it\'s a pattern you own.':''}</div></div><div class="actions"><span class="muted small">One more — teaching it is how it sticks.</span><button class="btn" id="go5">Teach it back →</button></div>`;}
  else if(sess.step===5){inner=`<span class="caps">Step 6 · ✨ Teach it back</span><p class="muted small" style="margin:8px 0 10px">The fastest way to lock this in is to teach it. In two or three sentences, explain <b>${esc(d.group)}</b> to a colleague who has never seen it.</p><textarea id="teach" placeholder="Explain it plainly, no jargon…">${esc(sess.teach||"")}</textarea><div class="actions"><span class="pilllabel">${AI_ON?'✨ live feedback':'self-check'}</span><button class="btn" id="teachGo">Get feedback →</button></div>${sess.teachFb?`<div class="airead" style="margin-top:14px">${esc(sess.teachFb)}</div><div class="rev" style="margin-top:12px"><div class="lab">A model explanation to compare with</div><div class="val">${esc(d.principle)}</div></div><div class="actions"><span class="muted small">+10 XP for teaching</span><button class="btn" id="done">Finish ✓</button></div>`:""}`;}
- return `<div class="card"><div class="dots">${dots}</div>${inner}</div>`;
+ return `<div class="card actcard"><button class="exitbtn" id="exitAct" title="Leave — you can start over later">✕ exit</button><div class="dots">${dots}</div>${inner}</div>`;
 }
 function fallbackProbe(d,pick){const other=pick==="A"?d.doorB.k:d.doorA.k;return `You've made the case for your door. What's the strongest reason someone would pick ${other} instead — and what does your choice cost you there?`;}
 function fallbackScore(s){const len=(s.defend+" "+s.answer).split(/\s+/).filter(Boolean).length;return len<15?2:len<40?3:4;}
@@ -856,8 +862,13 @@ function wireDoor(){
  const g5=root.querySelector("#go5");if(g5)g5.onclick=()=>{sess.step=5;render();};
  const tg=root.querySelector("#teachGo");if(tg)tg.onclick=async()=>{const tt=root.querySelector("#teach");sess.teach=tt?tt.value.trim():"";if(!sess.teach){if(tt)tt.focus();return;}tg.textContent="✨ Reading…";tg.disabled=true;sess.teachFb=await teachFeedback(sess.d.group,sess.d.principle,sess.teach);render();};
  const dn=root.querySelector("#done");if(dn)dn.onclick=()=>finishSession();
+ const ex=root.querySelector("#exitAct");if(ex)ex.onclick=()=>exitActivity();
+ const df=root.querySelector("#defend");if(df)df.oninput=()=>{sess.defend=df.value;persistResume();};
+ const af=root.querySelector("#answer");if(af)af.oninput=()=>{sess.answer=af.value;persistResume();};
+ const tf=root.querySelector("#teach");if(tf)tf.oninput=()=>{sess.teach=tf.value;persistResume();};
 }
 function finishSession(){
+ state.resume=null;
  const d=sess.d,fu=sess.fromUnit,prevXp=state.xp;
  bumpStreak();state.faced+=1;addXP(20+(sess.score>=4?15:sess.score>=3?8:0)+((sess.teach&&sess.teach.length>15)?10:0));
  state.history.push({id:d.id,group:d.group,pick:sess.pick,chosen:d.chosen,score:sess.score,date:todayStr()});
@@ -870,15 +881,16 @@ function finishSession(){
 }
 
 /* ===== SABOTAGE ===== */
-function startSabotage(uid){const seen=new Set(state.history.filter(h=>h.type==="sab").map(h=>h.id.replace("sab-","")));const fresh=SABOTAGE.filter(r=>!seen.has(r.id));const pool=fresh.length?fresh:SABOTAGE;sab={r:pool[Math.floor(Math.random()*pool.length)],from:uid,step:0,choice:null};tab=uid?"learn":"practice";syncTabs();render();window.scrollTo(0,0);}
+function startSabotage(uid){const seen=new Set(state.history.filter(h=>h.type==="sab").map(h=>h.id.replace("sab-","")));const fresh=SABOTAGE.filter(r=>!seen.has(r.id));const pool=fresh.length?fresh:SABOTAGE;sab={r:pool[Math.floor(Math.random()*pool.length)],from:uid,step:0,choice:null,ownerTab:uid?"learn":"practice"};tab=uid?"learn":"practice";syncTabs();render();window.scrollTo(0,0);}
 function renderSabotageHTML(){
  const r=sab.r;const code=r.lines.map(function(ln,i){return `<div class="cl${(sab.step===1&&i===r.fixLine)?' bug':''}"><span class="ln">${i+1}</span><span>${esc(ln)}</span></div>`;}).join("");let inner;
  if(sab.step===0){inner=`<span class="caps">🔍 Sabotage round</span><p class="muted small" style="margin:8px 0 12px">${esc(r.blurb)} <b style="color:var(--ink)">Exactly one thing here is broken — find it.</b></p><div class="code">${code}</div><p class="muted small" style="margin:16px 0 8px">What's wrong?</p><div class="opts">${r.options.map(function(o,i){return `<button class="opt" data-opt="${i}">${esc(o.t)}</button>`;}).join("")}</div>`;}
  else{const o=r.options[sab.choice],ok=o.ok,correct=r.options.filter(function(x){return x.ok;})[0];inner=`<span class="caps">🔍 The fault</span><div class="code" style="margin-top:8px">${code}</div><div class="rev ${ok?'hl':''}" style="margin-top:16px"><div class="lab">${ok?'✓ You found it':'Not quite — the real bug is on line '+(r.fixLine+1)}</div><div class="val">${esc(correct.why)}</div></div><div class="rev"><div class="lab">The fix</div><div class="val"><code>${esc(r.fix)}</code></div></div><div class="zoom"><h3>🧭 The method</h3><div class="prompt" style="font-size:15.5px">${esc(r.method)}</div><div class="rec">New term earned — <b>${esc(r.term.t)}</b>: ${esc(r.term.d)}</div></div><div class="actions"><span class="muted small">${ok?'Nice debugging.':'Now you\'ll spot it next time.'}</span><button class="btn" id="sabDone">Finish ✓</button></div>`;}
- return `<div class="card">${inner}</div>`;
+ return `<div class="card actcard"><button class="exitbtn" id="exitAct" title="Leave — you can start over later">✕ exit</button>${inner}</div>`;
 }
-function wireSabotage(){root.querySelectorAll("[data-opt]").forEach(function(b){b.onclick=function(){sab.choice=parseInt(b.dataset.opt);sab.step=1;render();window.scrollTo(0,0);};});const sd=root.querySelector("#sabDone");if(sd)sd.onclick=function(){finishSabotage();};}
+function wireSabotage(){root.querySelectorAll("[data-opt]").forEach(function(b){b.onclick=function(){sab.choice=parseInt(b.dataset.opt);sab.step=1;render();window.scrollTo(0,0);};});const sd=root.querySelector("#sabDone");if(sd)sd.onclick=function(){finishSabotage();};var ex=root.querySelector("#exitAct");if(ex)ex.onclick=function(){exitActivity();};}
 function finishSabotage(){
+ state.resume=null;
  const r=sab.r,fu=sab.from,correct=!!r.options[sab.choice].ok,prevXp=state.xp;
  bumpStreak();state.faced+=1;addXP(correct?20:10);
  state.history.push({id:"sab-"+r.id,group:"Debugging by method",type:"sab",correct:correct,date:todayStr()});
@@ -915,7 +927,7 @@ let lastQ=-1;
 function showQuote(){const el=document.getElementById("qtext");if(!el)return;let i;do{i=Math.floor(Math.random()*QUOTES.length);}while(i===lastQ&&QUOTES.length>1);lastQ=i;const q=QUOTES[i];el.style.opacity=0;setTimeout(function(){el.innerHTML=esc(q.t)+(q.a?` <span style="color:var(--faint);font-style:normal">— ${esc(q.a)}</span>`:"");el.style.opacity=1;},300);}
 document.getElementById("qref").onclick=showQuote;
 showQuote();setInterval(showQuote,180000);
-loadStateAsync().then(function(s){state=s;AI_ON=!!state.apiKey;return GAS?gcall("hasKey").then(function(k){AI_ON=!!k;}).catch(function(){}):null;}).then(function(){refreshStats();if(!state.onboarded){quiz={type:"intake",i:0,answers:[]};}render();});
+loadStateAsync().then(function(s){state=s;AI_ON=!!state.apiKey;return GAS?gcall("hasKey").then(function(k){AI_ON=!!k;}).catch(function(){}):null;}).then(function(){refreshStats();if(!state.onboarded){quiz={type:"intake",i:0,answers:[]};}else if(state.resume){restoreResume();}render();});
 </script>
 </body>
 </html>
