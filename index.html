@@ -152,6 +152,20 @@
   textarea{width:100%;min-height:120px;border:1.5px solid var(--line);border-radius:14px;background:var(--mint2);color:var(--ink);padding:13px 15px;font-family:inherit;font-size:15px;line-height:1.55;resize:vertical}
   textarea:focus{outline:none;border-color:var(--teal)}
   input[type=password]{width:100%;border:1.5px solid var(--line);border-radius:14px;background:var(--mint2);color:var(--ink);padding:12px 15px;font-family:inherit;font-size:14.5px}
+  .qlform{display:grid;gap:8px;margin-bottom:16px}
+  .qlform input{width:100%;border:1.5px solid var(--line);border-radius:14px;background:var(--mint2);color:var(--ink);padding:12px 15px;font-family:inherit;font-size:14.5px}
+  .qlform input:focus{outline:none;border-color:var(--teal)}
+  .qlform textarea{min-height:104px;font-family:ui-monospace,SFMono-Regular,Menlo,Consolas,monospace;font-size:13.5px;line-height:1.55}
+  .weeks{display:grid;gap:7px;margin:8px 0 2px}
+  .wk{display:flex;align-items:flex-start;gap:11px;background:var(--mint2);border:1.5px solid var(--line);border-radius:12px;padding:10px 14px;cursor:pointer;text-align:left;font-family:inherit;font-size:14px;color:var(--ink);width:100%;line-height:1.5}
+  .wk:hover{border-color:var(--teal)}
+  .wk.on{background:var(--mint);border-color:var(--mintline)}
+  .wk .box{width:18px;height:18px;border-radius:6px;border:1.5px solid var(--mintline);flex-shrink:0;margin-top:3px;display:flex;align-items:center;justify-content:center;font-size:11px;color:#fff;background:var(--surface)}
+  .wk.on .box{background:var(--teal);border-color:var(--teal)}
+  .wk .wl{flex:1}
+  .wk .wn{font-size:10.5px;letter-spacing:.13em;text-transform:uppercase;color:var(--teal);font-weight:600;display:block;margin-bottom:2px}
+  .wk.on .wl b{color:var(--muted)}
+  .planhead{display:flex;align-items:baseline;justify-content:space-between;gap:12px;margin:24px 4px 2px}
   input:focus{outline:none;border-color:var(--teal)}
   .pilllabel{display:inline-block;font-size:12px;padding:3px 11px;border-radius:30px;background:var(--mint2);border:1px solid var(--line);color:var(--muted)}
   .rev{border-left:3px solid var(--mintline);padding:2px 0 2px 15px;margin-bottom:16px}
@@ -264,6 +278,45 @@
   .diagram svg{max-width:100%;height:auto}
   .example{background:var(--mint2);border:1px solid var(--line);border-radius:14px;padding:14px 17px;font-size:15px;line-height:1.6}
   footer{margin-top:30px;text-align:center;color:var(--faint);font-size:12px;line-height:1.7}
+  .labprog{display:flex;align-items:center;gap:12px;margin:14px 0 4px}
+  .labbar{flex:1;height:8px;border-radius:6px;background:var(--mint);overflow:hidden;border:1px solid var(--mintline)}
+  .labbar span{display:block;height:100%;background:var(--teal);transition:width .4s ease}
+  .labprog b{font-size:13px;color:var(--teal-deep)}
+  .labstages{display:grid;grid-template-columns:repeat(auto-fit,minmax(148px,1fr));gap:8px;margin-top:12px}
+  .labstage{text-align:left;background:var(--surface);border:1.5px solid var(--line);border-radius:11px;padding:9px 11px;cursor:pointer;font-family:inherit;color:var(--ink)}
+  .labstage:hover{border-color:var(--mintline);background:var(--mint2)}
+  .labstage b{display:block;font-size:13.5px;font-weight:600}
+  .labstage span{display:block;font-size:11.5px;color:var(--muted);margin-top:2px}
+  .labstage.full{border-color:var(--teal);background:var(--mint2)}
+  .labschema{margin-top:14px;background:var(--mint2);border:1px solid var(--mintline);border-radius:12px;padding:12px 14px}
+  .labtbl{padding:6px 0;border-top:1px solid var(--line);font-size:13px}
+  .labtbl:first-of-type{border-top:none}
+  .labtbl b{font-family:ui-monospace,SFMono-Regular,Menlo,monospace;color:var(--teal-deep)}
+  .labtbl span{color:var(--muted);font-family:ui-monospace,SFMono-Regular,Menlo,monospace;font-size:12px}
+  .labask{font-size:16px;margin:0 0 10px}
+  .labteach{background:var(--mint2);border-left:3px solid var(--teal);border-radius:0 9px 9px 0;padding:10px 13px;font-size:13.5px;color:var(--muted);margin-bottom:12px}
+  .labhint{background:var(--gold-bg);border:1px solid #e6d5ab;border-radius:10px;padding:10px 13px;margin-bottom:12px;font-size:13.5px}
+  .labhint .caps{display:block;margin-bottom:5px;color:var(--gold)}
+  .labhint code{font-family:ui-monospace,SFMono-Regular,Menlo,monospace;font-size:12.5px;display:block;white-space:pre-wrap;line-height:1.6}
+  .labed{width:100%;box-sizing:border-box;min-height:112px;resize:vertical;font-family:ui-monospace,SFMono-Regular,Menlo,monospace;font-size:13.5px;line-height:1.6;border:1.5px solid var(--mintline);border-radius:11px;padding:12px 13px;background:var(--surface);color:var(--ink)}
+  .labed:focus{outline:2px solid var(--teal);outline-offset:1px}
+  .laberr{margin-top:12px;background:var(--bad-bg);border:1px solid #e3c3b8;color:var(--bad);border-radius:10px;padding:10px 13px;font-size:13px;font-family:ui-monospace,SFMono-Regular,Menlo,monospace}
+  .labok{margin-top:12px;background:var(--mint);border:1.5px solid var(--teal);border-radius:10px;padding:10px 13px;font-size:14px;font-weight:600;color:var(--teal-ink)}
+  .labno{margin-top:12px;background:var(--gold-bg);border:1px solid #e6d5ab;border-radius:10px;padding:10px 13px;font-size:13.5px}
+  .labres{margin-top:14px}
+  .labres .caps{display:block;margin-bottom:6px}
+  .labgridwrap{overflow-x:auto;border:1px solid var(--line);border-radius:10px}
+  .labgrid{border-collapse:collapse;width:100%;font-size:13px;font-family:ui-monospace,SFMono-Regular,Menlo,monospace}
+  .labgrid th{text-align:left;background:var(--mint2);padding:8px 11px;border-bottom:1.5px solid var(--mintline);white-space:nowrap;font-weight:600;color:var(--teal-ink)}
+  .labgrid td{padding:7px 11px;border-bottom:1px solid var(--line);white-space:nowrap}
+  .labgrid tr:last-child td{border-bottom:none}
+  .labnull{color:var(--faint);font-style:italic}
+  .labtick{color:var(--teal);font-size:18px}
+  label.btn{display:inline-flex;align-items:center;cursor:pointer}
+  .askimg{margin:10px 0;display:flex;align-items:center;gap:10px;background:var(--mint2);border:1px solid var(--mintline);border-radius:10px;padding:8px 10px}
+  .askimg img{width:52px;height:52px;object-fit:cover;border-radius:7px;border:1px solid var(--mintline)}
+  .askimg .aif{flex:1;font-size:12.5px;color:var(--muted)}
+  .askimg button{background:none;border:none;color:var(--bad);cursor:pointer;font-family:inherit;font-size:12.5px;padding:4px}
 </style>
 </head>
 <body>
@@ -280,6 +333,7 @@
     <button data-tab="learn">🎓 Learn</button>
     <button data-tab="practice">🎯 Practice</button>
     <button data-tab="reference">📚 Reference</button>
+    <button data-tab="lab">🗃️ SQL Lab</button>
     <button data-tab="key">🔑 AI &amp; Data</button>
   </nav>
   <div class="meta" id="meta"></div>
@@ -340,7 +394,14 @@ const UNITS = [
     lesson:`<p>Almost every architectural decision comes down to a defensible answer you can justify. Strong technical judgment is naming what you're trading and choosing on purpose. Every other unit is a specific instance of this one: local vs. synced trades privacy against continuity, simple vs. built trades speed against scale, guardrails vs. freedom trades safety against range.</p>
     <p>When you can hear a decision and immediately say “the real question here is X against Y,” you've become someone who can lead the conversation. This is also where taste lives — knowing when a change hasn't earned its place and undoing it, which your four reverts taught you better than any lecture could.</p>`,
     vocab:[{t:"Tradeoff",d:"What you give up to get what you chose."},{t:"Failure mode",d:"The specific way a choice goes wrong when it does."},{t:"Defensible decision",d:"One you can justify by its tradeoff, right answer or not."},{t:"Premature optimization",d:"Solving a problem before you've confirmed it exists."},{t:"Taste as an input",d:"Judgment about feel, treated as real design data."}],
-    unlock:"This is the whole game. Solutions people are hired to make defensible calls in ambiguity on a client's behalf. Everything else is in service of you doing this one thing with confidence." }
+    unlock:"This is the whole game. Solutions people are hired to make defensible calls in ambiguity on a client's behalf. Everything else is in service of you doing this one thing with confidence." },
+  { id:"u9", emoji:"🗃️", title:"Asking data a question",
+    objective:"Read a query, say what it returns, and spot the moment a number stops being trustworthy — so you can interrogate a dashboard instead of taking it on faith.",
+    lesson:`<p>Every dashboard you have ever trusted is a query underneath. <b>SQL</b> is the language for asking a database a question, and it is smaller than it looks. You name the columns you want (<code>SELECT</code>), the table they live in (<code>FROM</code>), which rows qualify (<code>WHERE</code>), how to bundle them up (<code>GROUP BY</code>), and how to stitch two tables together (<code>JOIN</code>). Those five carry most of the work a business role ever needs.</p>
+    <p>The interesting part is the failure mode. A wrong query rarely errors — it returns a number, confidently, and the number is off. A join that quietly drops rows shrinks the denominator and inflates every conversion rate built on top of it. A count that counts one lead three times, because that lead filed three applications, inflates the funnel. There is no red light anywhere. The skill is reading a query and asking what it silently left out.</p>
+    <p>The other half is knowing <em>where</em> a number should be computed. The same conversion rate can be defined inside the query, inside a BI tool's calculated field, or inside a spreadsheet three teams each keep a copy of — and every extra home is another place the definition drifts. Teams that care about a metric push its definition down toward the data, then let every tool read that one copy.</p>`,
+    vocab:[{t:"SQL",d:"The language for asking a database a question."},{t:"JOIN",d:"Stitching two tables together on a key they share."},{t:"Aggregate / GROUP BY",d:"Collapsing many rows into one summary number per bucket."},{t:"NULL",d:"A value that is absent — it fails comparisons rather than matching them."},{t:"Window function",d:"A calculation across related rows that keeps every row visible — running totals, rank, previous period."},{t:"Cohort",d:"A group defined by when it entered, then tracked forward over time."},{t:"Metric definition",d:"The agreed formula behind a number — the one thing that must not vary by tool."}],
+    unlock:"You stop being the person who receives the number and become the person who can check it. When two dashboards disagree in a meeting, you are the one who opens the query and says which is right, and why." },
 ];
 const DECISIONS = [
   { id:"api-key-location", units:["u3","u5"], project:"This app", when:"now", group:"APIs & secrets",
@@ -450,7 +511,34 @@ const DECISIONS = [
     downstream:"You reverted the swing animation. Delight that repeats every session turns into friction; motion has to still feel good at the hundredth viewing.", downstreamDraft:true,
     otherDoorCost:"Keeping it trades a first-impression flourish for a small recurring distraction every single time.",
     principle:"Delight and distraction are the same motion seen once versus a hundred times. Anything that repeats every session must be judged at the hundredth viewing. Animation earns its place only if it still feels good when it's routine.",
-    terms:[{t:"Motion budget",d:"How much animation a product can carry before it distracts."},{t:"Delight vs. friction",d:"A flourish that pleases once can annoy on repeat."}] }
+    terms:[{t:"Motion budget",d:"How much animation a product can carry before it distracts."},{t:"Delight vs. friction",d:"A flourish that pleases once can annoy on repeat."}] },
+  { id:"metric-home", units:["u9","u2"], project:"Weekly Performance Report", when:"next quarter", group:"Trusting a number",
+    context:"App-to-start gets quoted in three places — your dashboard, a partner-facing deck, and a spreadsheet the enrollment team keeps by hand. They disagree by two points and nobody can say which is right. You can define the metric once in a saved SQL view that every tool reads from, or leave the calculation in the BI layer where you can change it in ten seconds the next time a partner asks for a variant.",
+    doorA:{k:"Define it once in SQL", s:"One definition, every tool reads it"},
+    doorB:{k:"Define it in the BI tool", s:"Fast to change, lives per dashboard"},
+    chosen:"A", downstreamDraft:true,
+    downstream:"The definition stopped drifting, and the two-point argument disappeared for good. The cost showed up later: every variant a partner wanted became a change request against the view rather than a ten-second edit, so you learned to build the view with the variants as parameters from the start.",
+    otherDoorCost:"Keeping it in the BI layer stays fast and flexible, and it is exactly how you end up with three numbers for one metric — because every new dashboard quietly writes its own version of the formula.",
+    principle:"A metric definition is code, and code wants one home. Pushing it down toward the data buys agreement at the cost of speed; keeping it in the presentation layer buys speed at the cost of drift. Push it down for numbers people argue about, and keep it high for numbers still being explored.",
+    terms:[{t:"View",d:"A saved query other tools can read as though it were a table."},{t:"Semantic layer",d:"The single place a metric's formula is defined for everything downstream."},{t:"Metric drift",d:"The same metric quietly meaning different things in different tools."}] },
+  { id:"funnel-join-shape", units:["u9"], project:"Funnel diagnostics", when:"week 5 of SQL practice", group:"Trusting a number",
+    context:"You are rebuilding a conversion query you already know the answer to. Leads sit in one table, applications in another, and plenty of leads never applied at all. You can start from leads and keep every one of them, accepting rows full of empty values you then have to handle — or start from the two tables joined and work only with matched pairs, which reads cleanly and aggregates without fuss.",
+    doorA:{k:"Keep every lead", s:"Empty values to handle, honest denominator"},
+    doorB:{k:"Keep only matched pairs", s:"Clean rows, smaller denominator"},
+    chosen:"A", downstreamDraft:true,
+    downstream:"Keeping every lead meant the denominator matched the number you already knew from the dashboard, which is how you caught the mistake the first time you tried it the other way. Handling the empty values cost a few extra lines and taught you the pattern you now use everywhere.",
+    otherDoorCost:"Matched pairs give you a tidy query and a conversion rate that is silently measuring the wrong population — applications per applicant rather than per lead. It reads beautifully and it is wrong, which is the most expensive combination there is.",
+    principle:"The shape of a join decides who is in your denominator. Anything that must count everyone starts from the everyone table and pulls the rest in optionally. Reach for matched-pairs-only when the question genuinely is about the overlap.",
+    terms:[{t:"Inner join",d:"Keeps only rows that match on both sides, dropping the rest without warning."},{t:"Outer join",d:"Keeps every row from one side, filling in blanks where there is no match."},{t:"Denominator integrity",d:"Knowing that the bottom of your fraction is the population you meant."}] },
+  { id:"summary-vs-live", units:["u9","u6"], project:"Enrollment dashboard", when:"month 2", group:"Performance as data grows",
+    context:"Your dashboard reruns a heavy query across millions of event rows every time somebody opens it. At 8am when the whole team looks at once it crawls, and each run bills for compute. You can precompute the numbers into a nightly summary table the dashboard reads instantly, or keep querying the raw events so the number is always current to the minute.",
+    doorA:{k:"Nightly summary table", s:"Instant and cheap, up to a day stale"},
+    doorB:{k:"Query the raw events", s:"Always current, slow and billed"},
+    chosen:"A", downstreamDraft:true,
+    downstream:"The dashboard went from painful to instant and the bill dropped hard. The tradeoff bit exactly once: someone made a decision at 4pm off a number that was accurate as of 2am, so you added a visible as-of timestamp to every view and the confusion stopped.",
+    otherDoorCost:"Live queries are always right and always current, and they get slower and more expensive on precisely the day your data gets interesting. They also put the load on the source system at the worst possible moment — when everyone is looking.",
+    principle:"Precomputing trades freshness for speed and cost. The question is never which is better but how stale a number is allowed to be before somebody makes a bad decision with it. Answer that first, then pick.",
+    terms:[{t:"Materialized view",d:"Query results stored ahead of time so reads are instant."},{t:"Freshness",d:"How far behind the real world a stored number is allowed to fall."},{t:"As-of timestamp",d:"Showing when a number was last true, so nobody assumes it is live."}] },
 ];
 const SABOTAGE=[
  { id:"stringify", blurb:"Saving your journal to the browser.",
@@ -502,7 +590,37 @@ const SABOTAGE=[
      {t:'appendChild is spelled wrong.',ok:false},
      {t:'The image needs an explicit width to appear.',ok:false}],
    method:"A blank image fed valid-looking data usually means the data: URI prefix is missing.",
-   term:{t:"Data URI",d:"A way to put a file's bytes directly into a src as text."} }
+   term:{t:"Data URI",d:"A way to put a file's bytes directly into a src as text."} },
+ { id:"sql-inner-join", blurb:"Measuring lead-to-application conversion by channel.",
+   lines:["SELECT l.channel,","       COUNT(*) AS leads,","       COUNT(a.application_id) AS apps","FROM leads l","JOIN applications a ON a.lead_id = l.lead_id","GROUP BY l.channel;"],
+   fixLine:4, fix:"LEFT JOIN applications a ON a.lead_id = l.lead_id",
+   options:[
+     {t:"A plain JOIN is an inner join, so leads who never applied disappear and the leads column only counts leads who applied.",ok:true,why:"An inner join keeps only rows that match on both sides. Leads with no application have nothing to match, so they are dropped before the count ever happens — and the conversion rate built on that denominator comes out far too high. LEFT JOIN keeps every lead."},
+     {t:"COUNT(*) should be COUNT(1) — the star form is inaccurate.",ok:false},
+     {t:"GROUP BY has to list every column named in the SELECT.",ok:false},
+     {t:"The join should be on application_id rather than lead_id.",ok:false}],
+   method:"Check the denominator against a number you already know. If total leads in your result is smaller than total leads in the table, the join is eating rows.",
+   term:{t:"Inner join",d:"A join that keeps only matching rows, silently dropping everything else."} },
+ { id:"sql-left-join-where", blurb:"Listing every lead, flagging the ones with a paid application.",
+   lines:["SELECT l.lead_id, a.status","FROM leads l","LEFT JOIN applications a ON a.lead_id = l.lead_id","WHERE a.status = 'paid';"],
+   fixLine:3, fix:"LEFT JOIN applications a ON a.lead_id = l.lead_id AND a.status = 'paid'",
+   options:[
+     {t:"Filtering the right-hand table in WHERE deletes the empty rows, turning the LEFT JOIN back into an inner join.",ok:true,why:"Unmatched leads come back with an empty status. An empty value never equals 'paid', so the WHERE clause throws away exactly the rows the LEFT JOIN existed to keep. A condition on the optional table belongs in the ON clause."},
+     {t:"String comparisons in SQL need double quotes rather than single.",ok:false},
+     {t:"A LEFT JOIN needs an ORDER BY or the results are unpredictable.",ok:false},
+     {t:"status should be matched with LIKE instead of =.",ok:false}],
+   method:"If a LEFT JOIN returns the same row count an inner join would, look straight at the WHERE clause for a condition on the optional table.",
+   term:{t:"Join filter placement",d:"Conditions on an outer-joined table belong in ON — in WHERE they cancel the outer join."} },
+ { id:"sql-fan-out", blurb:"Reporting how many leads each partner sent you.",
+   lines:["SELECT p.partner_name,","       COUNT(l.lead_id) AS leads","FROM partners p","JOIN leads l ON l.partner_id = p.partner_id","JOIN applications a ON a.lead_id = l.lead_id","GROUP BY p.partner_name;"],
+   fixLine:1, fix:"COUNT(DISTINCT l.lead_id) AS leads",
+   options:[
+     {t:"The second join multiplies rows, so a lead with three applications gets counted three times.",ok:true,why:"Joining applications turns one lead row into one row per application. COUNT then counts rows rather than people, and every repeat applicant inflates the total. COUNT(DISTINCT l.lead_id) counts each lead once no matter how many applications they filed."},
+     {t:"COUNT cannot be used on a column that might be empty.",ok:false},
+     {t:"partners has to be joined last for the count to work.",ok:false},
+     {t:"The query needs a HAVING clause before it can group.",ok:false}],
+   method:"Run the same count without the extra join. If the number jumps, a one-to-many join is fanning your rows out underneath you.",
+   term:{t:"Fan-out",d:"A one-to-many join multiplying rows, so counts and sums silently double."} },
 ];
 const QUOTES=[
  {t:"It always seems impossible until it's done.",a:"Nelson Mandela"},
@@ -565,7 +683,7 @@ const QUOTES=[
 const LS="app-savvy-v1";
 const GAS=(typeof google!=="undefined"&&google.script&&google.script.run);
 let AI_ON=false;
-const blank=()=>({streak:0,lastDay:null,faced:0,history:[],glossary:[],learned:[],xp:0,badges:[],profile:null,onboarded:false,pre:null,post:null,shippedIntegration:false,capSnapshot:null,aiRead:null,apiKey:"",resume:null});
+const blank=()=>({streak:0,lastDay:null,faced:0,history:[],glossary:[],learned:[],xp:0,badges:[],profile:null,onboarded:false,pre:null,post:null,shippedIntegration:false,capSnapshot:null,aiRead:null,apiKey:"",resume:null,queries:[],sqlWeeks:[],labSolved:[],labAssisted:[]});
 function gcall(fn){var a=[].slice.call(arguments,1);return new Promise(function(res,rej){var r=google.script.run.withSuccessHandler(res).withFailureHandler(rej);r[fn].apply(r,a);});}
 function loadStateAsync(){if(GAS){return gcall("loadState").then(function(r){return r?Object.assign(blank(),JSON.parse(r)):blank();}).catch(blank);}
   try{return Promise.resolve(Object.assign(blank(),JSON.parse(localStorage.getItem(LS)||"{}")));}catch(e){return Promise.resolve(blank());}}
@@ -575,9 +693,23 @@ function todayStr(){return new Date().toISOString().slice(0,10);}
 function bumpStreak(){const t=todayStr();if(state.lastDay===t)return;const y=new Date(Date.now()-864e5).toISOString().slice(0,10);state.streak=(state.lastDay===y)?state.streak+1:1;state.lastDay=t;}
 
 /* ===== AI ===== */
-let lastAIError="";async function callClaude(system,user,maxTokens){if(GAS){try{var t=await gcall("aiCall",system,user,maxTokens||300);return t||null;}catch(e){return null;}} if(!state.apiKey){lastAIError="No API key set.";return null;} try{const r=await fetch("https://api.anthropic.com/v1/messages",{method:"POST",headers:{"content-type":"application/json","x-api-key":state.apiKey,"anthropic-version":"2023-06-01","anthropic-dangerous-direct-browser-access":"true"},body:JSON.stringify({model:"claude-sonnet-5",max_tokens:maxTokens||300,system:system,messages:[{role:"user",content:user}]})}); if(!r.ok){var msg="";try{var e=await r.json();msg=(e.error&&e.error.message)?e.error.message:JSON.stringify(e);}catch(_){msg=r.statusText||"";}lastAIError="Error "+r.status+": "+msg;return null;} const j=await r.json();lastAIError="";var txt="";if(j.content&&j.content.length){for(var i=0;i<j.content.length;i++){if(j.content[i]&&j.content[i].type==="text"&&j.content[i].text){txt=j.content[i].text;break;}}}if(!txt){lastAIError="Got a reply but found no text block. Blocks: "+(j.content?j.content.map(function(b){return b.type;}).join(", "):"none");}return txt?txt.trim():null; }catch(e){lastAIError="Could not reach Anthropic (network or CORS): "+e.message;return null;}}
+let lastAIError="";async function callClaude(system,user,maxTokens){if(GAS&&Array.isArray(user)){user=user.filter(function(b){return b.type==="text";}).map(function(b){return b.text;}).join("\n");}if(GAS){try{var t=await gcall("aiCall",system,user,maxTokens||300);return t||null;}catch(e){return null;}} if(!state.apiKey){lastAIError="No API key set.";return null;} try{const r=await fetch("https://api.anthropic.com/v1/messages",{method:"POST",headers:{"content-type":"application/json","x-api-key":state.apiKey,"anthropic-version":"2023-06-01","anthropic-dangerous-direct-browser-access":"true"},body:JSON.stringify({model:"claude-sonnet-5",max_tokens:maxTokens||300,system:system,messages:[{role:"user",content:user}]})}); if(!r.ok){var msg="";try{var e=await r.json();msg=(e.error&&e.error.message)?e.error.message:JSON.stringify(e);}catch(_){msg=r.statusText||"";}lastAIError="Error "+r.status+": "+msg;return null;} const j=await r.json();lastAIError="";var txt="";if(j.content&&j.content.length){for(var i=0;i<j.content.length;i++){if(j.content[i]&&j.content[i].type==="text"&&j.content[i].text){txt=j.content[i].text;break;}}}if(!txt){lastAIError="Got a reply but found no text block. Blocks: "+(j.content?j.content.map(function(b){return b.type;}).join(", "):"none");}return txt?txt.trim():null; }catch(e){lastAIError="Could not reach Anthropic (network or CORS): "+e.message;return null;}}
 
 /* ===== GAMIFICATION ===== */
+const SQLPLAN=[
+ {w:"Week 1",t:"Fundamentals I",d:"SELECT, WHERE, ORDER BY. Mode Analytics' free tutorial or the DataCamp SQL track. An hour a sitting is plenty."},
+ {w:"Week 2",t:"Fundamentals II",d:"GROUP BY, the aggregate functions, HAVING. This is where a table of rows turns into a summary."},
+ {w:"Week 3",t:"Fundamentals III",d:"JOINs and CTEs. With these you can already answer most questions a business role asks."},
+ {w:"Week 4",t:"Get access",d:"Ask for a sandbox or a read replica behind the dashboards. This week is a request rather than a lesson, so start it early."},
+ {w:"Week 5",t:"Rebuild a number you know",d:"Pick one metric you can state from memory and reproduce it. You will spot a wrong answer instantly, which is the whole point of starting here."},
+ {w:"Week 6",t:"Split it by segment",d:"The same metric by channel, partner, or program. Watch what happens to the denominator each time."},
+ {w:"Week 7",t:"Reconcile a disagreement",d:"Find two sources quoting one metric differently and prove which is right. This is the skill in its purest form."},
+ {w:"Week 8",t:"Save it as a view",d:"Turn your best query into something another tool can read. Now you have shipped a definition rather than an answer."},
+ {w:"Week 9",t:"Window functions I",d:"ROW_NUMBER, RANK, LAG. This is the line between knowing SQL and doing analytics."},
+ {w:"Week 10",t:"Window functions II",d:"Running totals and period-over-period change, without ever leaving the query."},
+ {w:"Week 11",t:"Cohort retention",d:"The most-asked pattern in interviews, and the same math as the term-over-term persistence you already run in your head."},
+ {w:"Week 12",t:"Write two of them up",d:"Problem, query, what it showed, what changed. Two pages that make the skill visible to somebody who was not in the room."}
+];
 const RANKS=[{n:"Curious",xp:0},{n:"Tinkerer",xp:60},{n:"Builder",xp:150},{n:"Sense-Maker",xp:300},{n:"Fluent",xp:500},{n:"Solutions-Minded",xp:780},{n:"Solutions-Ready",xp:1100}];
 function rankFor(xp){let r=RANKS[0],nx=null;for(let i=0;i<RANKS.length;i++){if(xp>=RANKS[i].xp){r=RANKS[i];nx=RANKS[i+1]||null;}}return {r:r,nx:nx};}
 function rankEmoji(n){return {"Curious":"🌱","Tinkerer":"🔧","Builder":"🧱","Sense-Maker":"🧭","Fluent":"💡","Solutions-Minded":"🛠️","Solutions-Ready":"🚀"}[n]||"⭐";}
@@ -586,14 +718,21 @@ const BADGES=[
  {id:"first-door",e:"🚪",t:"First Door",d:"Walked your first decision door.",test:s=>s.history.some(h=>!h.type)},
  {id:"bug-hunter",e:"🐛",t:"Bug Hunter",d:"Caught a sabotage bug correctly.",test:s=>s.history.some(h=>h.type==="sab"&&h.correct)},
  {id:"week-one",e:"🔥",t:"Week One",d:"Kept a 7-day streak.",test:s=>s.streak>=7},
- {id:"well-read",e:"📖",t:"Well Read",d:"Read all eight lessons.",test:s=>s.learned.length>=8},
+ {id:"well-read",e:"📖",t:"Well Read",d:"Read every lesson.",test:s=>s.learned.length>=UNITS.length},
  {id:"every-door",e:"🗝️",t:"Every Door",d:"Walked all fifteen doors.",test:s=>new Set(s.history.filter(h=>!h.type).map(h=>h.id)).size>=DECISIONS.length},
  {id:"exterminator",e:"🧹",t:"Exterminator",d:"Cleared every sabotage round.",test:s=>new Set(s.history.filter(h=>h.type==="sab").map(h=>h.id)).size>=SABOTAGE.length},
  {id:"wordsmith",e:"✍️",t:"Wordsmith",d:"Earned 10 glossary terms.",test:s=>s.glossary.length>=10},
  {id:"fluent-vocab",e:"📚",t:"Fluent Vocabulary",d:"Earned 25 terms — a success milestone.",test:s=>s.glossary.length>=25},
  {id:"fluent-rank",e:"⭐",t:"Fluent",d:"Reached the Fluent rank.",test:s=>s.xp>=500},
  {id:"forward",e:"🚀",t:"Solutions-Ready",d:"Reached the top rank.",test:s=>s.xp>=1100},
- {id:"integrator",e:"🔌",t:"Integrator",d:"Shipped an app that calls a real API.",test:s=>!!s.shippedIntegration}];
+ {id:"integrator",e:"🔌",t:"Integrator",d:"Shipped an app that calls a real API.",test:s=>!!s.shippedIntegration},
+ {id:"first-query",e:"🗃️",t:"First Query",d:"Logged your first real query.",test:s=>(s.queries||[]).length>=1},
+ {id:"query-keeper",e:"📊",t:"Query Keeper",d:"Logged ten queries against real data.",test:s=>(s.queries||[]).length>=10},
+ {id:"twelve-weeks",e:"🏁",t:"Twelve Weeks",d:"Finished the whole SQL practice plan.",test:s=>(s.sqlWeeks||[]).length>=SQLPLAN.length},
+ {id:"lab-first",e:"▸",t:"First Run",d:"Solved your first Lab exercise.",test:s=>(s.labSolved||[]).length>=1},
+ {id:"lab-joins",e:"🔗",t:"Joined Up",d:"Cleared the joins stage in the Lab.",test:s=>LAB_EX.filter(e=>e.s==="s3").every(e=>(s.labSolved||[]).indexOf(e.id)>=0)},
+ {id:"lab-window",e:"🪟",t:"Window Seat",d:"Cleared the window-function stage.",test:s=>LAB_EX.filter(e=>e.s==="s5").every(e=>(s.labSolved||[]).indexOf(e.id)>=0)},
+ {id:"lab-all",e:"🗃️",t:"Lab Complete",d:"Solved every Lab exercise.",test:s=>(s.labSolved||[]).length>=LAB_EX.length}];
 function checkBadges(){let earned=[];BADGES.forEach(b=>{if(state.badges.indexOf(b.id)<0&&b.test(state)){state.badges.push(b.id);earned.push(b);}});return earned;}
 function commitProgress(prevXp){
   const before=rankFor(prevXp).r.n, after=rankFor(state.xp).r.n;
@@ -623,7 +762,8 @@ const INTAKE=[
  {key:"cap_tradeoff",cap:true,q:"Can you look at a design and name what it's trading — and where it might break?",opts:[{t:"Not yet",v:0},{t:"Getting there",v:1},{t:"Confident",v:2}]},
  {key:"cap_build",cap:true,q:"Can you turn a plan into a working app by directing AI?",opts:[{t:"Not yet",v:0},{t:"Getting there",v:1},{t:"Confident",v:2}]},
  {key:"cap_connect",cap:true,q:"Can you make an app talk to another system's API?",opts:[{t:"Not yet",v:0},{t:"Getting there",v:1},{t:"Confident",v:2}]},
- {key:"cap_explain",cap:true,q:"Can you explain a technical choice to a non-technical person?",opts:[{t:"Not yet",v:0},{t:"Getting there",v:1},{t:"Confident",v:2}]}
+ {key:"cap_explain",cap:true,q:"Can you explain a technical choice to a non-technical person?",opts:[{t:"Not yet",v:0},{t:"Getting there",v:1},{t:"Confident",v:2}]},
+ {key:"cap_query",cap:true,q:"Can you write a query and get a trustworthy answer out of a database yourself?",opts:[{t:"Not yet",v:0},{t:"Getting there",v:1},{t:"Confident",v:2}]}
 ];
 const DIAG=[
  {q:"An app must show the same notes on a phone and a laptop. The first question worth asking is:",opts:[{t:"Which font should the notes use?"},{t:"Where does the data live, and what happens if both devices edit it?",ok:true},{t:"What color should the buttons be?"},{t:"Should it have a logo?"}]},
@@ -645,14 +785,14 @@ function doneCountUnit(uid){const ids=new Set(state.history.filter(h=>!h.type).m
 function sabDoneCount(){return new Set(state.history.filter(h=>h.type==="sab").map(h=>h.id)).size;}
 function recommendStart(){if(!state.profile||state.profile.cap_tradeoff==null)return {id:"u1",why:"Start at the beginning: how an app fits together."};const t=state.profile.cap_tradeoff;if(t<=0)return {id:"u1",why:"We'll start with the big picture: how an app is put together."};if(t===1)return {id:"u2",why:"You've got the basics — let's go deeper into where the data lives."};return {id:"u3",why:"You're already naming tradeoffs — go where the FDE value is: APIs and AI."};}
 
-const METAS={home:"Your dashboard — how far you've come, and where to go next.",learn:"Read a lesson, then test it with a door. Your curriculum's at the bottom.",practice:"A quick decision or a bug to hunt — perfect for ten minutes. Earns XP.",reference:"Look things up: the terms you've earned, the tradeoffs that recur, and the thinking behind it all.",key:"Turn on the AI tutor and manage your synced data."};
+const METAS={home:"Your dashboard — how far you've come, and where to go next.",learn:"Read a lesson, then test it with a door. Your curriculum's at the bottom.",practice:"A quick decision or a bug to hunt — perfect for ten minutes. Earns XP.",reference:"Look things up: the terms you've earned, the tradeoffs that recur, and the thinking behind it all.",lab:"A live database in the page. Write a query, run it, and see whether it holds up.",key:"Turn on the AI tutor and manage your synced data."};
 function setMeta(){const m=document.getElementById("meta");if(quiz){m.style.display="none";return;}m.style.display="block";m.textContent=METAS[tab]||"";}
 function syncTabs(){document.querySelectorAll("#tabs button").forEach(x=>x.classList.toggle("on",x.dataset.tab===tab));}
 function exitActivity(){if(window.speechSynthesis)window.speechSynthesis.cancel();sess=null;sab=null;teachSess=null;state.resume=null;save();render();}
 function setTab(t){if(!state.onboarded)return;if(window.speechSynthesis)window.speechSynthesis.cancel();tab=t;quiz=null;syncTabs();render();window.scrollTo(0,0);}
 function persistResume(){if(!(sess||sab||teachSess)&&!state.resume)return;if(sess)state.resume={kind:"door",tab:tab,learnUnit:learnUnit,sess:sess};else if(sab)state.resume={kind:"sab",tab:tab,learnUnit:learnUnit,sab:sab};else if(teachSess)state.resume={kind:"teach",tab:tab,teachSess:teachSess};else state.resume=null;save();}
 function restoreResume(){var R=state.resume;if(!R)return;try{if(R.kind==="door"){sess=R.sess;if(sess&&sess.d){var dd=DECISIONS.find(function(x){return x.id===sess.d.id;});if(dd)sess.d=dd;}tab=R.tab||"practice";learnUnit=R.learnUnit;}else if(R.kind==="sab"){sab=R.sab;if(sab&&sab.r){var rr=SABOTAGE.find(function(x){return x.id===sab.r.id;});if(rr)sab.r=rr;}tab=R.tab||"practice";learnUnit=R.learnUnit;}else if(R.kind==="teach"){teachSess=R.teachSess;if(teachSess&&teachSess.u){var uu=UNITS.find(function(x){return x.id===teachSess.u.id;});if(uu)teachSess.u=uu;}tab=R.tab||"practice";}syncTabs();}catch(e){state.resume=null;}}
-function render(){setMeta();persistResume();var tb=document.getElementById("tabs");if(tb)tb.classList.toggle("locked",!state.onboarded);var fb=document.getElementById("askFab");if(fb)fb.style.display=state.onboarded?"flex":"none";if(!state.onboarded)toggleAsk(false);if(quiz){renderQuiz();return;}if(tab==="home")renderHome();else if(tab==="learn")renderLearn();else if(tab==="practice")renderPractice();else if(tab==="reference")renderReference();else if(tab==="key")renderKey();}
+function render(){setMeta();persistResume();var tb=document.getElementById("tabs");if(tb)tb.classList.toggle("locked",!state.onboarded);var fb=document.getElementById("askFab");if(fb)fb.style.display=state.onboarded?"flex":"none";if(!state.onboarded)toggleAsk(false);if(quiz){renderQuiz();return;}if(tab==="home")renderHome();else if(tab==="learn")renderLearn();else if(tab==="practice")renderPractice();else if(tab==="reference")renderReference();else if(tab==="lab")renderLab();else if(tab==="key")renderKey();}
 
 /* ===== HOME ===== */
 function stat(e,v,l){return `<div class="stat"><span class="se">${e}</span><b>${v}</b><span class="sl">${l}</span></div>`;}
@@ -671,23 +811,24 @@ const CAPS=[
  {k:"tradeoff",e:"⚖️",t:"Name the tradeoff",d:"Look at a design and say what it's trading, and where it breaks.",tag:"App Savvy builds this",cls:"tag-build"},
  {k:"build",e:"🛠️",t:"Build it with AI",d:"Turn a plan into a working thing by directing AI.",tag:"you bring this",cls:"tag-have"},
  {k:"connect",e:"🔌",t:"Connect systems",d:"Make an app talk to another system's API.",tag:"your growth edge",cls:"tag-edge"},
- {k:"explain",e:"💬",t:"Explain it simply",d:"Explain a technical choice to a non-technical person.",tag:"you bring this",cls:"tag-have"}
+ {k:"explain",e:"💬",t:"Explain it simply",d:"Explain a technical choice to a non-technical person.",tag:"you bring this",cls:"tag-have"},
+ {k:"query",e:"🗃️",t:"Query the data",d:"Get a trustworthy answer out of a database yourself.",tag:"your growth edge",cls:"tag-edge"}
 ];
 function selfCap(k){const v=state.profile?state.profile["cap_"+k]:null;return (v==null?0:v);}
 function doorsDone(){return new Set(state.history.filter(h=>!h.type).map(h=>h.id)).size;}
-function earnedCap(k){if(k==="tradeoff"){const d=doorsDone();if((state.post&&state.post.score>=4)||d>=8)return 2;if(d>=3||(state.pre&&state.pre.score>=3))return 1;return 0;}if(k==="connect")return state.shippedIntegration?2:0;return 0;}
+function earnedCap(k){if(k==="tradeoff"){const d=doorsDone();if((state.post&&state.post.score>=4)||d>=8)return 2;if(d>=3||(state.pre&&state.pre.score>=3))return 1;return 0;}if(k==="connect")return state.shippedIntegration?2:0;if(k==="query"){const n=(state.queries||[]).length,w=(state.sqlWeeks||[]).length,L=(state.labSolved||[]).length;if(L>=20||n>=10||w>=SQLPLAN.length)return 2;if(L>=5||n>=3||w>=3||state.learned.indexOf("u9")>=0)return 1;return 0;}return 0;}
 function effCap(k){return Math.max(selfCap(k),earnedCap(k));}
 function capVal(k){return effCap(k);}
 function capNudge(){const d=doorsDone();const e=effCap("tradeoff");if(e>=2)return"";if(e===0){const n=Math.max(1,3-d);return n+" more door"+(n===1?"":"s")+" to reach Getting there";}return"Hit 8 doors or a 4/5 growth check to reach Confident";}
 function capMovement(){if(!state.profile)return [];const snap=state.capSnapshot;const cur={};let msgs=[];CAPS.forEach(c=>{const e=effCap(c.k);cur[c.k]=e;if(snap&&snap[c.k]!=null&&e>snap[c.k]){msgs.push({big:c.t+" leveled up",small:e>=2?"Now Confident":"Now Getting there",e:c.e});}});state.capSnapshot=cur;return msgs;}
 function weakestCap(){if(!state.profile)return "connect";let best="connect",bv=9;CAPS.forEach(c=>{const v=capVal(c.k);if(v<bv){bv=v;best=c.k;}});return best;}
-function roadmapHTML(){return `<p class="muted small" style="margin:0 0 8px;line-height:1.6">What gets you into AI-era solutions work is demonstrated capability across five things. Three of these five you likely already bring from the business side. App Savvy moves <b>Name the tradeoff</b>. The one to go get on purpose is <b>Connect systems</b> — ship a small app that calls a real API. Then rehearse with your <a href="https://tinyurl.com/aafreeinterviewpractice" target="_blank" rel="noopener">Interview Practice</a> app. When you can name a tradeoff unprompted and point to one integration you built, you're ready to pursue the solutions roles above — honestly, as what you are: someone who speaks the language and ships with AI.</p>`;}
-function rolesHTML(){return `<p class="muted small" style="margin:0 0 8px;line-height:1.6"><b>Roles this actually fits:</b> AI Consultant · AI Solutions Consultant · Solutions Engineer (client-facing, pre-sale) · Technical Account Manager · AI Implementation &amp; Enablement. These weight business translation, requirement-gathering, and client trust — your strengths.<br><br><b>Where they live:</b> the solutions and consulting teams at AI platform vendors, SaaS companies adding AI, consultancies and system integrators, and AI implementation shops.<br><br><b>Not the target — yet:</b> roles that gate on a live coding screen (Palantir-style Forward Deployed Engineer, backend or AI engineer). Those need real Python and SQL. Fluency plus one shipped integration moves you toward the solutions family. Engineering interviews still require real coding, and this app stays honest about that.</p>`;}
+function roadmapHTML(){return `<p class="muted small" style="margin:0 0 8px;line-height:1.6">What gets you into AI-era solutions work is demonstrated capability across six things. Three of them you likely already bring from the business side. App Savvy moves <b>Name the tradeoff</b>, and unit nine plus the query log move <b>Query the data</b>. The one to go get on purpose is <b>Connect systems</b> — ship a small app that calls a real API. Then rehearse with your <a href="https://tinyurl.com/aafreeinterviewpractice" target="_blank" rel="noopener">Interview Practice</a> app. When you can name a tradeoff unprompted and point to one integration you built, you're ready to pursue the solutions roles above — honestly, as what you are: someone who speaks the language and ships with AI.</p>`;}
+function rolesHTML(){return `<p class="muted small" style="margin:0 0 8px;line-height:1.6"><b>Roles this actually fits:</b> AI Consultant · AI Solutions Consultant · Solutions Engineer (client-facing, pre-sale) · Technical Account Manager · AI Implementation &amp; Enablement. These weight business translation, requirement-gathering, and client trust — your strengths.<br><br><b>Where they live:</b> the solutions and consulting teams at AI platform vendors, SaaS companies adding AI, consultancies and system integrators, and AI implementation shops.<br><br><b>Where SQL fits:</b> unit nine and the query log take SQL seriously — reading a query, catching the ways it goes quietly wrong, and building a record of real queries you have written. That is the level business operations, revenue operations, and solutions roles actually screen for, and it is worth having.<br><br><b>Not the target — yet:</b> roles that gate on a live coding screen (Palantir-style Forward Deployed Engineer, backend or AI engineer). Those want production Python alongside deeper SQL than any app can hand you. Fluency plus one shipped integration plus a query log moves you toward the solutions family. Engineering interviews still require writing real code under time, and this app stays honest about that.</p>`;}
 function readinessCard(){
- if(!state.profile||state.profile.cap_read==null)return `<div class="card"><span class="pilltag">🧭 Your readiness</span><p class="muted" style="margin:0">Take the quick intro to see where you land on the five-capability map.</p><button class="btn mini" id="startIntake2" style="margin-top:12px">Place me on the map →</button></div>`;
+ if(!state.profile||state.profile.cap_read==null)return `<div class="card"><span class="pilltag">🧭 Your readiness</span><p class="muted" style="margin:0">Take the quick intro to see where you land on the six-capability map.</p><button class="btn mini" id="startIntake2" style="margin-top:12px">Place me on the map →</button></div>`;
  const conf=CAPS.filter(c=>effCap(c.k)>=2).length;
  const rows=CAPS.map(c=>{const self=selfCap(c.k),eff=effCap(c.k),grown=eff>self;const seg=[0,1,2].map(i=>`<span class="${i<eff?'on':''}"></span>`).join("");let note="";if(grown)note=` <span class="grown">▲ grown from practice</span>`;else if(c.k==="tradeoff"){const n=capNudge();if(n)note=` <span class="capnudge">${n}</span>`;}let action="";if(c.k==="connect"&&!state.shippedIntegration)action=`<button class="btn ghost mini" data-shipped style="margin-top:10px">✓ I shipped an app that calls an API</button>`;return `<div class="caprow"><div class="caphead"><span>${c.e} ${esc(c.t)}</span><span class="captag ${c.cls}">${esc(c.tag)}</span></div><div class="capbar">${seg}</div><div class="capd">${esc(c.d)}${note}</div>${action}</div>`;}).join("");
- return `<div class="card"><span class="pilltag">🧭 Your readiness</span><h2>Where you stand</h2><p class="sub">App Savvy builds fluency and judgment for one kind of person: strong on the business or client side, getting conversant in how software works at the level a business role needs. It aims at the AI-era solutions family, where your client instincts are the rare advantage. Roles that require writing production code — software engineering, Palantir-style FDE — need coding this app leaves aside. <b>${conf} of 5</b> capabilities at Confident — this climbs as you practice.</p>${rows}<details class="curric" style="margin-top:16px"><summary><span class="caps">Honest targets — what this actually fits</span> <span class="muted small">— roles &amp; reality</span></summary><div style="padding:6px 14px 14px">${rolesHTML()}</div></details><details class="curric" style="margin-top:10px"><summary><span class="caps">How this gets you there</span> <span class="muted small">— the full path</span></summary><div style="padding:6px 14px 14px">${roadmapHTML()}</div></details></div>`;
+ return `<div class="card"><span class="pilltag">🧭 Your readiness</span><h2>Where you stand</h2><p class="sub">App Savvy builds fluency and judgment for one kind of person: strong on the business or client side, getting conversant in how software works at the level a business role needs. It aims at the AI-era solutions family, where your client instincts are the rare advantage. Roles that require writing production code — software engineering, Palantir-style FDE — need coding this app leaves aside. <b>${conf} of ${CAPS.length}</b> capabilities at Confident — this climbs as you practice.</p>${rows}<details class="curric" style="margin-top:16px"><summary><span class="caps">Honest targets — what this actually fits</span> <span class="muted small">— roles &amp; reality</span></summary><div style="padding:6px 14px 14px">${rolesHTML()}</div></details><details class="curric" style="margin-top:10px"><summary><span class="caps">How this gets you there</span> <span class="muted small">— the full path</span></summary><div style="padding:6px 14px 14px">${roadmapHTML()}</div></details></div>`;
 }
 function readCard(){
  if(!state.profile||state.profile.cap_read==null)return "";
@@ -786,9 +927,46 @@ function renderAsk(){
  const disabled=!AI_ON;let ans="";
  if(askState.loading)ans=`<div class="airead" style="margin-top:12px"><span class="thinking">✨ Thinking…</span></div>`;
  else if(askState.a)ans=`<div class="airead" style="margin-top:12px">${esc(askState.a).replace(/\n/g,"<br>")}</div>${askAddHTML()}`;
- el.innerHTML=`<p class="muted small" style="margin:0 0 10px">Curious why something works the way it does? Ask — no need to leave the app.${disabled?' <b>Add your key in AI &amp; Data to switch this on.</b>':''}</p><textarea id="askQ" placeholder="e.g. Why are Google Apps Script HTML files usually called Index?" style="min-height:64px">${esc(askState.q)}</textarea><div class="actions"><span></span><button class="btn" id="askBtn"${disabled?' disabled':''}>✨ Ask</button></div>${ans}`;
+ el.innerHTML=`<p class="muted small" style="margin:0 0 10px">Curious why something works the way it does? Ask — no need to leave the app.${disabled?' <b>Add your key in AI &amp; Data to switch this on.</b>':''}</p><textarea id="askQ" placeholder="e.g. Why are Google Apps Script HTML files usually called Index?" style="min-height:64px">${esc(askState.q)}</textarea>${askImgHTML()}<div class="actions"><label class="btn ghost mini" for="askImgIn">📷 Add a picture</label><button class="btn" id="askBtn"${disabled?' disabled':''}>✨ Ask</button></div><input type="file" id="askImgIn" accept="image/*" style="display:none">${ans}`;
  const b=document.getElementById("askBtn");if(b)b.onclick=doAsk;
+ wireAskImg();
  wireAskAdd();
+}
+
+function askImgHTML(){
+  if(!askState.img)return '<p class="muted small" style="margin:8px 0 0">Add a picture of anything you want to ask about \u2014 a dashboard, a query on your work screen, an error. On a phone the button opens your camera. On a computer you can also just paste a screenshot into the box above.</p>';
+  return '<div class="askimg"><img src="'+askState.img.preview+'" alt=""><span class="aif">Picture attached \u2014 it goes with your next question.</span><button id="askImgX">remove</button></div>';
+}
+function askShrink(file,cb){
+  if(!file||!/^image\//.test(file.type)){cb(null);return;}
+  var fr=new FileReader();
+  fr.onerror=function(){cb(null);};
+  fr.onload=function(){
+    var img=new Image();
+    img.onerror=function(){cb(null);};
+    img.onload=function(){
+      var max=1200,w=img.width,h=img.height;
+      if(w>max||h>max){var k=Math.min(max/w,max/h);w=Math.round(w*k);h=Math.round(h*k);}
+      var cv=document.createElement("canvas");cv.width=w;cv.height=h;
+      cv.getContext("2d").drawImage(img,0,0,w,h);
+      var url=cv.toDataURL("image/jpeg",0.82);
+      cb({media:"image/jpeg",data:url.split(",")[1],preview:url});
+    };
+    img.src=fr.result;
+  };
+  fr.readAsDataURL(file);
+}
+function askTakeFile(f){ askShrink(f,function(o){ if(!o)return; askState.img=o; renderAsk(); }); }
+function wireAskImg(){
+  var inp=document.getElementById("askImgIn");
+  if(inp)inp.onchange=function(){ if(inp.files&&inp.files[0])askTakeFile(inp.files[0]); inp.value=""; };
+  var x=document.getElementById("askImgX");
+  if(x)x.onclick=function(){ askState.img=null; renderAsk(); };
+  var t=document.getElementById("askQ");
+  if(t)t.onpaste=function(e){
+    var it=e.clipboardData&&e.clipboardData.items;if(!it)return;
+    for(var i=0;i<it.length;i++){ if(it[i].type&&it[i].type.indexOf("image")===0){ var f=it[i].getAsFile(); if(f){ e.preventDefault(); askState.q=t.value; askTakeFile(f); return; } } }
+  };
 }
 function askAddHTML(){
  var s=askState.suggest;
@@ -824,8 +1002,11 @@ function screenContext(){var r=document.getElementById("root");var t=r?(r.innerT
 async function doAsk(){
  const t=document.getElementById("askQ");const qv=t?t.value.trim():"";if(!qv)return;
  askState.q=qv;askState.loading=true;askState.a="";askState.suggest=null;renderAsk();
- const sys="You are App Savvy's built-in tutor. Answer two kinds of questions: (1) how software and apps work, in plain language for a business or client person becoming fluent by directing AI (not an engineer), and (2) how to use App Savvy itself. About the app: App Savvy builds architectural judgment. Its tabs are Home (a dashboard with your rank, XP, badges, streak, a readiness map across five capabilities, a personalized read, and a pre/post baseline check), Learn (eight lesson units — read a lesson, then walk a Door to test it), Practice (a quick Door or a Sabotage debugging round, both earning XP), Reference (a glossary of terms you have earned, a concept map of recurring tradeoffs, and the sourced thinking behind the app), and AI & Data (your API key and backups). A Door is a real decision with two defensible options; you pick one, justify it, and a reveal shows what was actually chosen and the tradeoff. You earn XP and climb ranks from Curious to Solutions-Ready, unlocking badges. Progress saves in your browser, and the sparkle marks AI features that use your key. Answer warmly and concretely in a few short paragraphs, no jargon dumps. If a question is off-topic, answer briefly and steer back. The user's message may include the text currently on their screen (marked [Context — ...]); when they ask about 'this' or 'what does this mean', use that on-screen text to answer specifically.";
- const out=await callClaude(sys,qv+" [Context — what is on my screen right now, use it if my question is about this: "+screenContext()+"]",700);
+ const sys="You are App Savvy's built-in tutor. Answer two kinds of questions: (1) how software and apps work, in plain language for a business or client person becoming fluent by directing AI (not an engineer), and (2) how to use App Savvy itself. About the app: App Savvy builds architectural judgment. Its tabs are Home (a dashboard with your rank, XP, badges, streak, a readiness map across five capabilities, a personalized read, and a pre/post baseline check), Learn (nine lesson units — read a lesson, then walk a Door to test it; unit nine is SQL, which also carries a twelve-week practice plan you tick off week by week), Practice (a quick Door or a Sabotage debugging round, both earning XP), Reference (a glossary of terms you have earned, a concept map of recurring tradeoffs, a query log where you record real SQL you have written alongside the business question it answered, and the sourced thinking behind the app), and AI & Data (your API key and backups). A Door is a real decision with two defensible options; you pick one, justify it, and a reveal shows what was actually chosen and the tradeoff. You earn XP and climb ranks from Curious to Solutions-Ready, unlocking badges. Progress saves in your browser, and the sparkle marks AI features that use your key. Answer warmly and concretely in a few short paragraphs, no jargon dumps. If a question is off-topic, answer briefly and steer back. The user's message may include the text currently on their screen (marked [Context — ...]); when they ask about 'this' or 'what does this mean', use that on-screen text to answer specifically.";
+ var payload=qv+" [Context — what is on my screen right now, use it if my question is about this: "+screenContext()+"]";
+ var content=payload;
+ if(askState.img){content=[{type:"image",source:{type:"base64",media_type:askState.img.media,data:askState.img.data}},{type:"text",text:payload+" [A picture is attached — read it and answer about what it shows.]"}];}
+ const out=await callClaude(sys,content,700);
  askState.loading=false;askState.a=out||(state.apiKey?("Couldn't get an answer. "+lastAIError+(/credit|balance/i.test(lastAIError)?" → Add credits at console.anthropic.com under Plans & Billing.":"")):"Add your Anthropic key in the AI & Data tab to ask questions here.");
  renderAsk();
 }
@@ -836,9 +1017,12 @@ function renderLearn(){
  root.innerHTML=main+curriculumHTML();
  wireLearn();
 }
-function learnLanding(){const rec=recommendStart(),u=UNITS.find(x=>x.id===rec.id);return `<div class="card"><span class="pilltag">🎓 Learn</span><h2>Where to start</h2><p class="sub">Eight short lessons. Read one, then test it with a door. Pick from your curriculum below, or jump into the suggested one.</p><div class="reccard"><div><span class="caps">Suggested for you</span><h3 style="margin:4px 0;font-size:19px">${esc(u.title)}</h3><p class="muted small" style="margin:0">${esc(rec.why)}</p></div><button class="btn" data-open="${u.id}">Open →</button></div></div>`;}
-function curriculumHTML(){const open=(learnUnit===null);return `<details class="curric" ${open?'open':''}><summary><span class="caps">Your curriculum</span> <span class="muted small">— eight units, tap to open</span></summary><div class="ulist">${UNITS.map((u,i)=>{const dc=doneCountUnit(u.id),tot=doorsForUnit(u.id).length,lrn=state.learned.indexOf(u.id)>=0,cnt=u.sabotage?`${sabDoneCount()}/${SABOTAGE.length}`:(tot?`${dc}/${tot}`:'');return `<button class="urow ${learnUnit===u.id?'on':''}" data-open="${u.id}"><span class="unum">${i+1}</span><span class="ulbl">${u.emoji} ${esc(u.title)}</span><span class="udone">${lrn?'✓ ':''}${cnt}</span></button>`;}).join("")}</div></details>`;}
+function learnLanding(){const rec=recommendStart(),u=UNITS.find(x=>x.id===rec.id);return `<div class="card"><span class="pilltag">🎓 Learn</span><h2>Where to start</h2><p class="sub">Nine short lessons. Read one, then test it with a door. Pick from your curriculum below, or jump into the suggested one.</p><div class="reccard"><div><span class="caps">Suggested for you</span><h3 style="margin:4px 0;font-size:19px">${esc(u.title)}</h3><p class="muted small" style="margin:0">${esc(rec.why)}</p></div><button class="btn" data-open="${u.id}">Open →</button></div></div>`;}
+function curriculumHTML(){const open=(learnUnit===null);return `<details class="curric" ${open?'open':''}><summary><span class="caps">Your curriculum</span> <span class="muted small">— nine units, tap to open</span></summary><div class="ulist">${UNITS.map((u,i)=>{const dc=doneCountUnit(u.id),tot=doorsForUnit(u.id).length,lrn=state.learned.indexOf(u.id)>=0,cnt=u.sabotage?`${sabDoneCount()}/${SABOTAGE.length}`:(tot?`${dc}/${tot}`:'');return `<button class="urow ${learnUnit===u.id?'on':''}" data-open="${u.id}"><span class="unum">${i+1}</span><span class="ulbl">${u.emoji} ${esc(u.title)}</span><span class="udone">${lrn?'✓ ':''}${cnt}</span></button>`;}).join("")}</div></details>`;}
 const EXTRAS={
+ u9:{obj:"read a SQL query out loud, say what it returns, and name the way it could be quietly wrong.",
+  example:"You ask for lead-to-application conversion by channel and get 41%. The query joins leads to applications. Every lead who never applied has no application row to match, so a plain JOIN drops them entirely — and 41% is really applications per applicant. One word changed to LEFT JOIN and the honest number is 12%. Nothing errored, nothing turned red. That gap is the whole reason to read the query yourself.",
+  diagram:'<svg viewBox="0 0 340 152" xmlns="http://www.w3.org/2000/svg"><rect x="8" y="16" width="98" height="44" rx="10" fill="#e9f4ef" stroke="#2f8a72" stroke-width="2"/><text x="57" y="36" text-anchor="middle" font-size="13" font-weight="600" fill="#22302c">leads</text><text x="57" y="51" text-anchor="middle" font-size="10" fill="#5f6f68">one row per person</text><rect x="8" y="72" width="98" height="44" rx="10" fill="#e9f4ef" stroke="#2f8a72" stroke-width="2"/><text x="57" y="92" text-anchor="middle" font-size="12" font-weight="600" fill="#22302c">applications</text><text x="57" y="107" text-anchor="middle" font-size="10" fill="#5f6f68">none, one, or many</text><path d="M110 38 H132 V60" fill="none" stroke="#2f8a72" stroke-width="2"/><path d="M110 94 H132 V72" fill="none" stroke="#2f8a72" stroke-width="2"/><rect x="136" y="44" width="74" height="44" rx="10" fill="#f6efe0" stroke="#c2913a" stroke-width="2"/><text x="173" y="64" text-anchor="middle" font-size="13" font-weight="600" fill="#22302c">JOIN</text><text x="173" y="79" text-anchor="middle" font-size="10" fill="#5f6f68">on lead_id</text><line x1="212" y1="66" x2="236" y2="66" stroke="#2f8a72" stroke-width="2"/><polygon points="236,66 228,62 228,70" fill="#2f8a72"/><rect x="238" y="44" width="94" height="44" rx="10" fill="#e9f4ef" stroke="#2f8a72" stroke-width="2"/><text x="285" y="64" text-anchor="middle" font-size="13" font-weight="600" fill="#22302c">your answer</text><text x="285" y="79" text-anchor="middle" font-size="10" fill="#5f6f68">one number</text><text x="170" y="136" text-anchor="middle" font-size="10.5" fill="#5f6f68">LEFT JOIN keeps leads who never applied · JOIN drops them, and the rate looks better than it is</text></svg>'},
  u1:{obj:"explain where any app's pieces live, and say on the spot whether a feature needs a backend.",
   example:"Say a client wants a 'contact us' form. The form and the typing are frontend, on the visitor's phone. Storing the message and emailing the team needs a backend — a server that receives it. So you can tell the client: the form is easy; saving and sending it is where the real work is.",
   diagram:'<svg viewBox="0 0 340 120" xmlns="http://www.w3.org/2000/svg"><rect x="14" y="38" width="118" height="50" rx="10" fill="#e9f4ef" stroke="#2f8a72" stroke-width="2"/><text x="73" y="62" text-anchor="middle" font-size="14" font-weight="600" fill="#22302c">Frontend</text><text x="73" y="78" text-anchor="middle" font-size="11" fill="#5f6f68">your device</text><rect x="208" y="38" width="118" height="50" rx="10" fill="#e9f4ef" stroke="#2f8a72" stroke-width="2"/><text x="267" y="62" text-anchor="middle" font-size="14" font-weight="600" fill="#22302c">Backend</text><text x="267" y="78" text-anchor="middle" font-size="11" fill="#5f6f68">a server</text><line x1="136" y1="63" x2="204" y2="63" stroke="#2f8a72" stroke-width="2"/><polygon points="204,63 196,59 196,67" fill="#2f8a72"/><polygon points="136,63 144,59 144,67" fill="#2f8a72"/><text x="170" y="34" text-anchor="middle" font-size="10" fill="#5f6f68">requests / responses</text></svg>'},
@@ -874,12 +1058,13 @@ function speakLesson(uid){
  const utt=new SpeechSynthesisUtterance(text);utt.rate=1;utt.onend=function(){if(document.getElementById("listenBtn"))document.getElementById("listenBtn").textContent="🔊 Listen";};
  window.speechSynthesis.cancel();window.speechSynthesis.speak(utt);if(btn)btn.textContent="⏹ Stop";
 }
-function lessonHTML(u){const doors=doorsForUnit(u.id),dc=doneCountUnit(u.id),learned=state.learned.indexOf(u.id)>=0;const x=EXTRAS[u.id]||{};const obj=x.obj||u.objective;return `<div class="card"><span class="pilltag">${u.emoji} Unit ${UNITS.indexOf(u)+1} · Lesson</span><h2>${esc(u.title)}</h2><div class="objbox"><span class="caps">By the end, you'll be able to</span><div>${esc(obj)}</div></div><h3 style="font-size:18px;margin:22px 0 8px">Key terms</h3><div class="vgrid">${u.vocab.map(v=>`<div class="vcard"><b>${esc(v.t)}</b><div class="d">${esc(v.d)}</div></div>`).join("")}</div><div class="lessonhead"><h3 style="margin:0;font-size:18px">The concept</h3><button class="btn ghost mini" id="listenBtn" data-u="${u.id}">🔊 Listen</button></div>${x.diagram?`<div class="diagram">${x.diagram}</div>`:""}${u.lesson}${x.example?`<h3 style="font-size:18px;margin:22px 0 8px">Worked example</h3><div class="example">${esc(x.example)}</div>`:""}<div class="unlock"><span class="caps">What this unlocks in the room</span><div style="margin-top:6px">${esc(u.unlock)}</div></div><div class="actions"><button class="btn ghost mini" data-learned="${u.id}">${learned?'✓ Marked as learned':'Mark as learned (+15 XP)'}</button>${u.sabotage?`<button class="btn" data-sabotage="${u.id}">Try a sabotage round → <span class="small" style="opacity:.8">(${sabDoneCount()}/${SABOTAGE.length})</span></button>`:`<button class="btn" data-door-unit="${u.id}">Walk through a door → <span class="small" style="opacity:.8">(${dc}/${doors.length})</span></button>`}</div></div>`;}
+function lessonHTML(u){const doors=doorsForUnit(u.id),dc=doneCountUnit(u.id),learned=state.learned.indexOf(u.id)>=0;const x=EXTRAS[u.id]||{};const obj=x.obj||u.objective;return `<div class="card"><span class="pilltag">${u.emoji} Unit ${UNITS.indexOf(u)+1} · Lesson</span><h2>${esc(u.title)}</h2><div class="objbox"><span class="caps">By the end, you'll be able to</span><div>${esc(obj)}</div></div><h3 style="font-size:18px;margin:22px 0 8px">Key terms</h3><div class="vgrid">${u.vocab.map(v=>`<div class="vcard"><b>${esc(v.t)}</b><div class="d">${esc(v.d)}</div></div>`).join("")}</div><div class="lessonhead"><h3 style="margin:0;font-size:18px">The concept</h3><button class="btn ghost mini" id="listenBtn" data-u="${u.id}">🔊 Listen</button></div>${x.diagram?`<div class="diagram">${x.diagram}</div>`:""}${u.lesson}${x.example?`<h3 style="font-size:18px;margin:22px 0 8px">Worked example</h3><div class="example">${esc(x.example)}</div>`:""}${u.id==="u9"?sqlPlanHTML():""}<div class="unlock"><span class="caps">What this unlocks in the room</span><div style="margin-top:6px">${esc(u.unlock)}</div></div><div class="actions"><button class="btn ghost mini" data-learned="${u.id}">${learned?'✓ Marked as learned':'Mark as learned (+15 XP)'}</button>${u.sabotage?`<button class="btn" data-sabotage="${u.id}">Try a sabotage round → <span class="small" style="opacity:.8">(${sabDoneCount()}/${SABOTAGE.length})</span></button>`:`<button class="btn" data-door-unit="${u.id}">Walk through a door → <span class="small" style="opacity:.8">(${dc}/${doors.length})</span></button>`}</div></div>`;}
 function wireLearn(){
  root.querySelectorAll("[data-open]").forEach(b=>b.onclick=()=>{learnUnit=b.dataset.open;sess=null;sab=null;renderLearn();window.scrollTo(0,0);});
  root.querySelectorAll("[data-learned]").forEach(b=>b.onclick=()=>{const id=b.dataset.learned;if(state.learned.indexOf(id)<0){state.learned.push(id);const p=state.xp;addXP(15);commitProgress(p);}renderLearn();});
  root.querySelectorAll("[data-door-unit]").forEach(b=>b.onclick=()=>startDoor(pickDoor(b.dataset.doorUnit),b.dataset.doorUnit));
  root.querySelectorAll("[data-sabotage]").forEach(b=>b.onclick=()=>startSabotage(b.dataset.sabotage));
+ root.querySelectorAll("[data-week]").forEach(b=>b.onclick=()=>{const i=+b.dataset.week;state.sqlWeeks=state.sqlWeeks||[];const at=state.sqlWeeks.indexOf(i);const p=state.xp;if(at>=0){state.sqlWeeks.splice(at,1);}else{state.sqlWeeks.push(i);addXP(5);bumpStreak();}commitProgress(p);renderLearn();});
  const lb=root.querySelector("#listenBtn");if(lb)lb.onclick=()=>speakLesson(lb.dataset.u);
 }
 
@@ -901,6 +1086,323 @@ async function teachFeedback(concept,model,text){const sys="You are a warm teach
 function startTeach(){const cands=UNITS.filter(u=>!u.sabotage);const learned=cands.filter(u=>state.learned.indexOf(u.id)>=0);const pool=learned.length?learned:cands;const u=pool[Math.floor(Math.random()*pool.length)];teachSess={u:u,text:"",fb:"",ownerTab:"practice",scenario:teachScenario(u.title)};tab="practice";syncTabs();render();window.scrollTo(0,0);}
 function renderTeachHTML(){const u=teachSess.u,x=EXTRAS[u.id]||{};return `<div class="card actcard"><button class="exitbtn" id="exitAct" title="Leave — you can start over later">✕ exit</button><span class="pilltag">🗣 ✨ Teach it back</span><h2>Teach: ${esc(u.title)}</h2><p class="sub">${teachSess.scenario||(teachSess.scenario=teachScenario(u.title))}</p><div class="objbox"><span class="caps">The idea to get across</span><div>${esc(x.obj||u.objective)}</div></div><textarea id="teachT" placeholder="In your own words, no jargon…">${esc(teachSess.text||"")}</textarea><div class="actions"><span class="pilllabel">${AI_ON?'✨ live feedback':'self-check'}</span><button class="btn" id="teachSubmit">Get feedback →</button></div>${teachSess.fb?`<div class="airead" style="margin-top:14px">${esc(teachSess.fb)}</div><div class="actions"><button class="btn ghost" id="teachAgain">Teach another →</button><button class="btn" id="teachDone">Done ✓ (+15 XP)</button></div>`:""}</div>`;}
 function wireTeach(){const s=root.querySelector("#teachSubmit");if(s)s.onclick=async()=>{const t=root.querySelector("#teachT");teachSess.text=t?t.value.trim():"";if(!teachSess.text){if(t)t.focus();return;}s.textContent="✨ Reading…";s.disabled=true;const u=teachSess.u,x=EXTRAS[u.id]||{};teachSess.fb=await teachFeedback(u.title,(x.obj||u.objective),teachSess.text);renderPractice();};const a=root.querySelector("#teachAgain");if(a)a.onclick=()=>startTeach();const dn=root.querySelector("#teachDone");if(dn)dn.onclick=()=>{const p=state.xp;state.resume=null;bumpStreak();addXP(15);commitProgress(p);teachSess=null;renderPractice();};var ex=root.querySelector("#exitAct");if(ex)ex.onclick=function(){exitActivity();};var tt=root.querySelector("#teachT");if(tt)tt.oninput=function(){teachSess.text=tt.value;persistResume();};}
+/* ===== SQL LAB ===== */
+const LAB_CDN="https://cdnjs.cloudflare.com/ajax/libs/sql.js/1.10.3/";
+let LAB={db:null,loading:false,error:"",ex:null,sql:"",res:null,err:"",verdict:null,hint:false,shown:false,free:false,stage:null};
+
+function labLoadFrom(base){return new Promise(function(res,rej){
+  function boot(){ if(typeof initSqlJs!=="function"){rej(new Error("script loaded but engine missing"));return;}
+    initSqlJs({locateFile:function(f){return base+f;}}).then(res,rej); }
+  if(typeof initSqlJs==="function"){boot();return;}
+  var s=document.createElement("script");s.src=base+"sql-wasm.js";
+  s.onload=boot;s.onerror=function(){rej(new Error("could not fetch "+base+"sql-wasm.js"));};
+  document.head.appendChild(s);});}
+
+function labEngine(){ if(window.__labEngine)return window.__labEngine;
+  window.__labEngine=labLoadFrom("./").catch(function(){ if(typeof initSqlJs==="function"){return initSqlJs({locateFile:function(f){return LAB_CDN+f;}}); } return labLoadFrom(LAB_CDN); });
+  return window.__labEngine; }
+
+/* deterministic data — same numbers on every device, every reload */
+function labRng(seed){return function(){seed|=0;seed=seed+0x6D2B79F5|0;var t=Math.imul(seed^seed>>>15,1|seed);t=t+Math.imul(t^t>>>7,61|t)^t;return((t^t>>>14)>>>0)/4294967296;};}
+
+const LAB_TERMS=[["2024FA","Fall 2024","2024-08-26",1],["2025SP","Spring 2025","2025-01-13",2],["2025SU","Summer 2025","2025-05-12",3],["2025FA","Fall 2025","2025-08-25",4],["2026SP","Spring 2026","2026-01-12",5]];
+const LAB_PROGRAMS=[["MSN","Nursing (MSN)","Master's","Riverbend University"],["MBA","Business Administration","Master's","Riverbend University"],["MSW","Social Work","Master's","Calhoun State"],["MPH","Public Health","Master's","Calhoun State"],["MEDL","Educational Leadership","Master's","Calhoun State"],["CYBR","Cybersecurity Certificate","Certificate","Ashford Tech"],["DATA","Data Analytics Certificate","Certificate","Ashford Tech"],["RNBS","RN to BSN","Bachelor's Completion","Riverbend University"]];
+const LAB_CHANNELS=[["Paid Search",.28,.30],["Organic",.19,.44],["Referral",.13,.58],["Email",.16,.41],["Partner Site",.15,.36],["Events",.09,.51]];
+
+function labSchemaSQL(){
+  return "CREATE TABLE programs(code TEXT, name TEXT, credential TEXT, partner TEXT);"+
+  "CREATE TABLE terms(code TEXT, name TEXT, start_date TEXT, seq INTEGER);"+
+  "CREATE TABLE leads(id INTEGER, created_date TEXT, channel TEXT, program_code TEXT, term_code TEXT);"+
+  "CREATE TABLE applications(id INTEGER, lead_id INTEGER, started_date TEXT, submitted_date TEXT, status TEXT);"+
+  "CREATE TABLE enrollments(id INTEGER, application_id INTEGER, term_code TEXT, credential TEXT, status TEXT);"+
+  "CREATE TABLE persistence(enrollment_id INTEGER, term_code TEXT, status TEXT);";
+}
+function q(v){return v===null?"NULL":"'"+String(v).replace(/'/g,"''")+"'";}
+function labSeedSQL(){
+  var r=labRng(20260725),out=[],i,j;
+  LAB_PROGRAMS.forEach(function(p){out.push("INSERT INTO programs VALUES("+p.map(q).join(",")+");");});
+  LAB_TERMS.forEach(function(t){out.push("INSERT INTO terms VALUES("+q(t[0])+","+q(t[1])+","+q(t[2])+","+t[3]+");");});
+  function pick(a){return a[Math.floor(r()*a.length)];}
+  function dateBefore(iso,maxDays){var d=new Date(iso+"T00:00:00Z");d.setUTCDate(d.getUTCDate()-Math.floor(r()*maxDays)-7);return d.toISOString().slice(0,10);}
+  function plus(iso,days){var d=new Date(iso+"T00:00:00Z");d.setUTCDate(d.getUTCDate()+days);return d.toISOString().slice(0,10);}
+  var leadId=1000,appId=5000,enrId=9000,leads=[],apps=[],enrs=[];
+  LAB_TERMS.forEach(function(t,ti){
+    var vol=[240,300,190,330,260][ti];
+    for(i=0;i<vol;i++){
+      var ch=null,x=r(),acc=0;for(j=0;j<LAB_CHANNELS.length;j++){acc+=LAB_CHANNELS[j][1];if(x<=acc){ch=LAB_CHANNELS[j];break;}}if(!ch)ch=LAB_CHANNELS[0];
+      var prog=pick(LAB_PROGRAMS),id=leadId++,cd=dateBefore(t[2],150);
+      leads.push([id,cd,ch[0],prog[0],t[0]]);
+      /* a real funnel: many leads never apply at all */
+      if(r()>ch[2])continue;
+      var nApps=r()<0.12?2:1;                       /* one lead, two applications — the fan-out trap */
+      for(j=0;j<nApps;j++){
+        var st=plus(cd,3+Math.floor(r()*40)),sub=null,status="started";
+        if(r()<0.62){sub=plus(st,1+Math.floor(r()*21));status="submitted";}
+        else if(r()<0.25){status="withdrawn";}
+        var aid=appId++;apps.push([aid,id,st,sub,status]);
+        if(status==="submitted"&&r()<0.55){
+          var cred=prog[2],eid=enrId++;enrs.push([eid,aid,t[0],cred,"enrolled"]);
+        }
+      }
+    }
+  });
+  /* persistence: each enrollment tracked forward term by term until it stops */
+  enrs.forEach(function(e){
+    var start=LAB_TERMS.filter(function(t){return t[0]===e[2];})[0][3];
+    for(var s=start;s<=5;s++){
+      var tc=LAB_TERMS[s-1][0];
+      out.push("INSERT INTO persistence VALUES("+e[0]+","+q(tc)+","+q("active")+");");
+      if(r()<(s===start?0.11:0.07))break;
+    }
+  });
+  leads.forEach(function(l){out.push("INSERT INTO leads VALUES("+l[0]+","+q(l[1])+","+q(l[2])+","+q(l[3])+","+q(l[4])+");");});
+  apps.forEach(function(a){out.push("INSERT INTO applications VALUES("+a[0]+","+a[1]+","+q(a[2])+","+(a[3]===null?"NULL":q(a[3]))+","+q(a[4])+");");});
+  enrs.forEach(function(e){out.push("INSERT INTO enrollments VALUES("+e[0]+","+e[1]+","+q(e[2])+","+q(e[3])+","+q(e[4])+");");});
+  return out.join("");
+}
+
+const LAB_STAGES=[
+ {id:"s1",n:"Reading a table",wk:"Week 1",d:"SELECT, WHERE, ORDER BY. Getting rows out and narrowing them down."},
+ {id:"s2",n:"Rows into a number",wk:"Week 2",d:"COUNT, GROUP BY, HAVING. Where a table becomes a metric."},
+ {id:"s3",n:"Two tables at once",wk:"Week 3",d:"JOINs, NULLs, CTEs — and the joins that quietly drop rows."},
+ {id:"s4",n:"Your funnel",wk:"Weeks 5–7",d:"I2A, ATS, denominators, and reconciling two numbers that disagree."},
+ {id:"s5",n:"Looking sideways",wk:"Weeks 9–10",d:"Window functions: rank, previous period, running totals."},
+ {id:"s6",n:"Cohorts",wk:"Week 11",d:"Retention by cohort — the pattern interviews ask for most."}];
+
+const LAB_EX=[
+/* ---- stage 1 ---- */
+{id:"s1-1",s:"s1",t:"Look at the leads",ask:"Show the id, created_date and channel for the 10 leads with the lowest id.",teach:"SELECT names the columns you want, FROM names the table, ORDER BY sorts, LIMIT cuts it short.",hint:"SELECT the three columns, then ORDER BY id, then LIMIT 10.",ordered:true,
+ sol:"SELECT id, created_date, channel FROM leads ORDER BY id LIMIT 10"},
+{id:"s1-2",s:"s1",t:"Narrow it down",ask:"List the id and created_date of every lead that came from the Referral channel.",teach:"WHERE filters rows before anything else happens. Text values go in single quotes.",hint:"WHERE channel = 'Referral'",
+ sol:"SELECT id, created_date FROM leads WHERE channel = 'Referral'"},
+{id:"s1-3",s:"s1",t:"Newest first",ask:"Show the id and created_date of the 5 most recent leads, newest first.",teach:"ORDER BY … DESC reverses the sort. Dates stored as YYYY-MM-DD sort correctly as text.",hint:"ORDER BY created_date DESC, then LIMIT 5.",ordered:true,
+ sol:"SELECT id, created_date FROM leads ORDER BY created_date DESC LIMIT 5"},
+{id:"s1-4",s:"s1",t:"What channels exist?",ask:"List each distinct channel that appears in the leads table. One row per channel.",teach:"DISTINCT collapses duplicate rows — the fastest way to see what values a column actually holds.",hint:"SELECT DISTINCT channel FROM leads",
+ sol:"SELECT DISTINCT channel FROM leads"},
+{id:"s1-5",s:"s1",t:"A date range",ask:"List the id and created_date of leads created during calendar 2025.",teach:"Because dates are YYYY-MM-DD text here, a BETWEEN on strings does what you would expect.",hint:"WHERE created_date BETWEEN '2025-01-01' AND '2025-12-31'",
+ sol:"SELECT id, created_date FROM leads WHERE created_date BETWEEN '2025-01-01' AND '2025-12-31'"},
+/* ---- stage 2 ---- */
+{id:"s2-1",s:"s2",t:"How many leads?",ask:"Return a single number: the total count of leads.",teach:"COUNT(*) counts rows. With no GROUP BY you get one row back for the whole table.",hint:"SELECT COUNT(*) FROM leads",
+ sol:"SELECT COUNT(*) AS leads FROM leads"},
+{id:"s2-2",s:"s2",t:"Leads by channel",ask:"Count leads per channel. Return the channel and the count.",teach:"GROUP BY is the moment a table turns into a metric: one output row per bucket.",hint:"SELECT channel, COUNT(*) … GROUP BY channel",
+ sol:"SELECT channel, COUNT(*) AS leads FROM leads GROUP BY channel"},
+{id:"s2-3",s:"s2",t:"Biggest channel first",ask:"Count leads per channel, sorted from most leads to fewest.",teach:"You can ORDER BY an aggregate you just computed. This is the shape of most dashboard tables.",hint:"Add ORDER BY COUNT(*) DESC to what you already wrote.",ordered:true,
+ sol:"SELECT channel, COUNT(*) AS leads FROM leads GROUP BY channel ORDER BY COUNT(*) DESC"},
+{id:"s2-4",s:"s2",t:"Only the big ones",ask:"Show only the channels that produced more than 200 leads, with their counts.",teach:"WHERE filters rows before grouping. HAVING filters the groups afterward — that distinction gets asked about a lot.",hint:"GROUP BY channel HAVING COUNT(*) > 200",
+ sol:"SELECT channel, COUNT(*) AS leads FROM leads GROUP BY channel HAVING COUNT(*) > 200"},
+{id:"s2-5",s:"s2",t:"Count the distinct thing",ask:"Return one number: how many different programs appear in the leads table.",teach:"COUNT(DISTINCT col) counts unique values. The gap between COUNT(*) and COUNT(DISTINCT …) is where inflated funnel numbers hide.",hint:"COUNT(DISTINCT program_code)",
+ sol:"SELECT COUNT(DISTINCT program_code) AS programs FROM leads"},
+/* ---- stage 3 ---- */
+{id:"s3-1",s:"s3",t:"Leads that applied",ask:"Return one number: how many distinct leads have at least one application.",teach:"A JOIN matches rows across tables on a shared key. Because one lead can hold two applications, COUNT(DISTINCT …) is what keeps the number honest.",hint:"JOIN applications ON applications.lead_id = leads.id, then COUNT(DISTINCT leads.id).",
+ sol:"SELECT COUNT(DISTINCT l.id) AS applied FROM leads l JOIN applications a ON a.lead_id = l.id"},
+{id:"s3-2",s:"s3",t:"The rows an inner join hides",ask:"Return one number: how many leads have no application at all.",teach:"A LEFT JOIN keeps every row on the left and fills NULL where nothing matched. Filtering on IS NULL is how you find the rows an inner join would have silently dropped.",hint:"LEFT JOIN applications, then WHERE applications.id IS NULL.",
+ sol:"SELECT COUNT(*) AS no_app FROM leads l LEFT JOIN applications a ON a.lead_id = l.id WHERE a.id IS NULL"},
+{id:"s3-3",s:"s3",t:"Fan-out, side by side",ask:"By channel, return the number of application rows and the number of distinct leads that applied. Columns: channel, app_rows, leads_applied.",teach:"These two numbers differ because some leads filed two applications. Quote the first as a lead count and every rate built on it is wrong.",hint:"COUNT(a.id) and COUNT(DISTINCT l.id) in the same GROUP BY.",
+ sol:"SELECT l.channel AS channel, COUNT(a.id) AS app_rows, COUNT(DISTINCT l.id) AS leads_applied FROM leads l JOIN applications a ON a.lead_id = l.id GROUP BY l.channel"},
+{id:"s3-4",s:"s3",t:"Started, never submitted",ask:"Return one number: how many applications were started but never submitted.",teach:"NULL means absent. It fails every comparison, including = NULL, so you must say IS NULL.",hint:"WHERE submitted_date IS NULL",
+ sol:"SELECT COUNT(*) AS unsubmitted FROM applications WHERE submitted_date IS NULL"},
+{id:"s3-5",s:"s3",t:"Three tables deep",ask:"Count enrollments per credential. Columns: credential, enrollments.",teach:"Joins chain. Each hop narrows the population, which is exactly why you keep checking the denominator.",hint:"enrollments already carries credential — this one is a plain GROUP BY.",
+ sol:"SELECT credential, COUNT(*) AS enrollments FROM enrollments GROUP BY credential"},
+{id:"s3-6",s:"s3",t:"Name the steps with a CTE",ask:"Using a CTE, return each channel with its lead count and its distinct applicant count. Columns: channel, leads, applicants.",teach:"A CTE (WITH … AS) names an intermediate result so a long query reads top to bottom instead of inside out.",hint:"WITH a AS (SELECT lead_id FROM applications GROUP BY lead_id) then LEFT JOIN it to leads.",
+ sol:"WITH ap AS (SELECT DISTINCT lead_id FROM applications) SELECT l.channel AS channel, COUNT(*) AS leads, COUNT(ap.lead_id) AS applicants FROM leads l LEFT JOIN ap ON ap.lead_id = l.id GROUP BY l.channel"},
+/* ---- stage 4 ---- */
+{id:"s4-1",s:"s4",t:"Inquiry to application",ask:"Return one number: the share of leads that filed at least one application, rounded to 3 decimals.",teach:"Your I2A. The numerator is distinct leads with an application; the denominator is every lead, including the ones an inner join would drop.",hint:"COUNT(DISTINCT a.lead_id) * 1.0 / COUNT(*) with a LEFT JOIN, then ROUND(…, 3).",
+ sol:"SELECT ROUND(COUNT(DISTINCT a.lead_id) * 1.0 / COUNT(DISTINCT l.id), 3) AS i2a FROM leads l LEFT JOIN applications a ON a.lead_id = l.id"},
+{id:"s4-2",s:"s4",t:"App to start, by credential",ask:"For each credential, return submitted applications and enrollments. Columns: credential, submitted, enrolled.",teach:"ATS in its natural form. Watch that the denominator counts submitted applications rather than all applications.",hint:"Join applications to programs via leads, or lean on enrollments.credential and count submitted apps separately in a CTE.",
+ sol:"WITH sub AS (SELECT p.credential AS credential, COUNT(*) AS submitted FROM applications a JOIN leads l ON l.id = a.lead_id JOIN programs p ON p.code = l.program_code WHERE a.status = 'submitted' GROUP BY p.credential), enr AS (SELECT credential, COUNT(*) AS enrolled FROM enrollments GROUP BY credential) SELECT sub.credential AS credential, sub.submitted AS submitted, enr.enrolled AS enrolled FROM sub JOIN enr ON enr.credential = sub.credential"},
+{id:"s4-3",s:"s4",t:"The whole funnel, one table",ask:"For each channel return leads, distinct applicants, and enrollments. Columns: channel, leads, applicants, enrollments.",teach:"This is a weekly performance report in four columns. Every rate anyone asks for later is derivable from it.",hint:"Build applicants and enrollments as separate CTEs keyed on channel, then LEFT JOIN both onto the lead counts.",
+ sol:"WITH l AS (SELECT channel, COUNT(*) AS leads FROM leads GROUP BY channel), ap AS (SELECT ld.channel AS channel, COUNT(DISTINCT ld.id) AS applicants FROM leads ld JOIN applications a ON a.lead_id = ld.id GROUP BY ld.channel), en AS (SELECT ld.channel AS channel, COUNT(*) AS enrollments FROM enrollments e JOIN applications a ON a.id = e.application_id JOIN leads ld ON ld.id = a.lead_id GROUP BY ld.channel) SELECT l.channel AS channel, l.leads AS leads, COALESCE(ap.applicants,0) AS applicants, COALESCE(en.enrollments,0) AS enrollments FROM l LEFT JOIN ap ON ap.channel = l.channel LEFT JOIN en ON en.channel = l.channel"},
+{id:"s4-4",s:"s4",t:"Prove which number is right",ask:"Return one row with two versions of the applicant count: total application rows, and distinct leads who applied. Columns: app_rows, distinct_leads.",teach:"When two teams quote different conversion rates, this query is usually the whole explanation.",hint:"COUNT(*) and COUNT(DISTINCT lead_id) from applications, no join needed.",
+ sol:"SELECT COUNT(*) AS app_rows, COUNT(DISTINCT lead_id) AS distinct_leads FROM applications"},
+{id:"s4-5",s:"s4",t:"Leads per enrollment",ask:"For each channel, return how many leads it took to produce one enrollment, rounded to 1 decimal. Columns: channel, leads_per_enrollment. Exclude channels with no enrollments.",teach:"The shape of a cost-per-enrollment question. Swap leads for spend and it is CAC.",hint:"Reuse the funnel CTEs, then divide leads by enrollments with a *1.0 to force decimal maths.",
+ sol:"WITH l AS (SELECT channel, COUNT(*) AS leads FROM leads GROUP BY channel), en AS (SELECT ld.channel AS channel, COUNT(*) AS enrollments FROM enrollments e JOIN applications a ON a.id = e.application_id JOIN leads ld ON ld.id = a.lead_id GROUP BY ld.channel) SELECT l.channel AS channel, ROUND(l.leads * 1.0 / en.enrollments, 1) AS leads_per_enrollment FROM l JOIN en ON en.channel = l.channel WHERE en.enrollments > 0"},
+/* ---- stage 5 ---- */
+{id:"s5-1",s:"s5",t:"Rank without collapsing",ask:"Rank channels by lead volume, biggest first. Columns: channel, leads, rank.",teach:"ROW_NUMBER() OVER (ORDER BY …) numbers rows while every row stays visible. That is the whole idea of a window function.",hint:"SELECT channel, COUNT(*) AS leads, ROW_NUMBER() OVER (ORDER BY COUNT(*) DESC) AS rank … GROUP BY channel",ordered:true,
+ sol:"SELECT channel, COUNT(*) AS leads, ROW_NUMBER() OVER (ORDER BY COUNT(*) DESC) AS rank FROM leads GROUP BY channel ORDER BY leads DESC"},
+{id:"s5-2",s:"s5",t:"Compared with last term",ask:"For each term in order, return enrollments and the previous term's enrollments. Columns: term_code, enrollments, prev_enrollments.",teach:"LAG() reaches back one row in the window's order. This is term-over-term without a self-join.",hint:"Join enrollments to terms for seq, GROUP BY term, then LAG(COUNT(*)) OVER (ORDER BY t.seq).",ordered:true,
+ sol:"SELECT e.term_code AS term_code, COUNT(*) AS enrollments, LAG(COUNT(*)) OVER (ORDER BY t.seq) AS prev_enrollments FROM enrollments e JOIN terms t ON t.code = e.term_code GROUP BY e.term_code, t.seq ORDER BY t.seq"},
+{id:"s5-3",s:"s5",t:"Running total",ask:"For each term in order, return enrollments and the cumulative enrollments to date. Columns: term_code, enrollments, running_total.",teach:"A frame clause turns SUM() into a running total. Same pattern as a cumulative starts-to-goal chart.",hint:"SUM(COUNT(*)) OVER (ORDER BY t.seq ROWS BETWEEN UNBOUNDED PRECEDING AND CURRENT ROW)",ordered:true,
+ sol:"SELECT e.term_code AS term_code, COUNT(*) AS enrollments, SUM(COUNT(*)) OVER (ORDER BY t.seq ROWS BETWEEN UNBOUNDED PRECEDING AND CURRENT ROW) AS running_total FROM enrollments e JOIN terms t ON t.code = e.term_code GROUP BY e.term_code, t.seq ORDER BY t.seq"},
+{id:"s5-4",s:"s5",t:"Share of the whole",ask:"For each channel, return enrollments and its share of all enrollments, rounded to 3 decimals. Columns: channel, enrollments, share.",teach:"SUM(…) OVER () with an empty window is the grand total sitting next to every row — the cleanest way to compute a share.",hint:"COUNT(*) * 1.0 / SUM(COUNT(*)) OVER ()",
+ sol:"SELECT ld.channel AS channel, COUNT(*) AS enrollments, ROUND(COUNT(*) * 1.0 / SUM(COUNT(*)) OVER (), 3) AS share FROM enrollments e JOIN applications a ON a.id = e.application_id JOIN leads ld ON ld.id = a.lead_id GROUP BY ld.channel"},
+/* ---- stage 6 ---- */
+{id:"s6-1",s:"s6",t:"Cohort sizes",ask:"For each starting term, return how many students enrolled. Columns: cohort_term, cohort_size.",teach:"A cohort is defined by when it entered. Everything downstream is measured relative to that entry point.",hint:"GROUP BY term_code on enrollments.",
+ sol:"SELECT term_code AS cohort_term, COUNT(*) AS cohort_size FROM enrollments GROUP BY term_code"},
+{id:"s6-2",s:"s6",t:"Still here next term",ask:"For each cohort, return the cohort size and how many were still active in the following term. Columns: cohort_term, cohort_size, retained_next.",teach:"Term-over-term persistence, which is the same arithmetic as logo retention with different nouns.",hint:"Join enrollments to terms for the start seq, then to persistence on the term whose seq is start+1.",
+ sol:"WITH c AS (SELECT e.id AS id, e.term_code AS cohort_term, t.seq AS seq FROM enrollments e JOIN terms t ON t.code = e.term_code) SELECT c.cohort_term AS cohort_term, COUNT(*) AS cohort_size, SUM(CASE WHEN p.enrollment_id IS NULL THEN 0 ELSE 1 END) AS retained_next FROM c LEFT JOIN terms nt ON nt.seq = c.seq + 1 LEFT JOIN persistence p ON p.enrollment_id = c.id AND p.term_code = nt.code GROUP BY c.cohort_term"},
+{id:"s6-3",s:"s6",t:"The retention triangle",ask:"For each cohort and each term offset (0, 1, 2 …), return how many of that cohort were still active. Columns: cohort_term, term_offset, still_active.",teach:"The grid every retention deck is built from. Offset rather than calendar term is what makes cohorts comparable.",hint:"Join persistence to terms twice — once for the cohort's start seq, once for the row's seq — and subtract.",
+ sol:"WITH c AS (SELECT e.id AS id, e.term_code AS cohort_term, t.seq AS start_seq FROM enrollments e JOIN terms t ON t.code = e.term_code) SELECT c.cohort_term AS cohort_term, pt.seq - c.start_seq AS term_offset, COUNT(*) AS still_active FROM c JOIN persistence p ON p.enrollment_id = c.id JOIN terms pt ON pt.code = p.term_code GROUP BY c.cohort_term, pt.seq - c.start_seq"}
+];
+
+function labSolved(){return state.labSolved||(state.labSolved=[]);}
+function labAssisted(){return state.labAssisted||(state.labAssisted=[]);}
+function labIsDone(id){return labSolved().indexOf(id)>=0;}
+function labStageEx(sid){return LAB_EX.filter(function(e){return e.s===sid;});}
+function labStageDone(sid){return labStageEx(sid).filter(function(e){return labIsDone(e.id);}).length;}
+function labNext(){for(var i=0;i<LAB_EX.length;i++){if(!labIsDone(LAB_EX[i].id))return LAB_EX[i];}return null;}
+
+async function labDB(){
+  if(LAB.db)return LAB.db;
+  var SQL=await labEngine();
+  var db=new SQL.Database();
+  db.run(labSchemaSQL());db.run(labSeedSQL());
+  LAB.db=db;return db;
+}
+function labRun(db,sql){
+  var out=db.exec(sql);
+  if(!out||!out.length)return {columns:[],values:[]};
+  return out[out.length-1];
+}
+function labNorm(cell){
+  if(cell===null||cell===undefined)return "\u2400";
+  if(typeof cell==="number")return String(Math.round(cell*1000)/1000);
+  var n=Number(cell);
+  if(cell!=="" && !isNaN(n) && String(n)===String(cell).trim())return String(Math.round(n*1000)/1000);
+  return String(cell).trim();
+}
+function labSame(mine,want,ordered){
+  if(!mine||!want)return false;
+  if(mine.values.length!==want.values.length)return {ok:false,why:"Row count is off — you returned "+mine.values.length+" row"+(mine.values.length===1?"":"s")+", the answer has "+want.values.length+"."};
+  if(!mine.values.length)return {ok:false,why:"That came back empty."};
+  if(mine.values[0].length!==want.values[0].length)return {ok:false,why:"Column count is off — you returned "+mine.values[0].length+", the answer has "+want.values[0].length+"."};
+  var a=mine.values.map(function(r){return r.map(labNorm).join("\u0001");});
+  var b=want.values.map(function(r){return r.map(labNorm).join("\u0001");});
+  if(!ordered){a=a.slice().sort();b=b.slice().sort();}
+  for(var i=0;i<a.length;i++){if(a[i]!==b[i])return {ok:false,why:ordered?"The values diverge at row "+(i+1)+". Check your sort order as well as the numbers.":"The values do not match. Compare your result against what the question asked for, row by row."};}
+  return {ok:true};
+}
+
+function labGrid(res,cap){
+  if(!res||!res.columns.length)return '<p class="muted small" style="margin:0">No rows came back.</p>';
+  var max=cap||60,rows=res.values.slice(0,max);
+  var h='<div class="labgridwrap"><table class="labgrid"><thead><tr>'+res.columns.map(function(c){return "<th>"+esc(String(c))+"</th>";}).join("")+"</tr></thead><tbody>";
+  h+=rows.map(function(r){return "<tr>"+r.map(function(c){return "<td>"+(c===null?'<span class="labnull">NULL</span>':esc(String(c)))+"</td>";}).join("")+"</tr>";}).join("");
+  h+="</tbody></table></div>";
+  if(res.values.length>max)h+='<p class="muted small" style="margin:8px 0 0">Showing '+max+" of "+res.values.length+" rows.</p>";
+  return h;
+}
+const LAB_SCHEMA_HTML='<div class="labschema"><span class="caps">The tables</span>'+
+ '<div class="labtbl"><b>leads</b> <span>id · created_date · channel · program_code · term_code</span></div>'+
+ '<div class="labtbl"><b>applications</b> <span>id · lead_id · started_date · submitted_date · status</span></div>'+
+ '<div class="labtbl"><b>enrollments</b> <span>id · application_id · term_code · credential · status</span></div>'+
+ '<div class="labtbl"><b>persistence</b> <span>enrollment_id · term_code · status</span></div>'+
+ '<div class="labtbl"><b>programs</b> <span>code · name · credential · partner</span></div>'+
+ '<div class="labtbl"><b>terms</b> <span>code · name · start_date · seq</span></div>'+
+ '<p class="muted small" style="margin:10px 0 0">A lead may have no application, or two. Not every application is submitted. That is deliberate — it is where wrong numbers come from.</p></div>';
+
+function renderLab(){
+  var doneN=labSolved().length,total=LAB_EX.length;
+  var head='<div class="card"><span class="pilltag">🗃️ SQL Lab</span><h2>Write it here</h2>'+
+   '<p class="sub">A real database runs in this page — the tables below hold an enrollment funnel shaped like the one you already know. Write a query, run it, and the lab checks your result against the answer.</p>'+
+   '<div class="labprog"><div class="labbar"><span style="width:'+(total?Math.round(doneN/total*100):0)+'%"></span></div><b>'+doneN+" / "+total+"</b></div>"+
+   '<div class="labstages">'+LAB_STAGES.map(function(s){var d=labStageDone(s.id),n=labStageEx(s.id).length;
+     return '<button class="labstage'+(d>=n?" full":"")+'" data-stage="'+s.id+'"><b>'+esc(s.n)+"</b><span>"+esc(s.wk)+" · "+d+"/"+n+"</span></button>";}).join("")+"</div>"+
+   '<div class="actions" style="margin-top:14px"><button class="btn ghost mini" id="labSchema">Show the tables</button><button class="btn ghost mini" id="labFree">Free query</button></div>'+
+   (LAB.showSchema?LAB_SCHEMA_HTML:"")+"</div>";
+
+  if(LAB.error){root.innerHTML=head+'<div class="card"><span class="pilltag">Engine</span><h2>The SQL engine did not load</h2><p class="muted">'+esc(LAB.error)+'</p><p class="muted small">Commit <b>sql-wasm.js</b> and <b>sql-wasm.wasm</b> next to your index.html, or let it reach the CDN. Opening the file straight from your hard drive can block the engine too — serving it from GitHub Pages fixes that.</p><button class="btn" id="labRetry" style="margin-top:12px">Try again</button></div>';
+    var rb=document.getElementById("labRetry");if(rb)rb.onclick=function(){LAB.error="";LAB.db=null;window.__labEngine=null;render();labBoot();};labWireHead();return;}
+  if(!LAB.db){root.innerHTML=head+'<div class="card"><p class="muted" style="margin:0"><span class="thinking">Starting the database…</span></p><p class="muted small" style="margin:10px 0 0">First run downloads the engine once, then it is instant.</p></div>';labWireHead();labBoot();return;}
+
+  var body="";
+  if(LAB.free){
+    body='<div class="card"><button class="exitbtn" id="labExitFree">✕ exit</button><span class="pilltag">🔓 Free query</span><h2>Ask it anything</h2>'+
+     '<p class="sub">No checking, no grading. Poke at the data until it makes sense.</p>'+
+     '<textarea class="labed" id="labSql" spellcheck="false" placeholder="SELECT channel, COUNT(*) FROM leads GROUP BY channel">'+esc(LAB.sql)+'</textarea>'+
+     '<div class="actions"><button class="btn ghost mini" id="labAskAI">✨ Ask about this</button><button class="btn" id="labRunBtn">Run ▸</button></div>'+
+     (LAB.err?'<div class="laberr">'+esc(LAB.err)+"</div>":"")+
+     (LAB.res?'<div class="labres">'+labGrid(LAB.res)+"</div>":"")+"</div>";
+  }else{
+    var ex=LAB.ex||labNext();
+    if(!ex){body='<div class="card"><span class="pilltag">🏁 Finished</span><h2>Every exercise is done</h2><p class="muted">Twenty-eight queries, from SELECT to a retention triangle. Free query mode is still there whenever you want to keep digging.</p></div>';}
+    else{
+      LAB.ex=ex;
+      var st=LAB_STAGES.filter(function(s){return s.id===ex.s;})[0];
+      var idx=labStageEx(ex.s).map(function(e){return e.id;}).indexOf(ex.id)+1;
+      var done=labIsDone(ex.id);
+      body='<div class="card"><span class="pilltag">'+esc(st.wk)+" · "+esc(st.n)+" "+idx+"/"+labStageEx(ex.s).length+'</span><h2>'+esc(ex.t)+(done?' <span class="labtick">✓</span>':"")+"</h2>"+
+       '<p class="labask">'+esc(ex.ask)+"</p>"+
+       '<div class="labteach">'+esc(ex.teach)+"</div>"+
+       (LAB.hint?'<div class="labhint"><span class="caps">Hint</span>'+esc(ex.hint)+"</div>":"")+
+       (LAB.shown?'<div class="labhint"><span class="caps">One way to write it</span><code>'+esc(ex.sol)+"</code></div>":"")+
+       '<textarea class="labed" id="labSql" spellcheck="false" placeholder="SELECT …">'+esc(LAB.sql)+"</textarea>"+
+       '<div class="actions"><span style="display:flex;gap:8px;flex-wrap:wrap">'+
+         (LAB.hint?"":'<button class="btn ghost mini" id="labHint">Hint</button>')+
+         (LAB.shown?"":'<button class="btn ghost mini" id="labShow">Show me</button>')+
+         '<button class="btn ghost mini" id="labAskAI">✨ Ask about this</button></span>'+
+         '<span style="display:flex;gap:8px"><button class="btn ghost" id="labRunBtn">Run ▸</button><button class="btn" id="labCheck">Check ✓</button></span></div>'+
+       (LAB.err?'<div class="laberr">'+esc(LAB.err)+"</div>":"")+
+       (LAB.verdict?'<div class="'+(LAB.verdict.ok?"labok":"labno")+'">'+esc(LAB.verdict.msg)+"</div>":"")+
+       (LAB.res?'<div class="labres"><span class="caps">Your result</span>'+labGrid(LAB.res)+"</div>":"")+
+       '<div class="actions" style="margin-top:12px"><button class="btn ghost mini" id="labPrev">‹ previous</button><button class="btn ghost mini" id="labSkip">next ›</button></div></div>';
+    }
+  }
+  root.innerHTML=head+body;
+  labWireHead();labWireBody();
+}
+function labBoot(){
+  if(LAB.loading)return;LAB.loading=true;
+  labDB().then(function(){LAB.loading=false;if(tab==="lab")render();})
+    .catch(function(e){LAB.loading=false;LAB.error=(e&&e.message)||String(e);if(tab==="lab")render();});
+}
+function labWireHead(){
+  var a=document.getElementById("labSchema");if(a)a.onclick=function(){LAB.showSchema=!LAB.showSchema;render();};
+  var f=document.getElementById("labFree");if(f)f.onclick=function(){LAB.free=true;LAB.res=null;LAB.err="";LAB.verdict=null;LAB.sql="";render();};
+  document.querySelectorAll("[data-stage]").forEach(function(b){b.onclick=function(){
+    var list=labStageEx(b.dataset.stage),nx=list.filter(function(e){return !labIsDone(e.id);})[0]||list[0];
+    LAB.free=false;labGo(nx);};});
+}
+function labGo(ex){LAB.ex=ex;LAB.sql="";LAB.res=null;LAB.err="";LAB.verdict=null;LAB.hint=false;LAB.shown=false;render();}
+function labWireBody(){
+  var ta=document.getElementById("labSql");
+  if(ta){ta.oninput=function(){LAB.sql=ta.value;};
+    ta.onkeydown=function(e){if((e.metaKey||e.ctrlKey)&&e.key==="Enter"){e.preventDefault();labDoRun();}};}
+  var x=document.getElementById("labExitFree");if(x)x.onclick=function(){LAB.free=false;LAB.res=null;LAB.err="";LAB.sql="";render();};
+  var r=document.getElementById("labRunBtn");if(r)r.onclick=labDoRun;
+  var c=document.getElementById("labCheck");if(c)c.onclick=labDoCheck;
+  var h=document.getElementById("labHint");if(h)h.onclick=function(){LAB.hint=true;render();};
+  var s=document.getElementById("labShow");if(s)s.onclick=function(){LAB.shown=true;if(labAssisted().indexOf(LAB.ex.id)<0)labAssisted().push(LAB.ex.id);save();render();};
+  var p=document.getElementById("labPrev");if(p)p.onclick=function(){var i=LAB_EX.map(function(e){return e.id;}).indexOf(LAB.ex.id);if(i>0)labGo(LAB_EX[i-1]);};
+  var n=document.getElementById("labSkip");if(n)n.onclick=function(){var i=LAB_EX.map(function(e){return e.id;}).indexOf(LAB.ex.id);if(i<LAB_EX.length-1)labGo(LAB_EX[i+1]);};
+  var q=document.getElementById("labAskAI");if(q)q.onclick=function(){
+    var ex=LAB.ex,parts=[];
+    if(ex&&!LAB.free){parts.push("I'm on this SQL exercise: "+ex.ask);}
+    if(LAB.sql.trim())parts.push("Here is the query I wrote:\n"+LAB.sql.trim());
+    if(LAB.err)parts.push("The database gave me this error: "+LAB.err);
+    else if(LAB.verdict&&!LAB.verdict.ok)parts.push("It runs, but the lab says: "+LAB.verdict.msg);
+    parts.push("Explain what is going wrong and nudge me toward the fix. Please don't just hand me the finished query.");
+    askState.q=parts.join("\n\n");askState.a="";askState.suggest=null;toggleAsk(true);};
+}
+function labDoRun(){
+  if(!LAB.db)return;
+  var sql=(LAB.sql||"").trim();
+  if(!sql){LAB.err="Write a query first.";LAB.res=null;render();return;}
+  try{LAB.res=labRun(LAB.db,sql);LAB.err="";}
+  catch(e){LAB.err=(e&&e.message)||String(e);LAB.res=null;}
+  LAB.verdict=null;render();
+}
+function labDoCheck(){
+  if(!LAB.db||!LAB.ex)return;
+  var sql=(LAB.sql||"").trim();
+  if(!sql){LAB.err="Write a query first.";render();return;}
+  var mine;
+  try{mine=labRun(LAB.db,sql);LAB.err="";}
+  catch(e){LAB.err=(e&&e.message)||String(e);LAB.res=null;LAB.verdict=null;render();return;}
+  LAB.res=mine;
+  var want=labRun(LAB.db,LAB.ex.sol);
+  var v=labSame(mine,want,!!LAB.ex.ordered);
+  if(v===true||v.ok){
+    var first=!labIsDone(LAB.ex.id);
+    LAB.verdict={ok:true,msg:first?"That's it. Result matches.":"Still correct."};
+    if(first){
+      var prev=state.xp;labSolved().push(LAB.ex.id);
+      addXP(labAssisted().indexOf(LAB.ex.id)>=0?8:20);
+      bumpStreak();commitProgress(prev);
+    }
+  }else{LAB.verdict={ok:false,msg:v.why};}
+  render();
+}
+
 function renderPractice(){
  if(teachSess){root.innerHTML=renderTeachHTML();wireTeach();return;}
  if(sab&&sab.ownerTab==="practice"){root.innerHTML=renderSabotageHTML();wireSabotage();return;}
@@ -985,17 +1487,29 @@ function finishSabotage(){
 }
 
 /* ===== REFERENCE (glossary + concept map) ===== */
+function sqlPlanHTML(){
+ const done=state.sqlWeeks||[];
+ const rows=SQLPLAN.map(function(p,i){const on=done.indexOf(i)>=0;return `<button class="wk${on?' on':''}" data-week="${i}"><span class="box">${on?'✓':''}</span><span class="wl"><span class="wn">${esc(p.w)}</span><b>${esc(p.t)}</b> — <span class="muted">${esc(p.d)}</span></span></button>`;}).join("");
+ return `<div class="planhead"><h3 style="margin:0;font-size:18px">The twelve-week practice plan</h3><span class="muted small">${done.length}/${SQLPLAN.length} done</span></div><p class="muted small" style="margin:0 4px 2px">About four hours a week. Tick a week once it is behind you — each is worth 5 XP, and every query you write along the way belongs in the query log under Reference.</p><div class="weeks">${rows}</div><p class="muted small" style="margin:10px 4px 0">Optional accelerant: dbt Fundamentals — free, roughly eight hours, and it signals modern-stack fluency.</p>`;
+}
+function queryLogHTML(){
+ const qs=state.queries||[];
+ const rows=qs.length?qs.slice().reverse().map(function(q){const i=qs.indexOf(q);const code=esc(q.sql).split("\n").map(function(ln,j){return `<div class="cl"><span class="ln">${j+1}</span><span>${ln}</span></div>`;}).join("");return `<div class="glossitem"><div class="t">${esc(q.q)}<span class="gacts"><button class="glnk del" data-qdel="${i}">Delete</button></span></div><div class="code" style="margin:10px 0">${code}</div>${q.note?`<div class="d">${esc(q.note)}</div>`:""}<div class="from">Logged — ${esc(q.d||"")}</div></div>`;}).join(""):`<div class="empty">🗃️ Nothing logged yet. Every query you write against real data goes here — a business question on top, the SQL underneath. This is the artifact you show somebody later.</div>`;
+ return `<div class="card"><span class="pilltag">🗃️ Query log</span><h2>Queries you have written</h2><p class="sub">${qs.length} logged. Each pairs a real business question with the SQL that answered it — the portfolio piece, built one query at a time.</p><div class="qlform"><input type="text" id="qlQ" placeholder="The business question — e.g. app-to-start by credential, 2025" autocomplete="off"><textarea id="qlS" placeholder="The SQL you wrote"></textarea><input type="text" id="qlN" placeholder="What it taught you, or what surprised you (optional)" autocomplete="off"><div class="prow"><button class="btn mini" id="qlAdd">+ Log this query (+10 XP)</button>${qs.length?`<button class="btn ghost mini" id="qlCopy">⧉ Copy all as Markdown</button>`:""}</div></div>${rows}</div>`;
+}
 function renderReference(){
  let gl=state.glossary.length?[...state.glossary].sort((a,b)=>a.t.localeCompare(b.t)).map(g=>{const key=esc(g.t).replace(/"/g,'&quot;');if(glEdit===g.t)return `<div class="glossitem editing"><input type="text" class="geT" value="${key}"><textarea class="geD">${esc(g.d)}</textarea><div class="actions"><button class="btn ghost mini" data-gcancel="1">Cancel</button><button class="btn mini" data-gsave="${key}">Save</button></div></div>`;return `<div class="glossitem"><div class="t">${esc(g.t)}${g.group?`<span class="gtag">${esc(g.group)}</span>`:''}<span class="gacts"><button class="glnk" data-gedit="${key}">Edit</button><button class="glnk del" data-gdel="${key}">Delete</button></span></div><div class="d">${esc(g.d)}</div><div class="from">Earned in — ${esc(g.fromLabel||g.from)}</div></div>`;}).join(""):`<div class="empty">📖 No terms yet — they arrive as you finish doors and sabotage rounds.</div>`;
  const c={};state.history.forEach(h=>{c[h.group]=(c[h.group]||0)+1;});const gs=Object.keys(c);let mp;
  if(!gs.length)mp=`<div class="empty">🗺️ The concept map fills in as you play. When a tradeoff shows up three times, that's the pattern landing.</div>`;
  else{const max=Math.max(...gs.map(g=>c[g]));mp=gs.sort((a,b)=>c[b]-c[a]).map(g=>{const n=c[g],hot=n>=3;return `<div class="cmap-row"><div class="rowtop"><span>${esc(g)}${hot?' ⭐':''}</span><span class="n">${n} ${n===1?'time':'times'}</span></div><div class="bar"><i class="${hot?'hot':''}" style="width:${Math.round(n/max*100)}%"></i></div></div>`;}).join("");}
- root.innerHTML=`<div class="card"><span class="pilltag">📚 Glossary</span><h2>Your glossary</h2><p class="sub">${state.glossary.length} term${state.glossary.length===1?'':'s'}, each anchored to where you met it.</p><div class="addterm"><input type="text" id="newTermT" placeholder="A term you picked up" autocomplete="off"><input type="text" id="newTermD" placeholder="What it means, in your words" autocomplete="off"><button class="btn ghost mini" id="newTermAdd">+ Add</button></div>${gl}</div><div class="card"><span class="pilltag">🗺️ Concept map</span><h2>Tradeoffs that keep recurring</h2><p class="sub">⭐ marks a pattern you've hit three or more times — that's the signal.</p>${mp}</div><div class="card"><span class="pilltag">🧠 The thinking</span><h2>Why App Savvy works this way</h2><p class="sub">Not invented on a whim — built on how judgment and expertise are actually formed.</p><div class="fw"><div class="fwitem"><b>Judgment you can defend.</b> Real architecture usually comes down to a defensible choice, justified by naming what you trade. That is how experienced engineers frame it. <a href="https://martinfowler.com/articles/microservice-trade-offs.html" target="_blank" rel="noopener">Fowler on trade-offs ↗</a></div><div class="fwitem"><b>Testing makes it stick.</b> Retrieving an answer under a little pressure builds durable understanding — the well-replicated “testing effect.” That is why every lesson ends at a door. <a href="https://pmc.ncbi.nlm.nih.gov/articles/PMC3983480/" target="_blank" rel="noopener">Retrieval-practice research ↗</a></div><div class="fwitem"><b>Deliberate practice.</b> Skill grows from focused reps on well-defined tasks with immediate feedback — exactly the shape of the door loop. <a href="https://royalsocietypublishing.org/doi/10.1098/rsos.190327" target="_blank" rel="noopener">Ericsson, revisited ↗</a></div><div class="fwitem"><b>Decisions as the unit.</b> Each door mirrors an Architecture Decision Record: a decision, its context, and its consequences — how real teams capture the reasoning behind a system. <a href="https://adr.github.io/" target="_blank" rel="noopener">Architecture Decision Records ↗</a></div><div class="fwitem"><b>Aimed at the role.</b> Forward Deployed Engineers turn messy client problems into sound systems — fluency in tradeoffs is the job itself. <a href="https://en.wikipedia.org/wiki/Forward_Deployed_Engineer" target="_blank" rel="noopener">What an FDE is ↗</a> · <a href="https://posthog.com/blog/forward-deployed-engineer" target="_blank" rel="noopener">Why they are in demand ↗</a></div></div></div>`;
+ root.innerHTML=`<div class="card"><span class="pilltag">📚 Glossary</span><h2>Your glossary</h2><p class="sub">${state.glossary.length} term${state.glossary.length===1?'':'s'}, each anchored to where you met it.</p><div class="addterm"><input type="text" id="newTermT" placeholder="A term you picked up" autocomplete="off"><input type="text" id="newTermD" placeholder="What it means, in your words" autocomplete="off"><button class="btn ghost mini" id="newTermAdd">+ Add</button></div>${gl}</div>${queryLogHTML()}<div class="card"><span class="pilltag">🗺️ Concept map</span><h2>Tradeoffs that keep recurring</h2><p class="sub">⭐ marks a pattern you've hit three or more times — that's the signal.</p>${mp}</div><div class="card"><span class="pilltag">🧠 The thinking</span><h2>Why App Savvy works this way</h2><p class="sub">Not invented on a whim — built on how judgment and expertise are actually formed.</p><div class="fw"><div class="fwitem"><b>Judgment you can defend.</b> Real architecture usually comes down to a defensible choice, justified by naming what you trade. That is how experienced engineers frame it. <a href="https://martinfowler.com/articles/microservice-trade-offs.html" target="_blank" rel="noopener">Fowler on trade-offs ↗</a></div><div class="fwitem"><b>Testing makes it stick.</b> Retrieving an answer under a little pressure builds durable understanding — the well-replicated “testing effect.” That is why every lesson ends at a door. <a href="https://pmc.ncbi.nlm.nih.gov/articles/PMC3983480/" target="_blank" rel="noopener">Retrieval-practice research ↗</a></div><div class="fwitem"><b>Deliberate practice.</b> Skill grows from focused reps on well-defined tasks with immediate feedback — exactly the shape of the door loop. <a href="https://royalsocietypublishing.org/doi/10.1098/rsos.190327" target="_blank" rel="noopener">Ericsson, revisited ↗</a></div><div class="fwitem"><b>Decisions as the unit.</b> Each door mirrors an Architecture Decision Record: a decision, its context, and its consequences — how real teams capture the reasoning behind a system. <a href="https://adr.github.io/" target="_blank" rel="noopener">Architecture Decision Records ↗</a></div><div class="fwitem"><b>Aimed at the role.</b> Forward Deployed Engineers turn messy client problems into sound systems — fluency in tradeoffs is the job itself. <a href="https://en.wikipedia.org/wiki/Forward_Deployed_Engineer" target="_blank" rel="noopener">What an FDE is ↗</a> · <a href="https://posthog.com/blog/forward-deployed-engineer" target="_blank" rel="noopener">Why they are in demand ↗</a></div></div></div>`;
  var na=document.getElementById("newTermAdd");if(na)na.onclick=function(){var t=(document.getElementById("newTermT").value||"").trim();var d=(document.getElementById("newTermD").value||"").trim();if(!t){document.getElementById("newTermT").focus();return;}addGlossaryTerm(t,d||"(your note)","Added by you");renderReference();};
  root.querySelectorAll("[data-gedit]").forEach(function(b){b.onclick=function(){glEdit=b.dataset.gedit;renderReference();};});
  root.querySelectorAll("[data-gcancel]").forEach(function(b){b.onclick=function(){glEdit=null;renderReference();};});
  root.querySelectorAll("[data-gdel]").forEach(function(b){b.onclick=function(){var nm=b.dataset.gdel;if(confirm('Delete “'+nm+'” from your glossary?')){state.glossary=state.glossary.filter(function(g){return g.t!==nm;});glEdit=null;save();refreshStats();renderReference();}};});
- root.querySelectorAll("[data-gsave]").forEach(function(b){b.onclick=function(){var item=b.closest(".glossitem");var nt=(item.querySelector(".geT").value||"").trim();var nd=(item.querySelector(".geD").value||"").trim();if(!nt){item.querySelector(".geT").focus();return;}var g=state.glossary.find(function(x){return x.t===b.dataset.gsave;});if(g){if(nt.toLowerCase()!==g.t.toLowerCase()&&state.glossary.some(function(x){return x.t.toLowerCase()===nt.toLowerCase();})){alert("You already have a term with that name.");return;}g.t=nt;g.d=nd||"(your note)";}glEdit=null;save();refreshStats();renderReference();};});
+ root.querySelectorAll("[data-gsave]").forEach(function(b){b.onclick=function(){var item=b.closest(".glossitem");var nt=(item.querySelector(".geT").value||"").trim();var nd=(item.querySelector(".geD").value||"").trim();if(!nt){item.querySelector(".geT").focus();return;}var g=state.glossary.find(function(x){return x.t===b.dataset.gsave;});if(g){if(nt.toLowerCase()!==g.t.toLowerCase()&&state.glossary.some(function(x){return x.t.toLowerCase()===nt.toLowerCase();})){alert("You already have a term with that name.");return;}g.t=nt;g.d=nd||"(your note)";}glEdit=null;save();refreshStats();renderReference();};}); var qa=document.getElementById("qlAdd");if(qa)qa.onclick=function(){var q=(document.getElementById("qlQ").value||"").trim();var sq=(document.getElementById("qlS").value||"").trim();var nt=(document.getElementById("qlN").value||"").trim();if(!q){document.getElementById("qlQ").focus();return;}if(!sq){document.getElementById("qlS").focus();return;}state.queries=state.queries||[];state.queries.push({q:q,sql:sq,note:nt,d:todayStr()});var p=state.xp;addXP(10);bumpStreak();commitProgress(p);renderReference();};
+ var qc=document.getElementById("qlCopy");if(qc)qc.onclick=function(){var md=(state.queries||[]).map(function(x){return "## "+x.q+"\n\n```sql\n"+x.sql+"\n```\n"+(x.note?"\n"+x.note+"\n":"")+"\n_Logged "+(x.d||"")+"_\n";}).join("\n---\n\n");var out="# Query log\n\n"+md;if(navigator.clipboard&&navigator.clipboard.writeText){navigator.clipboard.writeText(out).then(function(){qc.textContent="✓ Copied";setTimeout(function(){qc.textContent="⧉ Copy all as Markdown";},1600);}).catch(function(){alert(out);});}else{alert(out);}};
+ root.querySelectorAll("[data-qdel]").forEach(function(b){b.onclick=function(){var i=+b.dataset.qdel;if(confirm("Delete this query from your log?")){state.queries.splice(i,1);save();refreshStats();renderReference();}};});
 }
 
 /* ===== AI & DATA ===== */
