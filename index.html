@@ -288,6 +288,8 @@
   .labstage b{display:block;font-size:13.5px;font-weight:600}
   .labstage span{display:block;font-size:11.5px;color:var(--muted);margin-top:2px}
   .labstage.full{border-color:var(--teal);background:var(--mint2)}
+  .labstage.locked{opacity:.62;border-style:dashed}
+  .labstage.locked b{color:var(--muted)}
   .labschema{margin-top:14px;background:var(--mint2);border:1px solid var(--mintline);border-radius:12px;padding:12px 14px}
   .labtbl{padding:6px 0;border-top:1px solid var(--line);font-size:13px}
   .labtbl:first-of-type{border-top:none}
@@ -317,6 +319,38 @@
   .askimg img{width:52px;height:52px;object-fit:cover;border-radius:7px;border:1px solid var(--mintline)}
   .askimg .aif{flex:1;font-size:12.5px;color:var(--muted)}
   .askimg button{background:none;border:none;color:var(--bad);cursor:pointer;font-family:inherit;font-size:12.5px;padding:4px}
+  .labhow{position:relative;background:var(--mint2);border:1px solid var(--mintline);border-radius:12px;padding:13px 15px;margin-bottom:14px}
+  .labhowx{position:absolute;top:10px;right:12px;background:none;border:none;color:var(--muted);font-family:inherit;font-size:11.5px;cursor:pointer;text-decoration:underline}
+  .labhowbar{margin:0 0 12px}
+  .labshape{font-family:ui-monospace,SFMono-Regular,Menlo,monospace;font-size:12.5px;line-height:1.7;white-space:pre-wrap;background:var(--surface);border:1px solid var(--mintline);border-radius:9px;padding:11px 13px;margin:9px 0 0;overflow-x:auto;color:var(--teal-deep)}
+  .labkeys{margin-top:11px}
+  .labkeys.big{margin-top:18px;background:var(--mint2);border:1px solid var(--mintline);border-radius:12px;padding:13px 15px}
+  .labkey{display:flex;gap:11px;align-items:baseline;padding:6px 0;border-top:1px solid var(--line)}
+  .labkey:first-of-type{border-top:none}
+  .labkey b{font-family:ui-monospace,SFMono-Regular,Menlo,monospace;font-size:12.5px;color:var(--teal-deep);flex:0 0 auto;max-width:46%;word-break:break-word}
+  .labkey span{font-size:13px;color:var(--muted)}
+  .labtraps{margin-top:12px;border-top:1px solid var(--line);padding-top:10px}
+  .labtraps ul{margin:6px 0 0;padding-left:19px}
+  .labtraps li{font-size:13px;color:var(--muted);margin-bottom:5px;line-height:1.55}
+  .labafter{margin-top:14px;background:var(--gold-bg);border:1px solid #e6d5ab;border-left:3px solid var(--gold);border-radius:0 11px 11px 0;padding:12px 15px;font-size:14px;line-height:1.65}
+  .labafter .caps{display:block;margin-bottom:6px;color:var(--gold)}
+  .lablesson{font-size:15px;line-height:1.72}
+  .lablesson p{margin:0 0 13px}
+  .lablesson code{font-family:ui-monospace,SFMono-Regular,Menlo,monospace;font-size:13px;background:var(--mint2);border:1px solid var(--mintline);border-radius:5px;padding:1px 5px}
+  .lablesson .labshape{margin:0 0 13px}
+  .labtry{margin-top:18px;border-top:1px solid var(--line);padding-top:14px}
+  .labtryrow{display:flex;gap:12px;align-items:flex-start;justify-content:space-between;padding:11px 0;border-top:1px solid var(--line)}
+  .labtryrow:first-of-type{border-top:none}
+  .labtryrow>div{flex:1;min-width:0}
+  .labtryrow p{margin:0 0 6px;font-size:13.5px}
+  .labtryrow pre{margin:0;font-family:ui-monospace,SFMono-Regular,Menlo,monospace;font-size:12px;line-height:1.65;white-space:pre-wrap;color:var(--teal-deep);background:var(--mint2);border:1px solid var(--mintline);border-radius:8px;padding:9px 11px;overflow-x:auto}
+  .labtryrow button{flex:0 0 auto;margin-top:2px}
+  .recgrid{display:grid;grid-template-columns:repeat(auto-fit,minmax(88px,1fr));gap:8px;margin:14px 0 4px}
+  .recgrid>div{background:var(--mint2);border:1px solid var(--mintline);border-radius:11px;padding:10px 11px;text-align:center}
+  .recgrid b{display:block;font-family:'Playfair Display',Georgia,serif;font-size:22px;line-height:1.15;color:var(--teal-deep);margin-top:3px}
+  .recfields{display:flex;flex-direction:column;gap:8px;margin:14px 0 4px}
+  .recfields input{width:100%;box-sizing:border-box;border:1.5px solid var(--line);border-radius:10px;background:var(--surface);color:var(--ink);padding:10px 12px;font-family:inherit;font-size:14px}
+  .recfields input:focus{outline:2px solid var(--teal);outline-offset:1px}
 </style>
 </head>
 <body>
@@ -395,14 +429,119 @@ const UNITS = [
     <p>When you can hear a decision and immediately say “the real question here is X against Y,” you've become someone who can lead the conversation. This is also where taste lives — knowing when a change hasn't earned its place and undoing it, which your four reverts taught you better than any lecture could.</p>`,
     vocab:[{t:"Tradeoff",d:"What you give up to get what you chose."},{t:"Failure mode",d:"The specific way a choice goes wrong when it does."},{t:"Defensible decision",d:"One you can justify by its tradeoff, right answer or not."},{t:"Premature optimization",d:"Solving a problem before you've confirmed it exists."},{t:"Taste as an input",d:"Judgment about feel, treated as real design data."}],
     unlock:"This is the whole game. Solutions people are hired to make defensible calls in ambiguity on a client's behalf. Everything else is in service of you doing this one thing with confidence." },
-  { id:"u9", emoji:"🗃️", title:"Asking data a question",
-    objective:"Read a query, say what it returns, and spot the moment a number stops being trustworthy — so you can interrogate a dashboard instead of taking it on faith.",
-    lesson:`<p>Every dashboard you have ever trusted is a query underneath. <b>SQL</b> is the language for asking a database a question, and it is smaller than it looks. You name the columns you want (<code>SELECT</code>), the table they live in (<code>FROM</code>), which rows qualify (<code>WHERE</code>), how to bundle them up (<code>GROUP BY</code>), and how to stitch two tables together (<code>JOIN</code>). Those five carry most of the work a business role ever needs.</p>
-    <p>The interesting part is the failure mode. A wrong query rarely errors — it returns a number, confidently, and the number is off. A join that quietly drops rows shrinks the denominator and inflates every conversion rate built on top of it. A count that counts one lead three times, because that lead filed three applications, inflates the funnel. There is no red light anywhere. The skill is reading a query and asking what it silently left out.</p>
-    <p>The other half is knowing <em>where</em> a number should be computed. The same conversion rate can be defined inside the query, inside a BI tool's calculated field, or inside a spreadsheet three teams each keep a copy of — and every extra home is another place the definition drifts. Teams that care about a metric push its definition down toward the data, then let every tool read that one copy.</p>`,
-    vocab:[{t:"SQL",d:"The language for asking a database a question."},{t:"JOIN",d:"Stitching two tables together on a key they share."},{t:"Aggregate / GROUP BY",d:"Collapsing many rows into one summary number per bucket."},{t:"NULL",d:"A value that is absent — it fails comparisons rather than matching them."},{t:"Window function",d:"A calculation across related rows that keeps every row visible — running totals, rank, previous period."},{t:"Cohort",d:"A group defined by when it entered, then tracked forward over time."},{t:"Metric definition",d:"The agreed formula behind a number — the one thing that must not vary by tool."}],
+  { id:"u9", emoji:"\U0001F5C3\uFE0F", title:"Asking data a question",
+    objective:"Read a query out loud, say what it returns, write your own against a real table, and name the way it could be quietly wrong.",
+    lesson:`<p>Every dashboard you have ever trusted is a query underneath. <b>SQL</b> is the language for asking a database a question, and it is smaller than it looks.</p>
+    <p>A table is a grid, and you already know how to read one. <b>Rows</b> are records \u2014 one lead, one application, one enrollment. <b>Columns</b> are the facts about each record. What SQL adds is a way to ask for a slice of that grid without opening it: which columns you want, which table they live in, which rows qualify, how to sort them, and how many to hand back. Those five things always appear in the same order, and the order is not optional.</p>
+    <pre class="labshape">SELECT   which columns
+FROM     which table
+WHERE    which rows qualify
+ORDER BY how to sort
+LIMIT    how many to return</pre>
+    <p>Only the first two are required. Line breaks and extra spaces mean nothing to the database, so the formatting above is purely for the person reading it next, which is usually you in three weeks. Two habits worth forming now: name your columns rather than reaching for <code>SELECT *</code>, because a query that names its columns keeps working when somebody adds a sixth one; and when you are only looking around, add a <code>LIMIT</code>, because against a real work database a careless query over ten million rows is how you discover the read replica has a timeout.</p>
+    <p>The one that catches everybody: text values go in <b>single quotes</b>, comparison uses <b>one equals sign</b>, and values are <b>case-sensitive</b>. <code>WHERE channel = 'referral'</code> finds nothing at all, and it does not warn you. It returns zero rows with total confidence.</p>
+    <p>Which is the real lesson of this unit. <b>A wrong query rarely errors.</b> It returns a number, confidently, and the number is off. A join that quietly drops rows shrinks the denominator and inflates every conversion rate built on top of it. A count that counts one lead three times, because that lead filed three applications, inflates the funnel. There is no red light anywhere. The skill is reading a query and asking what it silently left out.</p>
+    <p>The other half is knowing <em>where</em> a number should be computed. The same conversion rate can be defined inside the query, inside a BI tool's calculated field, or inside a spreadsheet three teams each keep a copy of \u2014 and every extra home is another place the definition drifts. Teams that care about a metric push its definition down toward the data, then let every tool read that one copy.</p>`,
+    vocab:[{t:"SQL",d:"The language for asking a database a question."},{t:"Row / column",d:"A record, and a fact about that record. A table is rows of them."},{t:"SELECT / FROM",d:"Which columns you want, and which table they live in."},{t:"WHERE",d:"Keeps only the rows that pass a test. Text in single quotes, one equals sign, case-sensitive."},{t:"ORDER BY",d:"Sorts the result. Without it, a database promises nothing about order."},{t:"LIMIT",d:"Caps how many rows come back \u2014 a habit, not a nicety, against a big table."},{t:"DISTINCT",d:"Collapses duplicate rows so each value appears once."},{t:"Metric definition",d:"The agreed formula behind a number \u2014 the one thing that must not vary by tool."}],
+    tries:[{d:"Every column, five rows, just to see the shape of it",q:"SELECT * FROM leads LIMIT 5"},
+      {d:"Two columns, filtered, sorted, capped",q:"SELECT id, created_date\nFROM leads\nWHERE channel = 'Events'\nORDER BY created_date DESC\nLIMIT 8"},
+      {d:"The silent failure \u2014 wrong case, zero rows, no error",q:"SELECT id FROM leads WHERE channel = 'events'"}],
     unlock:"You stop being the person who receives the number and become the person who can check it. When two dashboards disagree in a meeting, you are the one who opens the query and says which is right, and why." },
-];
+
+  { id:"u10", emoji:"\U0001F4CA", title:"Rows into a number",
+    objective:"Turn a table of rows into the number somebody wants on a slide, and say which of three possible counts you actually used.",
+    lesson:`<p>Every number on every dashboard you have ever read started life as a pile of rows that got collapsed. This is where that happens, and it is the single most useful thing in SQL for a business role.</p>
+    <p>An <b>aggregate function</b> takes many rows and returns one value. <code>COUNT()</code> counts them, <code>SUM()</code> adds them, <code>AVG()</code>, <code>MIN()</code> and <code>MAX()</code> do what they say. On their own they hand back a single row for the whole table. <code>GROUP BY</code> is what makes them useful: it splits the rows into buckets first, then aggregates each bucket separately, giving you one output row per bucket. "Leads by channel" is nothing more than that.</p>
+    <pre class="labshape">SELECT   channel, COUNT(*) AS leads
+FROM     leads
+GROUP BY channel</pre>
+    <p>There is one rule the database enforces without mercy. Every column in your <code>SELECT</code> must either appear in the <code>GROUP BY</code> or be wrapped in an aggregate. Ask for <code>channel, created_date, COUNT(*)</code> grouped only by channel and you get either an error or a meaningless date picked at random, depending on the database. The rule exists because the question makes no sense otherwise: if you have collapsed 364 leads into one row, which of their 364 dates did you want?</p>
+    <p><b>WHERE and HAVING both filter, at different moments.</b> <code>WHERE</code> runs first and throws out rows before any grouping happens. <code>HAVING</code> runs last and throws out finished groups. "Leads created in 2025" is a <code>WHERE</code>. "Channels with more than 200 leads" is a <code>HAVING</code>, because you cannot know a channel's total until you have counted it. Interviewers ask about this distinction constantly.</p>
+    <p>And the three counts are not interchangeable. <code>COUNT(*)</code> counts rows. <code>COUNT(column)</code> counts rows where that column is not empty. <code>COUNT(DISTINCT column)</code> counts unique values. The gap between the first and the third is where inflated funnel numbers live \u2014 which is the door at the end of this unit, and the thing the next unit shows you happening for real.</p>`,
+    vocab:[{t:"Aggregate function",d:"Collapses many rows into one value \u2014 COUNT, SUM, AVG, MIN, MAX."},{t:"GROUP BY",d:"Splits rows into buckets and aggregates each one separately."},{t:"HAVING",d:"Filters the finished groups, after aggregation. WHERE filters rows before it."},{t:"COUNT(*) vs COUNT(col)",d:"Rows, versus rows where that column has a value. NULLs are skipped by the second."},{t:"COUNT(DISTINCT col)",d:"How many different values appear \u2014 the count that survives duplication."},{t:"Grain",d:"What one row of a result represents. Naming it prevents most counting mistakes."}],
+    tries:[{d:"One bucket, one number",q:"SELECT COUNT(*) AS total_leads FROM leads"},
+      {d:"One row per channel",q:"SELECT channel, COUNT(*) AS leads\nFROM leads\nGROUP BY channel\nORDER BY leads DESC"},
+      {d:"WHERE first, HAVING last \u2014 both in one query",q:"SELECT channel, COUNT(*) AS leads\nFROM leads\nWHERE created_date >= '2025-01-01'\nGROUP BY channel\nHAVING COUNT(*) > 100"},
+      {d:"Three counts side by side \u2014 watch them disagree",q:"SELECT COUNT(*) AS rows_, COUNT(submitted_date) AS has_date, COUNT(DISTINCT lead_id) AS people\nFROM applications"}],
+    unlock:"When somebody quotes you a conversion rate, you can ask what the denominator counted \u2014 and you already know the three different answers that one word could mean." },
+
+  { id:"u11", emoji:"\U0001F517", title:"Two tables, and the rows that vanish",
+    objective:"Join two tables without silently dropping or duplicating people, and prove which of the two just happened.",
+    lesson:`<p>Your funnel is not one table. Leads live in one place, applications in another, enrollments in a third, and the only reason they connect is a shared value: <code>applications.lead_id</code> holds the same number as <code>leads.id</code>. That shared value is a <b>key</b>, and a <code>JOIN</code> is the instruction to line two tables up along it.</p>
+    <pre class="labshape">SELECT   l.channel, a.status
+FROM     leads l
+JOIN     applications a ON a.lead_id = l.id</pre>
+    <p>The short letters after each table name are <b>aliases</b>. Once a query touches two tables you need them, because both tables have a column called <code>id</code> and the database will refuse to guess which one you meant.</p>
+    <p><b>This is where numbers start being wrong.</b> The default <code>JOIN</code> \u2014 sometimes spelled <code>INNER JOIN</code>, same thing \u2014 keeps only rows that found a partner on both sides. In the Lab's database, 782 of 1,320 leads never filed an application. An inner join silently drops all 782. Count the survivors, call it your lead volume, and every conversion rate built on top is inflated. No error, no warning, just a wrong number that looks plausible.</p>
+    <p><code>LEFT JOIN</code> is the fix. It keeps every row from the left-hand table and fills in <code>NULL</code> where the right-hand table had no match. Which raises the other thing this unit teaches: <b>NULL is not zero and not an empty string.</b> It means "no value here," and it fails every comparison you throw at it, including <code>= NULL</code>. You have to write <code>IS NULL</code>. Filtering a left join on <code>IS NULL</code> is how you deliberately find the rows an inner join would have hidden.</p>
+    <p>Then there is the trap running the other direction. 69 leads in that database filed <em>two</em> applications. Join leads to applications and those 69 appear twice, so <code>COUNT(*)</code> reads 607 where the number of actual people is 538. That duplication is called <b>fan-out</b>, and <code>COUNT(DISTINCT \u2026)</code> is what saves you. One join can inflate a number and deflate a number at the same time, for two different reasons \u2014 which is why the previous unit came first.</p>
+    <p>Last piece: a <b>CTE</b>. <code>WITH name AS (query)</code> parks a result under a name so you can use it below like a table. Nothing new becomes possible \u2014 it just means a four-step query reads top to bottom in the order you thought about it, instead of nesting inside out. Every query from the next unit onward will use one.</p>`,
+    vocab:[{t:"Key",d:"The shared value two tables connect on \u2014 lead_id matching id."},{t:"Inner join",d:"Keeps only rows that match on both sides, dropping the rest without warning."},{t:"Left join",d:"Keeps every row on the left, NULL-filling where nothing matched."},{t:"Alias",d:"A short table name, so l.id and a.lead_id are unambiguous."},{t:"NULL",d:"An absent value. It fails every comparison, so you test it with IS NULL."},{t:"Fan-out",d:"One row becoming many through a join, quietly inflating any count of rows."},{t:"CTE",d:"WITH name AS (query) \u2014 a named intermediate result, so a long query reads in order."}],
+    tries:[{d:"Inner join: only leads that applied survive",q:"SELECT COUNT(*) AS surviving_rows\nFROM leads l\nJOIN applications a ON a.lead_id = l.id"},
+      {d:"Left join keeps all 1,320 \u2014 count the same thing three ways",q:"SELECT COUNT(*) AS joined_rows,\n       COUNT(DISTINCT l.id) AS distinct_leads,\n       COUNT(a.id) AS applications\nFROM leads l\nLEFT JOIN applications a ON a.lead_id = l.id"},
+      {d:"Find the rows an inner join hides",q:"SELECT l.id, l.channel\nFROM leads l\nLEFT JOIN applications a ON a.lead_id = l.id\nWHERE a.id IS NULL\nLIMIT 10"},
+      {d:"See fan-out with your own eyes \u2014 one lead, two applications",q:"SELECT lead_id, COUNT(*) AS apps\nFROM applications\nGROUP BY lead_id\nHAVING COUNT(*) > 1\nLIMIT 10"},
+      {d:"A CTE, so the steps read in order",q:"WITH applied AS (\n  SELECT DISTINCT lead_id FROM applications\n)\nSELECT l.channel, COUNT(*) AS leads, COUNT(applied.lead_id) AS applicants\nFROM leads l\nLEFT JOIN applied ON applied.lead_id = l.id\nGROUP BY l.channel"}],
+    unlock:"You can say in the meeting that the number dropped 782 people, and then show it on the screen. That is a different kind of authority than having an opinion about the number." },
+
+  { id:"u12", emoji:"\U0001F4D0", title:"Rates, denominators, and disagreements",
+    objective:"Build a funnel rate whose denominator you can defend out loud, and settle an argument between two numbers.",
+    lesson:`<p>Everything so far produced counts. This unit produces <b>rates</b>, and a rate is where judgment enters, because a rate is two decisions wearing one number.</p>
+    <p>Mechanically it is division, with one catch that bites immediately. Divide an integer by an integer and many databases hand back an integer \u2014 <code>538 / 1320</code> becomes <code>0</code>. Multiply one side by <code>1.0</code> to force decimal arithmetic, then wrap it in <code>ROUND(x, 3)</code> so the output is readable.</p>
+    <pre class="labshape">ROUND(COUNT(DISTINCT a.lead_id) * 1.0 / COUNT(DISTINCT l.id), 3)</pre>
+    <p>The mechanical part is the easy half. <b>The denominator is the argument.</b> Your inquiry-to-application rate can be distinct leads who applied over all leads, or application rows over all leads, or distinct applicants over leads that were actually contactable, or over leads excluding a partner whose data arrived late. Those produce four different numbers from the same tables, and each one has somebody willing to defend it. This is why the join unit came first: an inner join quietly picks a denominator for you, and it picks the wrong one.</p>
+    <p>Which is also the answer to the question you will get asked. When two teams quote different conversion rates, the disagreement is almost never in the numerator. Ask what each one divided by, and the meeting ends.</p>
+    <p>Structurally, funnel queries get long, and the pattern that keeps them readable is one CTE per stage \u2014 one for leads, one for applicants, one for enrollments \u2014 each keyed on the same dimension, then <code>LEFT JOIN</code>ed together at the end. Left, not inner, because a channel with zero enrollments still needs to appear; that zero is the finding. <code>COALESCE(x, 0)</code> turns the resulting <code>NULL</code> into the 0 a reader expects.</p>
+    <p>Build that four-column table once \u2014 dimension, leads, applicants, enrollments \u2014 and you can derive every rate anybody asks for without touching the query again. Save it where other tools can read it and you have shipped a definition rather than an answer.</p>`,
+    vocab:[{t:"Rate",d:"A numerator over a denominator \u2014 two decisions presented as one number."},{t:"Integer division",d:"Whole-number maths that silently rounds a rate to zero. Multiply by 1.0 to escape it."},{t:"COALESCE",d:"Substitutes a value when the result is NULL \u2014 usually the 0 a reader expects."},{t:"CASE WHEN",d:"An if-statement inside a query. SUM(CASE WHEN \u2026) counts conditionally."},{t:"Denominator integrity",d:"Knowing that the bottom of your fraction is the population you meant."},{t:"Reconciliation",d:"Proving why two sources disagree, rather than picking the one you prefer."}],
+    tries:[{d:"Integer division, doing exactly the wrong thing",q:"SELECT 538 / 1320 AS looks_like_zero, 538 * 1.0 / 1320 AS actual_rate"},
+      {d:"One rate, honest denominator",q:"SELECT ROUND(COUNT(DISTINCT a.lead_id) * 1.0 / COUNT(DISTINCT l.id), 3) AS i2a\nFROM leads l\nLEFT JOIN applications a ON a.lead_id = l.id"},
+      {d:"The same rate with an inner join \u2014 watch it inflate to 1.0",q:"SELECT ROUND(COUNT(DISTINCT a.lead_id) * 1.0 / COUNT(DISTINCT l.id), 3) AS i2a_inflated\nFROM leads l\nJOIN applications a ON a.lead_id = l.id"},
+      {d:"Counting conditionally without a second query",q:"SELECT channel,\n       COUNT(*) AS leads,\n       SUM(CASE WHEN created_date >= '2025-01-01' THEN 1 ELSE 0 END) AS leads_2025\nFROM leads\nGROUP BY channel"}],
+    unlock:"You stop arguing about whose rate is right and start asking what each side divided by. That question ends the argument, and asking it is what a RevOps hire is for." },
+
+  { id:"u13", emoji:"\U0001FA9F", title:"Calculations that look sideways",
+    objective:"Compute rank, previous period, running total and share without collapsing your rows \u2014 and know when it belongs in the query rather than the dashboard.",
+    lesson:`<p><code>GROUP BY</code> has one cost: it destroys the rows. Ask for a count per channel and the individual leads are gone. Usually that is what you want. Sometimes you need a number that depends on <em>other</em> rows while every row stays on screen \u2014 this term against last term, each program's rank, a running total, each channel's share of the whole.</p>
+    <p>A <b>window function</b> does that. The syntax is a normal function followed by <code>OVER (\u2026)</code>, and what goes inside the parentheses defines which other rows it may look at.</p>
+    <pre class="labshape">ROW_NUMBER() OVER (PARTITION BY credential ORDER BY leads DESC)
+LAG(enrollments) OVER (ORDER BY term_seq)
+SUM(enrollments) OVER ()</pre>
+    <p><code>PARTITION BY</code> is a reset \u2014 start the numbering over for each credential. The <code>ORDER BY</code> inside the parentheses is the direction the function looks, and it is a completely separate thing from the <code>ORDER BY</code> that sorts your final output. An empty <code>OVER ()</code> means the whole result set, which is the tidiest way to get a grand total sitting beside every row so you can compute a share.</p>
+    <p>The four that earn their keep: <code>ROW_NUMBER()</code> numbers rows in order. <code>RANK()</code> does the same but ties share a number and leave a gap. <code>LAG(col)</code> reaches back one row and <code>LEAD(col)</code> forward \u2014 period-over-period without the self-join people used to write. And any aggregate plus a frame clause becomes cumulative: <code>SUM(x) OVER (ORDER BY seq ROWS BETWEEN UNBOUNDED PRECEDING AND CURRENT ROW)</code> is a running total, verbose but mechanical.</p>
+    <p>One quirk that trips people up: when the query is already grouped you can nest an aggregate inside a window function, so <code>LAG(COUNT(*)) OVER (ORDER BY t.seq)</code> is legal and means "the previous group's count." It reads strangely the first time and it is exactly what a term-over-term comparison needs.</p>
+    <p>This is the line most business analysts never cross, which is precisely why it is worth crossing. It also raises a real choice, and it is the door at the end of this unit: the same running total can be computed here, or in a Tableau table calculation. One of those travels with the number to every tool that reads it. The other lives in one workbook and has to be rebuilt by whoever needs it next.</p>`,
+    vocab:[{t:"Window function",d:"A calculation across related rows that keeps every row visible."},{t:"OVER ( )",d:"Marks a window function and defines which rows it may look at."},{t:"PARTITION BY",d:"Restarts the calculation for each group, without collapsing rows."},{t:"ROW_NUMBER / RANK",d:"Position in order. RANK lets ties share a number and leaves a gap."},{t:"LAG / LEAD",d:"The value from the previous or next row in the window's order."},{t:"Frame clause",d:"Which rows the aggregate covers \u2014 what turns SUM into a running total."}],
+    tries:[{d:"Rank without collapsing anything",q:"SELECT channel, COUNT(*) AS leads,\n       ROW_NUMBER() OVER (ORDER BY COUNT(*) DESC) AS rank\nFROM leads\nGROUP BY channel"},
+      {d:"Last term's number, beside this term's",q:"SELECT e.term_code, COUNT(*) AS enrollments,\n       LAG(COUNT(*)) OVER (ORDER BY t.seq) AS prev\nFROM enrollments e\nJOIN terms t ON t.code = e.term_code\nGROUP BY e.term_code, t.seq\nORDER BY t.seq"},
+      {d:"Grand total beside every row, then a share",q:"SELECT channel, COUNT(*) AS leads,\n       SUM(COUNT(*)) OVER () AS all_leads,\n       ROUND(COUNT(*) * 1.0 / SUM(COUNT(*)) OVER (), 3) AS share\nFROM leads\nGROUP BY channel"},
+      {d:"PARTITION BY \u2014 rank restarts inside each credential",q:"SELECT credential, term_code, COUNT(*) AS enrollments,\n       ROW_NUMBER() OVER (PARTITION BY credential ORDER BY COUNT(*) DESC) AS rank_in_credential\nFROM enrollments\nGROUP BY credential, term_code"}],
+    unlock:"You can answer a period-over-period question inside the query instead of exporting to a spreadsheet \u2014 and you can say why the calculation belongs there rather than in the workbook." },
+
+  { id:"u14", emoji:"\U0001F4C8", title:"Cohorts, and why offsets beat calendars",
+    objective:"Build a cohort retention grid, and defend measuring it in offsets rather than calendar periods.",
+    lesson:`<p>A <b>cohort</b> is a group defined by when it entered. Everyone who started in Fall 2024 is a cohort, and the question you ask of it is always the same shape: of the people who entered then, how many are still here later?</p>
+    <p>You already run this calculation. Term-over-term persistence is cohort retention with different nouns, and it is the same arithmetic as logo retention at a SaaS company. What makes it a SQL exercise rather than a spreadsheet exercise is the shape of the answer: a grid with cohorts down the side and time across the top.</p>
+    <p><b>The one idea that makes it work is the offset.</b> Measuring in calendar terms makes cohorts incomparable \u2014 the Fall 2024 cohort has five terms of history and the Spring 2026 cohort has one, so of course the older one looks worse. Measure in <em>terms since entry</em> instead and every cohort's offset-1 sits in the same column. Now they can be compared, and a genuine decline in offset-1 retention becomes visible instead of buried.</p>
+    <pre class="labshape">WITH cohort AS (
+  SELECT e.id, e.term_code AS cohort_term, t.seq AS start_seq
+  FROM enrollments e
+  JOIN terms t ON t.code = e.term_code
+)
+SELECT cohort_term, pt.seq - start_seq AS term_offset, COUNT(*) AS still_active
+FROM cohort
+JOIN persistence p ON p.enrollment_id = cohort.id
+JOIN terms pt ON pt.code = p.term_code
+GROUP BY cohort_term, pt.seq - start_seq</pre>
+    <p>The pattern is worth memorising because it recurs: a CTE that anchors each member to their entry point, a join out to the activity table, a second join to translate a period code into a sortable number, then a subtraction. Terms are text like <code>2025FA</code>, which does not sort chronologically \u2014 that is what the <code>seq</code> column exists for, and most real warehouses have one for exactly this reason.</p>
+    <p>Offset 0 is the cohort's own starting size, so every cohort shows 100% there. That row is your sanity check: if offset 0 does not match the cohort size you counted separately, your join is dropping or duplicating people and nothing to the right of it can be trusted.</p>`,
+    vocab:[{t:"Cohort",d:"A group defined by when it entered, then tracked forward over time."},{t:"Term offset",d:"Periods since entry. What makes different cohorts comparable to each other."},{t:"Anchor CTE",d:"Pinning each member to their entry period before joining out to activity."},{t:"Sequence column",d:"A numeric period number, because period codes rarely sort chronologically."},{t:"Retention grid",d:"Cohorts down the side, offsets across the top \u2014 the shape of the answer."},{t:"Sanity check",d:"A row whose value you already know, used to prove the join has not distorted anything."}],
+    tries:[{d:"Cohort sizes, the denominator for everything after",q:"SELECT term_code AS cohort_term, COUNT(*) AS cohort_size\nFROM enrollments\nGROUP BY term_code"},
+      {d:"Why period codes need a seq column",q:"SELECT code, name, seq FROM terms ORDER BY code"},
+      {d:"One cohort, tracked forward term by term",q:"WITH cohort AS (\n  SELECT e.id, t.seq AS start_seq\n  FROM enrollments e\n  JOIN terms t ON t.code = e.term_code\n  WHERE e.term_code = '2024FA'\n)\nSELECT pt.seq - c.start_seq AS term_offset, COUNT(*) AS still_active\nFROM cohort c\nJOIN persistence p ON p.enrollment_id = c.id\nJOIN terms pt ON pt.code = p.term_code\nGROUP BY pt.seq - c.start_seq"}],
+    unlock:"You can build the grid a board deck is made of, and defend the offset choice when somebody asks why the columns are not months. That defence is the part most people cannot give." },
+
+  ];
 const DECISIONS = [
   { id:"api-key-location", units:["u3","u5"], project:"This app", when:"now", group:"APIs & secrets",
     context:"Your app needs to call an AI model, which requires a secret API key. With no backend, you can only store that key in the browser. You can ship it that way and accept the exposure, or stand up a small server whose only job is to hold the key and forward requests.",
@@ -512,6 +651,33 @@ const DECISIONS = [
     otherDoorCost:"Keeping it trades a first-impression flourish for a small recurring distraction every single time.",
     principle:"Delight and distraction are the same motion seen once versus a hundred times. Anything that repeats every session must be judged at the hundredth viewing. Animation earns its place only if it still feels good when it's routine.",
     terms:[{t:"Motion budget",d:"How much animation a product can carry before it distracts."},{t:"Delight vs. friction",d:"A flourish that pleases once can annoy on repeat."}] },
+  { id:"count-definition", units:["u10"], project:"Weekly funnel report", when:"first month of reporting", group:"Trusting a number",
+    context:"You are writing the definition of \u201capplicants\u201d that the weekly report will use from now on. Some people filed two applications in the same term. You can define the metric as distinct people, which matches what anyone means when they say the word \u2014 or as application rows, which matches the operational workload the processing team actually carries.",
+    doorA:{k:"Distinct people", s:"Matches the word, needs care in every query"},
+    doorB:{k:"Application rows", s:"Matches the workload, inflates any per-person rate"},
+    chosen:"A", downstreamDraft:true,
+    downstream:"Defining it as people meant every rate built on it divided by a population that exists, and the number matched the headcount finance already had. It also meant every future query needed COUNT(DISTINCT \u2026) rather than COUNT(*), which is a small tax you pay forever and a habit worth having.",
+    otherDoorCost:"Counting rows gives a number that is genuinely useful to the processing team and quietly wrong everywhere else. Any conversion rate divided by it overstates the funnel, and nobody notices, because 607 and 538 both look like plausible numbers of applicants.",
+    principle:"A metric definition names the thing being counted, not the table it came from. Decide the grain \u2014 one row equals one what \u2014 then write whichever count preserves it. Publish both numbers under different names when both are genuinely needed.",
+    terms:[{t:"Grain",d:"What one row of a result represents. Naming it prevents most counting mistakes."},{t:"Fan-out",d:"One row becoming many, quietly inflating any count of rows."},{t:"House definition",d:"The single agreed formula for a metric that every tool is expected to read."}] },
+  { id:"window-where", units:["u13"], project:"Enrollment trend view", when:"month 4", group:"Trusting a number",
+    context:"Leadership wants term-over-term change and a running total on the enrollment view. You can compute both in the query with window functions, so the columns arrive already calculated \u2014 or build them as table calculations in Tableau, which is faster to do and lets you adjust the view without touching the query.",
+    doorA:{k:"Compute it in the query", s:"Travels to every tool, slower to change"},
+    doorB:{k:"Table calculation in the workbook", s:"Fast to build, lives in one workbook"},
+    chosen:"A", downstreamDraft:true,
+    downstream:"Computing it in the query meant the change column meant the same thing in the dashboard, in the board deck export, and in the ad-hoc question somebody asked in Slack. When a second team needed the same trend they read the view instead of rebuilding the logic.",
+    otherDoorCost:"A table calculation is quicker and invisible to everything outside that workbook. The next person who needs term-over-term change rebuilds it, slightly differently, and now two decks disagree about growth for a reason nobody can find.",
+    principle:"Push a calculation as far toward the data as the tooling allows when more than one consumer will need it. Keep it in the presentation layer when it is genuinely a property of that one view rather than of the metric.",
+    terms:[{t:"Table calculation",d:"A computation performed by the BI tool on results it already fetched."},{t:"Semantic layer",d:"Where a metric's definition lives so every tool reads one copy."},{t:"Single source of truth",d:"One authoritative home for a definition, with everything else reading from it."}] },
+  { id:"cohort-offset", units:["u14"], project:"Persistence reporting", when:"month 6", group:"Trusting a number",
+    context:"You are building the retention grid leadership will see every term. You can put calendar terms across the top, which is what everyone already reads and needs no explanation \u2014 or put periods-since-entry across the top, which makes cohorts comparable but means the columns no longer line up with the calendar anybody is thinking in.",
+    doorA:{k:"Periods since entry", s:"Cohorts comparable, needs explaining once"},
+    doorB:{k:"Calendar terms", s:"Instantly familiar, cohorts not comparable"},
+    chosen:"A", downstreamDraft:true,
+    downstream:"Offsets meant the newest cohort could be judged against the oldest at the same point in its life, and a real drop in first-term persistence showed up as a column that was declining rather than a diagonal nobody reads. The explanation took one sentence in the first meeting and was never needed again.",
+    otherDoorCost:"Calendar columns are familiar and structurally misleading: older cohorts have more history, so they always look worse, and a genuine decline hides inside an artefact of how long each group has existed. The chart is easy to read and impossible to act on.",
+    principle:"When comparing groups that started at different times, measure from each group's own start. Calendar axes are for describing what happened; offset axes are for comparing how groups behave.",
+    terms:[{t:"Offset axis",d:"Time measured from each group's own entry rather than the calendar."},{t:"Survivorship artefact",d:"An apparent difference caused by unequal observation time rather than behaviour."},{t:"Comparability",d:"Arranging measures so a difference between groups means something."}] },
   { id:"metric-home", units:["u9","u2"], project:"Weekly Performance Report", when:"next quarter", group:"Trusting a number",
     context:"App-to-start gets quoted in three places — your dashboard, a partner-facing deck, and a spreadsheet the enrollment team keeps by hand. They disagree by two points and nobody can say which is right. You can define the metric once in a saved SQL view that every tool reads from, or leave the calculation in the BI layer where you can change it in ten seconds the next time a partner asks for a variant.",
     doorA:{k:"Define it once in SQL", s:"One definition, every tool reads it"},
@@ -521,7 +687,7 @@ const DECISIONS = [
     otherDoorCost:"Keeping it in the BI layer stays fast and flexible, and it is exactly how you end up with three numbers for one metric — because every new dashboard quietly writes its own version of the formula.",
     principle:"A metric definition is code, and code wants one home. Pushing it down toward the data buys agreement at the cost of speed; keeping it in the presentation layer buys speed at the cost of drift. Push it down for numbers people argue about, and keep it high for numbers still being explored.",
     terms:[{t:"View",d:"A saved query other tools can read as though it were a table."},{t:"Semantic layer",d:"The single place a metric's formula is defined for everything downstream."},{t:"Metric drift",d:"The same metric quietly meaning different things in different tools."}] },
-  { id:"funnel-join-shape", units:["u9"], project:"Funnel diagnostics", when:"week 5 of SQL practice", group:"Trusting a number",
+  { id:"funnel-join-shape", units:["u11"], project:"Funnel diagnostics", when:"week 5 of SQL practice", group:"Trusting a number",
     context:"You are rebuilding a conversion query you already know the answer to. Leads sit in one table, applications in another, and plenty of leads never applied at all. You can start from leads and keep every one of them, accepting rows full of empty values you then have to handle — or start from the two tables joined and work only with matched pairs, which reads cleanly and aggregates without fuss.",
     doorA:{k:"Keep every lead", s:"Empty values to handle, honest denominator"},
     doorB:{k:"Keep only matched pairs", s:"Clean rows, smaller denominator"},
@@ -530,7 +696,7 @@ const DECISIONS = [
     otherDoorCost:"Matched pairs give you a tidy query and a conversion rate that is silently measuring the wrong population — applications per applicant rather than per lead. It reads beautifully and it is wrong, which is the most expensive combination there is.",
     principle:"The shape of a join decides who is in your denominator. Anything that must count everyone starts from the everyone table and pulls the rest in optionally. Reach for matched-pairs-only when the question genuinely is about the overlap.",
     terms:[{t:"Inner join",d:"Keeps only rows that match on both sides, dropping the rest without warning."},{t:"Outer join",d:"Keeps every row from one side, filling in blanks where there is no match."},{t:"Denominator integrity",d:"Knowing that the bottom of your fraction is the population you meant."}] },
-  { id:"summary-vs-live", units:["u9","u6"], project:"Enrollment dashboard", when:"month 2", group:"Performance as data grows",
+  { id:"summary-vs-live", units:["u12","u6"], project:"Enrollment dashboard", when:"month 2", group:"Performance as data grows",
     context:"Your dashboard reruns a heavy query across millions of event rows every time somebody opens it. At 8am when the whole team looks at once it crawls, and each run bills for compute. You can precompute the numbers into a nightly summary table the dashboard reads instantly, or keep querying the raw events so the number is always current to the minute.",
     doorA:{k:"Nightly summary table", s:"Instant and cheap, up to a day stale"},
     doorB:{k:"Query the raw events", s:"Always current, slow and billed"},
@@ -683,7 +849,7 @@ const QUOTES=[
 const LS="app-savvy-v1";
 const GAS=(typeof google!=="undefined"&&google.script&&google.script.run);
 let AI_ON=false;
-const blank=()=>({streak:0,lastDay:null,faced:0,history:[],glossary:[],learned:[],xp:0,badges:[],profile:null,onboarded:false,pre:null,post:null,shippedIntegration:false,capSnapshot:null,aiRead:null,apiKey:"",resume:null,queries:[],sqlWeeks:[],labSolved:[],labAssisted:[]});
+const blank=()=>({streak:0,lastDay:null,faced:0,history:[],glossary:[],learned:[],xp:0,badges:[],profile:null,onboarded:false,pre:null,post:null,shippedIntegration:false,capSnapshot:null,aiRead:null,apiKey:"",resume:null,queries:[],sqlWeeks:[],labSolved:[],labAssisted:[],labRead:[],stamps:{},recName:"",recUrl:""});
 function gcall(fn){var a=[].slice.call(arguments,1);return new Promise(function(res,rej){var r=google.script.run.withSuccessHandler(res).withFailureHandler(rej);r[fn].apply(r,a);});}
 function loadStateAsync(){if(GAS){return gcall("loadState").then(function(r){return r?Object.assign(blank(),JSON.parse(r)):blank();}).catch(blank);}
   try{return Promise.resolve(Object.assign(blank(),JSON.parse(localStorage.getItem(LS)||"{}")));}catch(e){return Promise.resolve(blank());}}
@@ -1017,8 +1183,8 @@ function renderLearn(){
  root.innerHTML=main+curriculumHTML();
  wireLearn();
 }
-function learnLanding(){const rec=recommendStart(),u=UNITS.find(x=>x.id===rec.id);return `<div class="card"><span class="pilltag">🎓 Learn</span><h2>Where to start</h2><p class="sub">Nine short lessons. Read one, then test it with a door. Pick from your curriculum below, or jump into the suggested one.</p><div class="reccard"><div><span class="caps">Suggested for you</span><h3 style="margin:4px 0;font-size:19px">${esc(u.title)}</h3><p class="muted small" style="margin:0">${esc(rec.why)}</p></div><button class="btn" data-open="${u.id}">Open →</button></div></div>`;}
-function curriculumHTML(){const open=(learnUnit===null);return `<details class="curric" ${open?'open':''}><summary><span class="caps">Your curriculum</span> <span class="muted small">— nine units, tap to open</span></summary><div class="ulist">${UNITS.map((u,i)=>{const dc=doneCountUnit(u.id),tot=doorsForUnit(u.id).length,lrn=state.learned.indexOf(u.id)>=0,cnt=u.sabotage?`${sabDoneCount()}/${SABOTAGE.length}`:(tot?`${dc}/${tot}`:'');return `<button class="urow ${learnUnit===u.id?'on':''}" data-open="${u.id}"><span class="unum">${i+1}</span><span class="ulbl">${u.emoji} ${esc(u.title)}</span><span class="udone">${lrn?'✓ ':''}${cnt}</span></button>`;}).join("")}</div></details>`;}
+function learnLanding(){const rec=recommendStart(),u=UNITS.find(x=>x.id===rec.id);return `<div class="card"><span class="pilltag">🎓 Learn</span><h2>Where to start</h2><p class="sub">${UNITS.length} short lessons. Read one, then test it with a door. Pick from your curriculum below, or jump into the suggested one.</p><div class="reccard"><div><span class="caps">Suggested for you</span><h3 style="margin:4px 0;font-size:19px">${esc(u.title)}</h3><p class="muted small" style="margin:0">${esc(rec.why)}</p></div><button class="btn" data-open="${u.id}">Open →</button></div></div>`;}
+function curriculumHTML(){const open=(learnUnit===null);return `<details class="curric" ${open?'open':''}><summary><span class="caps">Your curriculum</span> <span class="muted small">— ${UNITS.length} units, tap to open</span></summary><div class="ulist">${UNITS.map((u,i)=>{const dc=doneCountUnit(u.id),tot=doorsForUnit(u.id).length,lrn=state.learned.indexOf(u.id)>=0,cnt=u.sabotage?`${sabDoneCount()}/${SABOTAGE.length}`:(tot?`${dc}/${tot}`:'');return `<button class="urow ${learnUnit===u.id?'on':''}" data-open="${u.id}"><span class="unum">${i+1}</span><span class="ulbl">${u.emoji} ${esc(u.title)}</span><span class="udone">${lrn?'✓ ':''}${cnt}</span></button>`;}).join("")}</div></details>`;}
 const EXTRAS={
  u9:{obj:"read a SQL query out loud, say what it returns, and name the way it could be quietly wrong.",
   example:"You ask for lead-to-application conversion by channel and get 41%. The query joins leads to applications. Every lead who never applied has no application row to match, so a plain JOIN drops them entirely — and 41% is really applications per applicant. One word changed to LEFT JOIN and the honest number is 12%. Nothing errored, nothing turned red. That gap is the whole reason to read the query yourself.",
@@ -1058,13 +1224,21 @@ function speakLesson(uid){
  const utt=new SpeechSynthesisUtterance(text);utt.rate=1;utt.onend=function(){if(document.getElementById("listenBtn"))document.getElementById("listenBtn").textContent="🔊 Listen";};
  window.speechSynthesis.cancel();window.speechSynthesis.speak(utt);if(btn)btn.textContent="⏹ Stop";
 }
-function lessonHTML(u){const doors=doorsForUnit(u.id),dc=doneCountUnit(u.id),learned=state.learned.indexOf(u.id)>=0;const x=EXTRAS[u.id]||{};const obj=x.obj||u.objective;return `<div class="card"><span class="pilltag">${u.emoji} Unit ${UNITS.indexOf(u)+1} · Lesson</span><h2>${esc(u.title)}</h2><div class="objbox"><span class="caps">By the end, you'll be able to</span><div>${esc(obj)}</div></div><h3 style="font-size:18px;margin:22px 0 8px">Key terms</h3><div class="vgrid">${u.vocab.map(v=>`<div class="vcard"><b>${esc(v.t)}</b><div class="d">${esc(v.d)}</div></div>`).join("")}</div><div class="lessonhead"><h3 style="margin:0;font-size:18px">The concept</h3><button class="btn ghost mini" id="listenBtn" data-u="${u.id}">🔊 Listen</button></div>${x.diagram?`<div class="diagram">${x.diagram}</div>`:""}${u.lesson}${x.example?`<h3 style="font-size:18px;margin:22px 0 8px">Worked example</h3><div class="example">${esc(x.example)}</div>`:""}${u.id==="u9"?sqlPlanHTML():""}<div class="unlock"><span class="caps">What this unlocks in the room</span><div style="margin-top:6px">${esc(u.unlock)}</div></div><div class="actions"><button class="btn ghost mini" data-learned="${u.id}">${learned?'✓ Marked as learned':'Mark as learned (+15 XP)'}</button>${u.sabotage?`<button class="btn" data-sabotage="${u.id}">Try a sabotage round → <span class="small" style="opacity:.8">(${sabDoneCount()}/${SABOTAGE.length})</span></button>`:`<button class="btn" data-door-unit="${u.id}">Walk through a door → <span class="small" style="opacity:.8">(${dc}/${doors.length})</span></button>`}</div></div>`;}
+function lessonHTML(u){const doors=doorsForUnit(u.id),dc=doneCountUnit(u.id),learned=state.learned.indexOf(u.id)>=0;const x=EXTRAS[u.id]||{};const obj=x.obj||u.objective;return `<div class="card"><span class="pilltag">${u.emoji} Unit ${UNITS.indexOf(u)+1} · Lesson</span><h2>${esc(u.title)}</h2><div class="objbox"><span class="caps">By the end, you'll be able to</span><div>${esc(obj)}</div></div><h3 style="font-size:18px;margin:22px 0 8px">Key terms</h3><div class="vgrid">${u.vocab.map(v=>`<div class="vcard"><b>${esc(v.t)}</b><div class="d">${esc(v.d)}</div></div>`).join("")}</div><div class="lessonhead"><h3 style="margin:0;font-size:18px">The concept</h3><button class="btn ghost mini" id="listenBtn" data-u="${u.id}">🔊 Listen</button></div>${x.diagram?`<div class="diagram">${x.diagram}</div>`:""}${u.lesson}${x.example?`<h3 style="font-size:18px;margin:22px 0 8px">Worked example</h3><div class="example">${esc(x.example)}</div>`:""}${(u.tries&&u.tries.length)?`<h3 style="font-size:18px;margin:22px 0 8px">Try it in the Lab</h3><p class="muted small" style="margin:0 0 10px">These run against the Lab\u2019s database. Reading them is not the same as running them.</p><div class="labtry">${u.tries.map((t,i)=>`<div class="labtryrow"><div><p>${esc(t.d)}</p><pre>${esc(t.q)}</pre></div><button class="btn ghost mini" data-labtry="${u.id}:${i}">Run it in the Lab ▸</button></div>`).join("")}</div>`:""}${u.id==="u9"?sqlPlanHTML():""}<div class="unlock"><span class="caps">What this unlocks in the room</span><div style="margin-top:6px">${esc(u.unlock)}</div></div><div class="actions"><button class="btn ghost mini" data-learned="${u.id}">${learned?'✓ Marked as learned':'Mark as learned (+15 XP)'}</button>${u.sabotage?`<button class="btn" data-sabotage="${u.id}">Try a sabotage round → <span class="small" style="opacity:.8">(${sabDoneCount()}/${SABOTAGE.length})</span></button>`:`<button class="btn" data-door-unit="${u.id}">Walk through a door → <span class="small" style="opacity:.8">(${dc}/${doors.length})</span></button>`}</div></div>`;}
 function wireLearn(){
  root.querySelectorAll("[data-open]").forEach(b=>b.onclick=()=>{learnUnit=b.dataset.open;sess=null;sab=null;renderLearn();window.scrollTo(0,0);});
- root.querySelectorAll("[data-learned]").forEach(b=>b.onclick=()=>{const id=b.dataset.learned;if(state.learned.indexOf(id)<0){state.learned.push(id);const p=state.xp;addXP(15);commitProgress(p);}renderLearn();});
+ root.querySelectorAll("[data-learned]").forEach(b=>b.onclick=()=>{const id=b.dataset.learned;if(state.learned.indexOf(id)<0){state.learned.push(id);recStamp("unit:"+id);const p=state.xp;addXP(15);commitProgress(p);}renderLearn();});
  root.querySelectorAll("[data-door-unit]").forEach(b=>b.onclick=()=>startDoor(pickDoor(b.dataset.doorUnit),b.dataset.doorUnit));
  root.querySelectorAll("[data-sabotage]").forEach(b=>b.onclick=()=>startSabotage(b.dataset.sabotage));
  root.querySelectorAll("[data-week]").forEach(b=>b.onclick=()=>{const i=+b.dataset.week;state.sqlWeeks=state.sqlWeeks||[];const at=state.sqlWeeks.indexOf(i);const p=state.xp;if(at>=0){state.sqlWeeks.splice(at,1);}else{state.sqlWeeks.push(i);addXP(5);bumpStreak();}commitProgress(p);renderLearn();});
+ root.querySelectorAll("[data-labtry]").forEach(b=>b.onclick=()=>{
+   const parts=b.dataset.labtry.split(":"),u=UNITS.find(x=>x.id===parts[0]);
+   if(!u||!u.tries||!u.tries[+parts[1]])return;
+   LAB.free=true;LAB.lesson=null;LAB.sql=u.tries[+parts[1]].q;LAB.res=null;LAB.err="";LAB.verdict=null;
+   setTab("lab");window.scrollTo(0,0);
+   var t=setInterval(function(){if(LAB.db){clearInterval(t);labDoRun();}},120);
+   setTimeout(function(){clearInterval(t);},9000);
+ });
  const lb=root.querySelector("#listenBtn");if(lb)lb.onclick=()=>speakLesson(lb.dataset.u);
 }
 
@@ -1162,84 +1336,228 @@ function labSeedSQL(){
 }
 
 const LAB_STAGES=[
- {id:"s1",n:"Reading a table",wk:"Week 1",d:"SELECT, WHERE, ORDER BY. Getting rows out and narrowing them down."},
- {id:"s2",n:"Rows into a number",wk:"Week 2",d:"COUNT, GROUP BY, HAVING. Where a table becomes a metric."},
- {id:"s3",n:"Two tables at once",wk:"Week 3",d:"JOINs, NULLs, CTEs — and the joins that quietly drop rows."},
- {id:"s4",n:"Your funnel",wk:"Weeks 5–7",d:"I2A, ATS, denominators, and reconciling two numbers that disagree."},
- {id:"s5",n:"Looking sideways",wk:"Weeks 9–10",d:"Window functions: rank, previous period, running totals."},
- {id:"s6",n:"Cohorts",wk:"Week 11",d:"Retention by cohort — the pattern interviews ask for most."}];
+ {id:"s1",u:"u9", n:"Reading a table",wk:"Unit 9",d:"SELECT, WHERE, ORDER BY. Getting rows out and narrowing them down."},
+ {id:"s2",u:"u10",n:"Rows into a number",wk:"Unit 10",d:"COUNT, GROUP BY, HAVING. Where a table becomes a metric."},
+ {id:"s3",u:"u11",n:"Two tables at once",wk:"Unit 11",d:"JOINs, NULLs, CTEs — and the joins that quietly drop rows."},
+ {id:"s4",u:"u12",n:"Your funnel",wk:"Unit 12",d:"I2A, ATS, denominators, and reconciling two numbers that disagree."},
+ {id:"s5",u:"u13",n:"Looking sideways",wk:"Unit 13",d:"Window functions: rank, previous period, running totals."},
+ {id:"s6",u:"u14",n:"Cohorts",wk:"Unit 14",d:"Retention by cohort — the pattern interviews ask for most."}];
 
 const LAB_EX=[
 /* ---- stage 1 ---- */
-{id:"s1-1",s:"s1",t:"Look at the leads",ask:"Show the id, created_date and channel for the 10 leads with the lowest id.",teach:"SELECT names the columns you want, FROM names the table, ORDER BY sorts, LIMIT cuts it short.",hint:"SELECT the three columns, then ORDER BY id, then LIMIT 10.",ordered:true,
+{id:"s1-1",s:"s1",t:"Look at the leads",ask:"Show the id, created_date and channel for the 10 leads with the lowest id.",
+ shape:"SELECT col, col, col\nFROM table\nORDER BY col\nLIMIT n",
+ nw:[{k:"SELECT",d:"List the three columns separated by commas."},{k:"ORDER BY id",d:"Ascending is the default, so this puts the lowest ids first."},{k:"LIMIT 10",d:"Stops after ten rows."}],
+ traps:["LIMIT without ORDER BY returns ten arbitrary rows. A database promises nothing about order unless you ask.","Order matters between clauses: ORDER BY always comes before LIMIT."],
+ hint:"SELECT the three columns, FROM leads, ORDER BY id, LIMIT 10.",ordered:true,
+ after:"Read down your two first columns. The ids climb 1000, 1001, 1002 — and the dates jump from July to March to June. Sorting by id did not sort by time. Any report labelled \u201c10 most recent\u201d that was built on ORDER BY id is simply wrong, and it looks perfectly reasonable on a slide.",
  sol:"SELECT id, created_date, channel FROM leads ORDER BY id LIMIT 10"},
-{id:"s1-2",s:"s1",t:"Narrow it down",ask:"List the id and created_date of every lead that came from the Referral channel.",teach:"WHERE filters rows before anything else happens. Text values go in single quotes.",hint:"WHERE channel = 'Referral'",
+{id:"s1-2",s:"s1",t:"Narrow it down",ask:"List the id and created_date of every lead that came from the Referral channel.",
+ shape:"SELECT col, col\nFROM table\nWHERE col = 'text'",
+ nw:[{k:"WHERE",d:"Goes after FROM. Keeps only rows that pass the test."},{k:"= 'Referral'",d:"One equals sign, single quotes, exact spelling."}],
+ traps:["Single quotes, not double. Double quotes mean something else in SQL.","One = sign, not two. Other languages use == for comparison; SQL does not.","Values are case-sensitive. 'referral' returns zero rows with no error at all."],
+ hint:"WHERE channel = 'Referral' \u2014 and no LIMIT, because you want all of them.",
+ after:"You got a couple of hundred rows and no sort order, which is fine here. Notice what did not happen when you had the case right: nothing warned you either way. A filter that silently matches nothing looks identical to a filter that correctly found nothing.",
  sol:"SELECT id, created_date FROM leads WHERE channel = 'Referral'"},
-{id:"s1-3",s:"s1",t:"Newest first",ask:"Show the id and created_date of the 5 most recent leads, newest first.",teach:"ORDER BY … DESC reverses the sort. Dates stored as YYYY-MM-DD sort correctly as text.",hint:"ORDER BY created_date DESC, then LIMIT 5.",ordered:true,
+{id:"s1-3",s:"s1",t:"Newest first",ask:"Show the id and created_date of the 5 most recent leads, newest first.",
+ shape:"SELECT col, col\nFROM table\nORDER BY col DESC\nLIMIT n",
+ nw:[{k:"DESC",d:"Reverses the sort. Largest, latest, or Z-first."},{k:"ASC",d:"The default, so you rarely type it."}],
+ traps:["Dates here are text in YYYY-MM-DD form, which happens to sort correctly. Dates stored as 07/05/2024 would not \u2014 that format sorts by month.","This is the query exercise 1 should have been. Compare the two results."],
+ hint:"ORDER BY created_date DESC, then LIMIT 5.",ordered:true,
+ after:"Different ids entirely from exercise 1. That gap between \u201csorted by id\u201d and \u201csorted by date\u201d is the whole lesson of Stage 1, and it is the first thing to check when a recency-based report looks off.",
  sol:"SELECT id, created_date FROM leads ORDER BY created_date DESC LIMIT 5"},
-{id:"s1-4",s:"s1",t:"What channels exist?",ask:"List each distinct channel that appears in the leads table. One row per channel.",teach:"DISTINCT collapses duplicate rows — the fastest way to see what values a column actually holds.",hint:"SELECT DISTINCT channel FROM leads",
+{id:"s1-4",s:"s1",t:"What values are in there?",ask:"List each distinct channel that appears in the leads table. One row per channel.",
+ shape:"SELECT DISTINCT col\nFROM table",
+ nw:[{k:"DISTINCT",d:"Collapses duplicate rows so each value appears once."}],
+ traps:["DISTINCT applies to the whole row, not just the first column. Add a second column and you get every unique combination instead."],
+ hint:"SELECT DISTINCT channel FROM leads",
+ after:"Six channels. This is the first query to run against any unfamiliar table \u2014 before you filter on a column, find out what is actually in it. Half of all wrong WHERE clauses are guesses about spelling that nobody checked.",
  sol:"SELECT DISTINCT channel FROM leads"},
-{id:"s1-5",s:"s1",t:"A date range",ask:"List the id and created_date of leads created during calendar 2025.",teach:"Because dates are YYYY-MM-DD text here, a BETWEEN on strings does what you would expect.",hint:"WHERE created_date BETWEEN '2025-01-01' AND '2025-12-31'",
+{id:"s1-5",s:"s1",t:"A date range",ask:"List the id and created_date of leads created during calendar 2025.",
+ shape:"SELECT col, col\nFROM table\nWHERE col BETWEEN 'x' AND 'y'",
+ nw:[{k:"BETWEEN … AND",d:"A range test, and it includes both endpoints."},{k:">= and <=",d:"Two conditions joined by AND does the same job."}],
+ traps:["BETWEEN is inclusive on both ends. Off-by-one on a date boundary is a real reporting bug, not a technicality.","If a column stores a timestamp rather than a date, BETWEEN '2025-01-01' AND '2025-12-31' silently drops everything that happened during the last day."],
+ hint:"WHERE created_date BETWEEN '2025-01-01' AND '2025-12-31'",
+ after:"That is Week 1 done. Five clauses \u2014 SELECT, FROM, WHERE, ORDER BY, LIMIT \u2014 and you can get any slice of any single table. Stage 2 collapses those rows into the numbers people actually put on slides.",
  sol:"SELECT id, created_date FROM leads WHERE created_date BETWEEN '2025-01-01' AND '2025-12-31'"},
 /* ---- stage 2 ---- */
-{id:"s2-1",s:"s2",t:"How many leads?",ask:"Return a single number: the total count of leads.",teach:"COUNT(*) counts rows. With no GROUP BY you get one row back for the whole table.",hint:"SELECT COUNT(*) FROM leads",
+{id:"s2-1",s:"s2",t:"How many leads?",ask:"Return a single number: the total count of leads.",
+ shape:"SELECT COUNT(*) AS name\nFROM table",
+ nw:[{k:"COUNT(*)",d:"Counts rows. With no GROUP BY, it counts the whole table."},{k:"AS",d:"Names the output column so the result reads properly."}],
+ traps:["The AS name is cosmetic here \u2014 the Lab compares values, not column names. It stops mattering to the machine and starts mattering to whoever reads your query."],
+ hint:"SELECT COUNT(*) FROM leads",
+ after:"1,320. Hold onto that number: it is the honest denominator for every conversion rate in this database, and Stage 3 will show you a join that quietly replaces it with 538.",
  sol:"SELECT COUNT(*) AS leads FROM leads"},
-{id:"s2-2",s:"s2",t:"Leads by channel",ask:"Count leads per channel. Return the channel and the count.",teach:"GROUP BY is the moment a table turns into a metric: one output row per bucket.",hint:"SELECT channel, COUNT(*) … GROUP BY channel",
+{id:"s2-2",s:"s2",t:"Leads by channel",ask:"Count leads per channel. Return the channel and the count.",
+ shape:"SELECT col, COUNT(*) AS name\nFROM table\nGROUP BY col",
+ nw:[{k:"GROUP BY",d:"Splits rows into buckets and aggregates each one separately."}],
+ traps:["Every column you SELECT must be in the GROUP BY or wrapped in an aggregate. Add created_date here and the query becomes meaningless.","No ORDER BY means no promised order. The Lab accepts any order for this one; a reader will not."],
+ hint:"SELECT channel, COUNT(*) \u2026 GROUP BY channel",
+ after:"Six rows out of 1,320. That is the entire mechanism behind every bar chart you have ever been handed: bucket, count, and the rows are gone.",
  sol:"SELECT channel, COUNT(*) AS leads FROM leads GROUP BY channel"},
-{id:"s2-3",s:"s2",t:"Biggest channel first",ask:"Count leads per channel, sorted from most leads to fewest.",teach:"You can ORDER BY an aggregate you just computed. This is the shape of most dashboard tables.",hint:"Add ORDER BY COUNT(*) DESC to what you already wrote.",ordered:true,
+{id:"s2-3",s:"s2",t:"Biggest first",ask:"Count leads per channel, sorted from most leads to fewest.",
+ shape:"SELECT col, COUNT(*) AS name\nFROM table\nGROUP BY col\nORDER BY COUNT(*) DESC",
+ nw:[{k:"ORDER BY an aggregate",d:"You can sort by something you just computed."}],
+ traps:["ORDER BY comes after GROUP BY, always.","Most databases also let you write ORDER BY 2 DESC to mean the second output column. Compact, and unreadable six months later."],
+ hint:"Add ORDER BY COUNT(*) DESC to what you wrote last time.",ordered:true,
+ after:"Paid Search on top. This is the shape of most dashboard tables \u2014 a dimension, a measure, sorted descending. You have now written one from nothing.",
  sol:"SELECT channel, COUNT(*) AS leads FROM leads GROUP BY channel ORDER BY COUNT(*) DESC"},
-{id:"s2-4",s:"s2",t:"Only the big ones",ask:"Show only the channels that produced more than 200 leads, with their counts.",teach:"WHERE filters rows before grouping. HAVING filters the groups afterward — that distinction gets asked about a lot.",hint:"GROUP BY channel HAVING COUNT(*) > 200",
+{id:"s2-4",s:"s2",t:"Only the big ones",ask:"Show only the channels that produced more than 200 leads, with their counts.",
+ shape:"SELECT col, COUNT(*) AS name\nFROM table\nGROUP BY col\nHAVING COUNT(*) > n",
+ nw:[{k:"HAVING",d:"Filters finished groups, after aggregation has happened."}],
+ traps:["WHERE cannot do this. WHERE runs before grouping, so a channel's total does not exist yet.","WHERE filters rows, HAVING filters groups. Expect to be asked the difference in an interview."],
+ hint:"GROUP BY channel HAVING COUNT(*) > 200",
+ after:"Three channels clear the bar. WHERE and HAVING are the same idea applied at two different moments \u2014 and knowing which moment you need is most of what GROUP BY fluency is.",
  sol:"SELECT channel, COUNT(*) AS leads FROM leads GROUP BY channel HAVING COUNT(*) > 200"},
-{id:"s2-5",s:"s2",t:"Count the distinct thing",ask:"Return one number: how many different programs appear in the leads table.",teach:"COUNT(DISTINCT col) counts unique values. The gap between COUNT(*) and COUNT(DISTINCT …) is where inflated funnel numbers hide.",hint:"COUNT(DISTINCT program_code)",
+{id:"s2-5",s:"s2",t:"Count the distinct thing",ask:"Return one number: how many different programs appear in the leads table.",
+ shape:"SELECT COUNT(DISTINCT col) AS name\nFROM table",
+ nw:[{k:"COUNT(DISTINCT col)",d:"Counts unique values rather than rows."}],
+ traps:["COUNT(*) here would return 1,320 \u2014 the number of rows, not the number of programs.","COUNT(column) is a third thing again: rows where that column is not NULL."],
+ hint:"COUNT(DISTINCT program_code)",
+ after:"Eight programs. Remember the three counts as three different questions: how many rows, how many rows with a value, how many different values. Confusing the first for the third is the most common way a funnel number gets inflated \u2014 and Stage 3 is where it happens for real.",
  sol:"SELECT COUNT(DISTINCT program_code) AS programs FROM leads"},
 /* ---- stage 3 ---- */
-{id:"s3-1",s:"s3",t:"Leads that applied",ask:"Return one number: how many distinct leads have at least one application.",teach:"A JOIN matches rows across tables on a shared key. Because one lead can hold two applications, COUNT(DISTINCT …) is what keeps the number honest.",hint:"JOIN applications ON applications.lead_id = leads.id, then COUNT(DISTINCT leads.id).",
+{id:"s3-1",s:"s3",t:"Leads that applied",ask:"Return one number: how many distinct leads have at least one application.",
+ shape:"SELECT COUNT(DISTINCT a.col) AS name\nFROM table a\nJOIN table b ON b.key = a.key",
+ nw:[{k:"JOIN … ON",d:"Lines two tables up on the key they share."},{k:"aliases (leads l)",d:"Short names, so l.id and a.lead_id are unambiguous."}],
+ traps:["Both tables have a column called id. Without aliases the database refuses to guess which you meant.","COUNT(*) gives 607 here, not 538, because some leads have two applications. The question asked for leads."],
+ hint:"JOIN applications a ON a.lead_id = l.id, then COUNT(DISTINCT l.id).",
+ after:"538 leads applied, out of 1,320. Your first join, and already the DISTINCT was load-bearing \u2014 COUNT(*) would have told you 607 people applied, which is 69 more people than exist.",
  sol:"SELECT COUNT(DISTINCT l.id) AS applied FROM leads l JOIN applications a ON a.lead_id = l.id"},
-{id:"s3-2",s:"s3",t:"The rows an inner join hides",ask:"Return one number: how many leads have no application at all.",teach:"A LEFT JOIN keeps every row on the left and fills NULL where nothing matched. Filtering on IS NULL is how you find the rows an inner join would have silently dropped.",hint:"LEFT JOIN applications, then WHERE applications.id IS NULL.",
+{id:"s3-2",s:"s3",t:"The rows an inner join hides",ask:"Return one number: how many leads have no application at all.",
+ shape:"SELECT COUNT(*) AS name\nFROM table a\nLEFT JOIN table b ON b.key = a.key\nWHERE b.col IS NULL",
+ nw:[{k:"LEFT JOIN",d:"Keeps every row on the left, NULL-filling where nothing matched."},{k:"IS NULL",d:"The only way to test for an absent value."}],
+ traps:["= NULL never matches anything, not even a NULL. It has to be IS NULL.","Filter on a column from the right-hand table \u2014 a.id. Filtering on l.id would find nothing, since every lead has one."],
+ hint:"LEFT JOIN applications, then WHERE a.id IS NULL.",
+ after:"782 leads never applied \u2014 59% of the table. That is what the inner join in the last exercise silently threw away. Build a conversion rate on the survivors and you get 100%, which somebody has certainly reported at some point.",
  sol:"SELECT COUNT(*) AS no_app FROM leads l LEFT JOIN applications a ON a.lead_id = l.id WHERE a.id IS NULL"},
-{id:"s3-3",s:"s3",t:"Fan-out, side by side",ask:"By channel, return the number of application rows and the number of distinct leads that applied. Columns: channel, app_rows, leads_applied.",teach:"These two numbers differ because some leads filed two applications. Quote the first as a lead count and every rate built on it is wrong.",hint:"COUNT(a.id) and COUNT(DISTINCT l.id) in the same GROUP BY.",
+{id:"s3-3",s:"s3",t:"Fan-out, side by side",ask:"By channel, return the number of application rows and the number of distinct leads that applied. Columns: channel, app_rows, leads_applied.",
+ shape:"SELECT a.col, COUNT(x) AS n1, COUNT(DISTINCT y) AS n2\nFROM …\nGROUP BY a.col",
+ nw:[{k:"two counts, one query",d:"Different aggregates over the same grouped rows."}],
+ traps:["Group by l.channel, with the alias \u2014 an unqualified channel is ambiguous once two tables are in play.","The two columns will differ in every channel. That difference is the point of the exercise."],
+ hint:"COUNT(a.id) and COUNT(DISTINCT l.id) in the same GROUP BY.",
+ after:"Every channel shows a gap. 69 leads filed two applications, so the join duplicated them, and the left-hand number counts paperwork while the right-hand number counts people. Both are correct answers to different questions \u2014 the error is labelling the first one \u201cleads.\u201d",
  sol:"SELECT l.channel AS channel, COUNT(a.id) AS app_rows, COUNT(DISTINCT l.id) AS leads_applied FROM leads l JOIN applications a ON a.lead_id = l.id GROUP BY l.channel"},
-{id:"s3-4",s:"s3",t:"Started, never submitted",ask:"Return one number: how many applications were started but never submitted.",teach:"NULL means absent. It fails every comparison, including = NULL, so you must say IS NULL.",hint:"WHERE submitted_date IS NULL",
+{id:"s3-4",s:"s3",t:"Started, never submitted",ask:"Return one number: how many applications were started but never submitted.",
+ shape:"SELECT COUNT(*) AS name\nFROM table\nWHERE col IS NULL",
+ nw:[{k:"IS NULL on a real column",d:"Here NULL carries meaning: the submission never happened."}],
+ traps:["NULL is not an empty string and not zero. WHERE submitted_date = '' finds nothing.","COUNT(submitted_date) would count the opposite group, since COUNT of a column skips NULLs."],
+ hint:"WHERE submitted_date IS NULL",
+ after:"224 abandoned applications. NULL is doing real work in this table \u2014 it is the difference between \u201cstarted\u201d and \u201cfinished,\u201d and any average time-to-submit that forgets to exclude them will be quietly wrong.",
  sol:"SELECT COUNT(*) AS unsubmitted FROM applications WHERE submitted_date IS NULL"},
-{id:"s3-5",s:"s3",t:"Three tables deep",ask:"Count enrollments per credential. Columns: credential, enrollments.",teach:"Joins chain. Each hop narrows the population, which is exactly why you keep checking the denominator.",hint:"enrollments already carries credential — this one is a plain GROUP BY.",
+{id:"s3-5",s:"s3",t:"Enrollments by credential",ask:"Count enrollments per credential. Columns: credential, enrollments.",
+ shape:"SELECT col, COUNT(*) AS name\nFROM table\nGROUP BY col",
+ nw:[{k:"denormalised column",d:"credential is already stored on enrollments, so no join is needed."}],
+ traps:["Check what a table already holds before joining out to find it. A join you did not need is a chance to drop rows for nothing."],
+ hint:"No join here \u2014 enrollments already carries credential.",
+ after:"Three credentials, 183 enrollments. That copied column is a real design tradeoff: fast and simple to read, and one more place the value can drift out of step with the programs table. Your Learn tab has a Door on exactly this.",
  sol:"SELECT credential, COUNT(*) AS enrollments FROM enrollments GROUP BY credential"},
-{id:"s3-6",s:"s3",t:"Name the steps with a CTE",ask:"Using a CTE, return each channel with its lead count and its distinct applicant count. Columns: channel, leads, applicants.",teach:"A CTE (WITH … AS) names an intermediate result so a long query reads top to bottom instead of inside out.",hint:"WITH a AS (SELECT lead_id FROM applications GROUP BY lead_id) then LEFT JOIN it to leads.",
+{id:"s3-6",s:"s3",t:"Name the steps with a CTE",ask:"Using a CTE, return each channel with its lead count and its distinct applicant count. Columns: channel, leads, applicants.",
+ shape:"WITH name AS (\n  SELECT …\n)\nSELECT …\nFROM table\nLEFT JOIN name ON …\nGROUP BY col",
+ nw:[{k:"WITH … AS ( )",d:"Parks a result under a name you can use below like a table."}],
+ traps:["Make the CTE one row per lead \u2014 SELECT DISTINCT lead_id \u2014 or the fan-out comes back through the CTE.","LEFT JOIN, so channels keep their full lead count in the denominator.","COUNT(cte.lead_id) counts matches only, because COUNT of a column skips the NULLs a LEFT JOIN produced."],
+ hint:"WITH ap AS (SELECT DISTINCT lead_id FROM applications), then LEFT JOIN ap onto leads.",
+ after:"Both honest numbers in one table: full lead counts as the denominator, deduplicated people as the numerator. This is the pattern behind every funnel query in Stage 4 \u2014 one CTE per stage, left-joined, counted carefully.",
  sol:"WITH ap AS (SELECT DISTINCT lead_id FROM applications) SELECT l.channel AS channel, COUNT(*) AS leads, COUNT(ap.lead_id) AS applicants FROM leads l LEFT JOIN ap ON ap.lead_id = l.id GROUP BY l.channel"},
 /* ---- stage 4 ---- */
-{id:"s4-1",s:"s4",t:"Inquiry to application",ask:"Return one number: the share of leads that filed at least one application, rounded to 3 decimals.",teach:"Your I2A. The numerator is distinct leads with an application; the denominator is every lead, including the ones an inner join would drop.",hint:"COUNT(DISTINCT a.lead_id) * 1.0 / COUNT(*) with a LEFT JOIN, then ROUND(…, 3).",
+{id:"s4-1",s:"s4",t:"Inquiry to application",ask:"Return one number: the share of leads that filed at least one application, rounded to 3 decimals.",
+ shape:"SELECT ROUND(COUNT(DISTINCT x) * 1.0 / COUNT(DISTINCT y), 3) AS name\nFROM table a\nLEFT JOIN table b ON …",
+ nw:[{k:"* 1.0",d:"Forces decimal division. Without it, integer maths returns 0."},{k:"ROUND(x, 3)",d:"Three decimal places."}],
+ traps:["LEFT JOIN, or your denominator becomes 538 instead of 1,320 and the rate reads 1.0.","Both sides need DISTINCT \u2014 the numerator to undo fan-out, the denominator because the join duplicated leads."],
+ hint:"COUNT(DISTINCT a.lead_id) * 1.0 / COUNT(DISTINCT l.id), wrapped in ROUND, over a LEFT JOIN.",
+ after:"0.408. Your I2A, computed from raw tables rather than read off a dashboard. Every choice in that one line \u2014 left versus inner, distinct versus not \u2014 moves the number, and none of them announce themselves in the output.",
  sol:"SELECT ROUND(COUNT(DISTINCT a.lead_id) * 1.0 / COUNT(DISTINCT l.id), 3) AS i2a FROM leads l LEFT JOIN applications a ON a.lead_id = l.id"},
-{id:"s4-2",s:"s4",t:"App to start, by credential",ask:"For each credential, return submitted applications and enrollments. Columns: credential, submitted, enrolled.",teach:"ATS in its natural form. Watch that the denominator counts submitted applications rather than all applications.",hint:"Join applications to programs via leads, or lean on enrollments.credential and count submitted apps separately in a CTE.",
+{id:"s4-2",s:"s4",t:"App to start, by credential",ask:"For each credential, return submitted applications and enrollments. Columns: credential, submitted, enrolled.",
+ shape:"WITH a AS ( … ), b AS ( … )\nSELECT …\nFROM a JOIN b ON …",
+ nw:[{k:"two CTEs",d:"One per funnel stage, each keyed on the same dimension."},{k:"chained joins",d:"applications to leads to programs, to reach credential."}],
+ traps:["The denominator is submitted applications, so filter status = 'submitted' \u2014 abandoned ones are not part of an app-to-start rate.","Enrollments carries credential directly; applications has to reach it through leads and programs."],
+ hint:"One CTE counting submitted apps by credential via leads and programs, another counting enrollments, then join them.",
+ after:"ATS in its natural shape. Notice the numerator and denominator arrive from two different paths through the schema \u2014 that is normal, and it is why a rate deserves more scrutiny than a count.",
  sol:"WITH sub AS (SELECT p.credential AS credential, COUNT(*) AS submitted FROM applications a JOIN leads l ON l.id = a.lead_id JOIN programs p ON p.code = l.program_code WHERE a.status = 'submitted' GROUP BY p.credential), enr AS (SELECT credential, COUNT(*) AS enrolled FROM enrollments GROUP BY credential) SELECT sub.credential AS credential, sub.submitted AS submitted, enr.enrolled AS enrolled FROM sub JOIN enr ON enr.credential = sub.credential"},
-{id:"s4-3",s:"s4",t:"The whole funnel, one table",ask:"For each channel return leads, distinct applicants, and enrollments. Columns: channel, leads, applicants, enrollments.",teach:"This is a weekly performance report in four columns. Every rate anyone asks for later is derivable from it.",hint:"Build applicants and enrollments as separate CTEs keyed on channel, then LEFT JOIN both onto the lead counts.",
+{id:"s4-3",s:"s4",t:"The whole funnel, one table",ask:"For each channel return leads, distinct applicants, and enrollments. Columns: channel, leads, applicants, enrollments.",
+ shape:"WITH l AS ( … ), ap AS ( … ), en AS ( … )\nSELECT …\nFROM l\nLEFT JOIN ap ON …\nLEFT JOIN en ON …",
+ nw:[{k:"three CTEs, left-joined",d:"The standard structure for a funnel report."},{k:"COALESCE(x, 0)",d:"Turns a missing match into the 0 a reader expects."}],
+ traps:["LEFT JOIN the later stages. A channel with zero enrollments still belongs in the report \u2014 that zero is the finding.","Reaching channel from enrollments takes two hops: enrollments to applications to leads."],
+ hint:"One CTE per stage keyed on channel, then LEFT JOIN both onto the lead counts and COALESCE the gaps.",
+ after:"This is the deliverable. Four columns, and every rate anyone asks for \u2014 by channel, by stage, this month against last \u2014 comes out of it without rewriting the query. Saved as a view, it becomes a definition instead of an answer, which is Week 8 of your plan.",
  sol:"WITH l AS (SELECT channel, COUNT(*) AS leads FROM leads GROUP BY channel), ap AS (SELECT ld.channel AS channel, COUNT(DISTINCT ld.id) AS applicants FROM leads ld JOIN applications a ON a.lead_id = ld.id GROUP BY ld.channel), en AS (SELECT ld.channel AS channel, COUNT(*) AS enrollments FROM enrollments e JOIN applications a ON a.id = e.application_id JOIN leads ld ON ld.id = a.lead_id GROUP BY ld.channel) SELECT l.channel AS channel, l.leads AS leads, COALESCE(ap.applicants,0) AS applicants, COALESCE(en.enrollments,0) AS enrollments FROM l LEFT JOIN ap ON ap.channel = l.channel LEFT JOIN en ON en.channel = l.channel"},
-{id:"s4-4",s:"s4",t:"Prove which number is right",ask:"Return one row with two versions of the applicant count: total application rows, and distinct leads who applied. Columns: app_rows, distinct_leads.",teach:"When two teams quote different conversion rates, this query is usually the whole explanation.",hint:"COUNT(*) and COUNT(DISTINCT lead_id) from applications, no join needed.",
+{id:"s4-4",s:"s4",t:"Prove which number is right",ask:"Return one row with two versions of the applicant count: total application rows, and distinct leads who applied. Columns: app_rows, distinct_leads.",
+ shape:"SELECT COUNT(*) AS n1, COUNT(DISTINCT col) AS n2\nFROM table",
+ nw:[{k:"one row, two definitions",d:"The whole query is an argument about what a number means."}],
+ traps:["No join needed at all. Reaching for one is the instinct to resist."],
+ hint:"COUNT(*) and COUNT(DISTINCT lead_id) straight from applications.",
+ after:"607 and 538. When two teams quote different conversion rates, this five-second query usually ends the meeting \u2014 and the disagreement is almost never in the numerator. Ask what each side divided by.",
  sol:"SELECT COUNT(*) AS app_rows, COUNT(DISTINCT lead_id) AS distinct_leads FROM applications"},
-{id:"s4-5",s:"s4",t:"Leads per enrollment",ask:"For each channel, return how many leads it took to produce one enrollment, rounded to 1 decimal. Columns: channel, leads_per_enrollment. Exclude channels with no enrollments.",teach:"The shape of a cost-per-enrollment question. Swap leads for spend and it is CAC.",hint:"Reuse the funnel CTEs, then divide leads by enrollments with a *1.0 to force decimal maths.",
+{id:"s4-5",s:"s4",t:"Leads per enrollment",ask:"For each channel, return how many leads it took to produce one enrollment, rounded to 1 decimal. Columns: channel, leads_per_enrollment. Exclude channels with no enrollments.",
+ shape:"WITH l AS ( … ), en AS ( … )\nSELECT col, ROUND(x * 1.0 / y, 1) AS name\nFROM l JOIN en ON …\nWHERE y > 0",
+ nw:[{k:"efficiency as a ratio",d:"Swap leads for spend and the same query is CAC."}],
+ traps:["Division by zero. An inner join between the two CTEs handles it here; a LEFT JOIN would need a guard.","ROUND to 1 decimal, not 3. The question sets the precision."],
+ hint:"Reuse the funnel CTEs, divide leads by enrollments with a * 1.0, and inner-join so empty channels drop out.",
+ after:"This is the number a CFO actually asks for, in the shape they ask for it. Multiply by cost per lead and it is cost per enrollment \u2014 the same query with one more column, and the reason this stage is worth more than the syntax in it.",
  sol:"WITH l AS (SELECT channel, COUNT(*) AS leads FROM leads GROUP BY channel), en AS (SELECT ld.channel AS channel, COUNT(*) AS enrollments FROM enrollments e JOIN applications a ON a.id = e.application_id JOIN leads ld ON ld.id = a.lead_id GROUP BY ld.channel) SELECT l.channel AS channel, ROUND(l.leads * 1.0 / en.enrollments, 1) AS leads_per_enrollment FROM l JOIN en ON en.channel = l.channel WHERE en.enrollments > 0"},
 /* ---- stage 5 ---- */
-{id:"s5-1",s:"s5",t:"Rank without collapsing",ask:"Rank channels by lead volume, biggest first. Columns: channel, leads, rank.",teach:"ROW_NUMBER() OVER (ORDER BY …) numbers rows while every row stays visible. That is the whole idea of a window function.",hint:"SELECT channel, COUNT(*) AS leads, ROW_NUMBER() OVER (ORDER BY COUNT(*) DESC) AS rank … GROUP BY channel",ordered:true,
+{id:"s5-1",s:"s5",t:"Rank without collapsing",ask:"Rank channels by lead volume, biggest first. Columns: channel, leads, rank.",
+ shape:"SELECT col, COUNT(*) AS n,\n       ROW_NUMBER() OVER (ORDER BY COUNT(*) DESC) AS rank\nFROM table\nGROUP BY col\nORDER BY n DESC",
+ nw:[{k:"ROW_NUMBER()",d:"Numbers rows in the window's order."},{k:"OVER ( )",d:"Defines which rows the function may look at."}],
+ traps:["The ORDER BY inside OVER controls the numbering. The ORDER BY at the end controls the output. They are separate, and both are needed here.","RANK() is not the same function \u2014 ties share a number and leave a gap."],
+ hint:"ROW_NUMBER() OVER (ORDER BY COUNT(*) DESC) alongside your GROUP BY, then sort the output too.",ordered:true,
+ after:"An aggregate nested inside a window function, which reads oddly the first time and is completely standard. You have crossed the line most business analysts never cross \u2014 the next three exercises are the ones interviews actually ask about.",
  sol:"SELECT channel, COUNT(*) AS leads, ROW_NUMBER() OVER (ORDER BY COUNT(*) DESC) AS rank FROM leads GROUP BY channel ORDER BY leads DESC"},
-{id:"s5-2",s:"s5",t:"Compared with last term",ask:"For each term in order, return enrollments and the previous term's enrollments. Columns: term_code, enrollments, prev_enrollments.",teach:"LAG() reaches back one row in the window's order. This is term-over-term without a self-join.",hint:"Join enrollments to terms for seq, GROUP BY term, then LAG(COUNT(*)) OVER (ORDER BY t.seq).",ordered:true,
+{id:"s5-2",s:"s5",t:"Compared with last term",ask:"For each term in order, return enrollments and the previous term's enrollments. Columns: term_code, enrollments, prev_enrollments.",
+ shape:"SELECT col, COUNT(*) AS n,\n       LAG(COUNT(*)) OVER (ORDER BY seq) AS prev\nFROM a JOIN b ON …\nGROUP BY col, seq\nORDER BY seq",
+ nw:[{k:"LAG(col)",d:"The value from the previous row in the window's order."},{k:"LEAD(col)",d:"The same, looking forward."}],
+ traps:["Order by t.seq, not term_code. '2025FA' sorts before '2025SP' alphabetically, which is not the calendar.","Put seq in the GROUP BY so it is available to order by.","The first row's prev is NULL. There is no earlier term \u2014 that NULL is correct, not a bug."],
+ hint:"Join enrollments to terms for seq, GROUP BY both, then LAG(COUNT(*)) OVER (ORDER BY t.seq).",ordered:true,
+ after:"Period-over-period without a self-join, which is how this used to be written and why it used to be painful. Subtract the two columns and you have term-over-term change; divide and you have growth rate.",
  sol:"SELECT e.term_code AS term_code, COUNT(*) AS enrollments, LAG(COUNT(*)) OVER (ORDER BY t.seq) AS prev_enrollments FROM enrollments e JOIN terms t ON t.code = e.term_code GROUP BY e.term_code, t.seq ORDER BY t.seq"},
-{id:"s5-3",s:"s5",t:"Running total",ask:"For each term in order, return enrollments and the cumulative enrollments to date. Columns: term_code, enrollments, running_total.",teach:"A frame clause turns SUM() into a running total. Same pattern as a cumulative starts-to-goal chart.",hint:"SUM(COUNT(*)) OVER (ORDER BY t.seq ROWS BETWEEN UNBOUNDED PRECEDING AND CURRENT ROW)",ordered:true,
+{id:"s5-3",s:"s5",t:"Running total",ask:"For each term in order, return enrollments and the cumulative enrollments to date. Columns: term_code, enrollments, running_total.",
+ shape:"SUM(COUNT(*)) OVER (\n  ORDER BY seq\n  ROWS BETWEEN UNBOUNDED PRECEDING AND CURRENT ROW\n)",
+ nw:[{k:"frame clause",d:"Which rows in the window the aggregate covers."},{k:"UNBOUNDED PRECEDING",d:"Start from the first row of the window."}],
+ traps:["Verbose, and worth typing out once. Many databases default to this frame when you supply an ORDER BY, but relying on a default here is how you ship a subtly wrong chart.","The last row of your running total should equal the total count of enrollments. Check it."],
+ hint:"SUM(COUNT(*)) OVER (ORDER BY t.seq ROWS BETWEEN UNBOUNDED PRECEDING AND CURRENT ROW)",ordered:true,
+ after:"A cumulative starts-to-goal line, in one query. Your final row should read 183, matching the total \u2014 that self-check is the habit worth keeping, because a running total that ends on the wrong number is the easiest chart in the world to publish by accident.",
  sol:"SELECT e.term_code AS term_code, COUNT(*) AS enrollments, SUM(COUNT(*)) OVER (ORDER BY t.seq ROWS BETWEEN UNBOUNDED PRECEDING AND CURRENT ROW) AS running_total FROM enrollments e JOIN terms t ON t.code = e.term_code GROUP BY e.term_code, t.seq ORDER BY t.seq"},
-{id:"s5-4",s:"s5",t:"Share of the whole",ask:"For each channel, return enrollments and its share of all enrollments, rounded to 3 decimals. Columns: channel, enrollments, share.",teach:"SUM(…) OVER () with an empty window is the grand total sitting next to every row — the cleanest way to compute a share.",hint:"COUNT(*) * 1.0 / SUM(COUNT(*)) OVER ()",
+{id:"s5-4",s:"s5",t:"Share of the whole",ask:"For each channel, return enrollments and its share of all enrollments, rounded to 3 decimals. Columns: channel, enrollments, share.",
+ shape:"ROUND(COUNT(*) * 1.0 / SUM(COUNT(*)) OVER (), 3)",
+ nw:[{k:"SUM(x) OVER ()",d:"An empty window means the whole result set — the grand total beside every row."}],
+ traps:["The parentheses after OVER stay empty. Adding an ORDER BY in there turns your share into a running share.","Still needs the * 1.0. Integer division does not care that you are computing a percentage."],
+ hint:"COUNT(*) * 1.0 / SUM(COUNT(*)) OVER (), wrapped in ROUND.",
+ after:"Your shares should sum to 1.000. This is the cleanest mix-shift query there is \u2014 add a term dimension and you can see a channel's share moving over time, which is usually the story underneath a flat total.",
  sol:"SELECT ld.channel AS channel, COUNT(*) AS enrollments, ROUND(COUNT(*) * 1.0 / SUM(COUNT(*)) OVER (), 3) AS share FROM enrollments e JOIN applications a ON a.id = e.application_id JOIN leads ld ON ld.id = a.lead_id GROUP BY ld.channel"},
 /* ---- stage 6 ---- */
-{id:"s6-1",s:"s6",t:"Cohort sizes",ask:"For each starting term, return how many students enrolled. Columns: cohort_term, cohort_size.",teach:"A cohort is defined by when it entered. Everything downstream is measured relative to that entry point.",hint:"GROUP BY term_code on enrollments.",
+{id:"s6-1",s:"s6",t:"Cohort sizes",ask:"For each starting term, return how many students enrolled. Columns: cohort_term, cohort_size.",
+ shape:"SELECT col AS cohort_term, COUNT(*) AS cohort_size\nFROM table\nGROUP BY col",
+ nw:[{k:"cohort",d:"A group defined by when it entered."}],
+ traps:["Simple on purpose. These five numbers are the denominators for everything in this stage, and every retention percentage you compute depends on them being right."],
+ hint:"GROUP BY term_code on enrollments.",
+ after:"Five cohorts. Write these down \u2014 the offset-0 column of your retention triangle has to match them exactly, and when it does not, the join is duplicating or dropping people.",
  sol:"SELECT term_code AS cohort_term, COUNT(*) AS cohort_size FROM enrollments GROUP BY term_code"},
-{id:"s6-2",s:"s6",t:"Still here next term",ask:"For each cohort, return the cohort size and how many were still active in the following term. Columns: cohort_term, cohort_size, retained_next.",teach:"Term-over-term persistence, which is the same arithmetic as logo retention with different nouns.",hint:"Join enrollments to terms for the start seq, then to persistence on the term whose seq is start+1.",
+{id:"s6-2",s:"s6",t:"Still here next term",ask:"For each cohort, return the cohort size and how many were still active in the following term. Columns: cohort_term, cohort_size, retained_next.",
+ shape:"WITH c AS ( … anchor each student to their start seq … )\nSELECT cohort_term, COUNT(*), SUM(CASE WHEN … THEN 1 ELSE 0 END)\nFROM c\nLEFT JOIN terms nt ON nt.seq = c.seq + 1\nLEFT JOIN persistence p ON …\nGROUP BY cohort_term",
+ nw:[{k:"anchor CTE",d:"Pins each student to their entry point so later terms can be measured against it."},{k:"seq + 1",d:"Arithmetic on the period number, which is why seq exists."},{k:"SUM(CASE WHEN … )",d:"Counts conditionally inside an aggregate."}],
+ traps:["LEFT JOIN both hops, or cohorts with nobody retained disappear from the report entirely.","The newest cohort has no following term. Its retained count should be 0, and it should still appear."],
+ hint:"CTE to get each enrollment's start seq, LEFT JOIN terms on seq + 1, LEFT JOIN persistence on that term, then count the matches.",
+ after:"Term-over-term persistence, computed rather than reported. Divide retained_next by cohort_size and that is the number you have been quoting from memory \u2014 now with the query behind it.",
  sol:"WITH c AS (SELECT e.id AS id, e.term_code AS cohort_term, t.seq AS seq FROM enrollments e JOIN terms t ON t.code = e.term_code) SELECT c.cohort_term AS cohort_term, COUNT(*) AS cohort_size, SUM(CASE WHEN p.enrollment_id IS NULL THEN 0 ELSE 1 END) AS retained_next FROM c LEFT JOIN terms nt ON nt.seq = c.seq + 1 LEFT JOIN persistence p ON p.enrollment_id = c.id AND p.term_code = nt.code GROUP BY c.cohort_term"},
-{id:"s6-3",s:"s6",t:"The retention triangle",ask:"For each cohort and each term offset (0, 1, 2 …), return how many of that cohort were still active. Columns: cohort_term, term_offset, still_active.",teach:"The grid every retention deck is built from. Offset rather than calendar term is what makes cohorts comparable.",hint:"Join persistence to terms twice — once for the cohort's start seq, once for the row's seq — and subtract.",
+{id:"s6-3",s:"s6",t:"The retention triangle",ask:"For each cohort and each term offset (0, 1, 2 …), return how many of that cohort were still active. Columns: cohort_term, term_offset, still_active.",
+ shape:"WITH c AS ( … id, cohort_term, start_seq … )\nSELECT cohort_term, pt.seq - c.start_seq AS term_offset, COUNT(*)\nFROM c\nJOIN persistence p ON p.enrollment_id = c.id\nJOIN terms pt ON pt.code = p.term_code\nGROUP BY cohort_term, pt.seq - c.start_seq",
+ nw:[{k:"term_offset",d:"Periods since entry. What makes different cohorts comparable."},{k:"GROUP BY an expression",d:"You can group by the subtraction itself."}],
+ traps:["Two joins to terms doing two different jobs: one for the cohort's start, one for the activity row's period. Aliases are mandatory.","Calendar terms across the top would make older cohorts look worse purely because they have more history. Offsets fix that.","Offset 0 must equal the cohort sizes from the first exercise. If it does not, stop and fix the join."],
+ hint:"Anchor each enrollment to its start seq in a CTE, join out to persistence, join terms again for the activity period, then subtract.",
+ after:"That is the grid every retention deck is built from, and it is the pattern interviews ask for most often. Read down the offset-1 column: if it drops for recent cohorts, something changed in recruiting or onboarding, and you can now find it yourself instead of waiting for the report.",
  sol:"WITH c AS (SELECT e.id AS id, e.term_code AS cohort_term, t.seq AS start_seq FROM enrollments e JOIN terms t ON t.code = e.term_code) SELECT c.cohort_term AS cohort_term, pt.seq - c.start_seq AS term_offset, COUNT(*) AS still_active FROM c JOIN persistence p ON p.enrollment_id = c.id JOIN terms pt ON pt.code = p.term_code GROUP BY c.cohort_term, pt.seq - c.start_seq"}
 ];
 
+function labStage(sid){return LAB_STAGES.filter(function(s){return s.id===sid;})[0];}
+function labUnitFor(sid){return labStage(sid).u;}
+function labOpen(sid){return state.learned.indexOf(labUnitFor(sid))>=0;}
+function labUnitTitle(sid){var u=UNITS.filter(function(x){return x.id===labUnitFor(sid);})[0];return u?u.title:"";}
 function labSolved(){return state.labSolved||(state.labSolved=[]);}
 function labAssisted(){return state.labAssisted||(state.labAssisted=[]);}
 function labIsDone(id){return labSolved().indexOf(id)>=0;}
 function labStageEx(sid){return LAB_EX.filter(function(e){return e.s===sid;});}
 function labStageDone(sid){return labStageEx(sid).filter(function(e){return labIsDone(e.id);}).length;}
-function labNext(){for(var i=0;i<LAB_EX.length;i++){if(!labIsDone(LAB_EX[i].id))return LAB_EX[i];}return null;}
+function labNext(){for(var i=0;i<LAB_EX.length;i++){if(!labIsDone(LAB_EX[i].id)&&labOpen(LAB_EX[i].s))return LAB_EX[i];}return null;}
 
 async function labDB(){
   if(LAB.db)return LAB.db;
@@ -1292,11 +1610,11 @@ const LAB_SCHEMA_HTML='<div class="labschema"><span class="caps">The tables</spa
 
 function renderLab(){
   var doneN=labSolved().length,total=LAB_EX.length;
-  var head='<div class="card"><span class="pilltag">🗃️ SQL Lab</span><h2>Write it here</h2>'+
-   '<p class="sub">A real database runs in this page — the tables below hold an enrollment funnel shaped like the one you already know. Write a query, run it, and the lab checks your result against the answer.</p>'+
+  var head='<div class="card"><span class="pilltag">🗃️ SQL Lab</span><h2>Apply it here</h2>'+
+   '<p class="sub">The reps. A real database runs in this page, holding an enrollment funnel shaped like the one you already know. Units 9 to 14 teach each idea in Learn; this is where you write it yourself against real rows and find out.</p>'+
    '<div class="labprog"><div class="labbar"><span style="width:'+(total?Math.round(doneN/total*100):0)+'%"></span></div><b>'+doneN+" / "+total+"</b></div>"+
-   '<div class="labstages">'+LAB_STAGES.map(function(s){var d=labStageDone(s.id),n=labStageEx(s.id).length;
-     return '<button class="labstage'+(d>=n?" full":"")+'" data-stage="'+s.id+'"><b>'+esc(s.n)+"</b><span>"+esc(s.wk)+" · "+d+"/"+n+"</span></button>";}).join("")+"</div>"+
+   '<div class="labstages">'+LAB_STAGES.map(function(s){var d=labStageDone(s.id),n=labStageEx(s.id).length,op=labOpen(s.id);
+     return '<button class="labstage'+(d>=n&&op?" full":"")+(op?"":" locked")+'" data-stage="'+s.id+'"><b>'+(op?"":"🔒 ")+esc(s.n)+"</b><span>"+esc(s.wk)+" · "+(op?d+"/"+n:"read the unit first")+"</span></button>";}).join("")+"</div>"+
    '<div class="actions" style="margin-top:14px"><button class="btn ghost mini" id="labSchema">Show the tables</button><button class="btn ghost mini" id="labFree">Free query</button></div>'+
    (LAB.showSchema?LAB_SCHEMA_HTML:"")+"</div>";
 
@@ -1305,6 +1623,16 @@ function renderLab(){
   if(!LAB.db){root.innerHTML=head+'<div class="card"><p class="muted" style="margin:0"><span class="thinking">Starting the database…</span></p><p class="muted small" style="margin:10px 0 0">First run downloads the engine once, then it is instant.</p></div>';labWireHead();labBoot();return;}
 
   var body="";
+  if(LAB.locked){
+    var lk=LAB.locked;
+    body='<div class="card"><span class="pilltag">🔒 Not open yet</span><h2>'+esc(labStage(lk).n)+'</h2>'+
+     '<p class="sub">These reps are taught in <b>Unit '+(UNITS.map(function(u){return u.id;}).indexOf(labUnitFor(lk))+1)+' \u00b7 '+esc(labUnitTitle(lk))+'</b>. Read the lesson, walk its door, then come back and apply it.</p>'+
+     '<div class="actions"><button class="btn ghost mini" id="labLockedX">\u2039 back</button><button class="btn" id="labLockedGo">Open the unit \u2192</button></div></div>';
+    root.innerHTML=head+body;labWireHead();
+    var a=document.getElementById("labLockedX");if(a)a.onclick=function(){LAB.locked=null;render();};
+    var g=document.getElementById("labLockedGo");if(g)g.onclick=function(){var uid=labUnitFor(lk);LAB.locked=null;learnUnit=uid;sess=null;sab=null;setTab("learn");window.scrollTo(0,0);};
+    return;
+  }
   if(LAB.free){
     body='<div class="card"><button class="exitbtn" id="labExitFree">✕ exit</button><span class="pilltag">🔓 Free query</span><h2>Ask it anything</h2>'+
      '<p class="sub">No checking, no grading. Poke at the data until it makes sense.</p>'+
@@ -1314,31 +1642,48 @@ function renderLab(){
      (LAB.res?'<div class="labres">'+labGrid(LAB.res)+"</div>":"")+"</div>";
   }else{
     var ex=LAB.ex||labNext();
-    if(!ex){body='<div class="card"><span class="pilltag">🏁 Finished</span><h2>Every exercise is done</h2><p class="muted">Twenty-eight queries, from SELECT to a retention triangle. Free query mode is still there whenever you want to keep digging.</p></div>';}
+    if(!ex){
+      var anyOpen=LAB_STAGES.some(function(st){return labOpen(st.id);});
+      if(!anyOpen){
+        body='<div class="card"><span class="pilltag">📖 Start in Learn</span><h2>Nothing is open yet</h2>'+
+         '<p class="sub">The reps unlock as you finish the units that teach them. Unit 9 comes first — read the lesson, walk its door, then the first five exercises open here.</p>'+
+         '<div class="actions"><span></span><button class="btn" id="labGoU9">Open Unit 9 →</button></div></div>';
+      }else{
+        body='<div class="card"><span class="pilltag">🏁 Caught up</span><h2>Everything open is done</h2>'+
+         '<p class="muted">Nothing left in the units you have finished. Read the next unit in Learn to open the next set, or stay here in free query mode.</p></div>';
+      }
+    }
     else{
       LAB.ex=ex;
       var st=LAB_STAGES.filter(function(s){return s.id===ex.s;})[0];
       var idx=labStageEx(ex.s).map(function(e){return e.id;}).indexOf(ex.id)+1;
       var done=labIsDone(ex.id);
-      body='<div class="card"><span class="pilltag">'+esc(st.wk)+" · "+esc(st.n)+" "+idx+"/"+labStageEx(ex.s).length+'</span><h2>'+esc(ex.t)+(done?' <span class="labtick">✓</span>':"")+"</h2>"+
+      var how='<div class="labhow"><button class="labhowx" id="labHowHide">hide</button><span class="caps">Recall from the lesson</span>'+
+        (ex.shape?'<pre class="labshape">'+esc(ex.shape)+"</pre>":"")+
+        (ex.nw&&ex.nw.length?'<div class="labkeys">'+ex.nw.map(function(k){return '<div class="labkey"><b>'+esc(k.k)+"</b><span>"+esc(k.d)+"</span></div>";}).join("")+"</div>":"")+
+        "</div>";
+      body='<div class="card"><span class="pilltag">'+esc(st.wk)+" \u00b7 "+esc(st.n)+" "+idx+"/"+labStageEx(ex.s).length+'</span><h2>'+esc(ex.t)+(done?' <span class="labtick">\u2713</span>':"")+"</h2>"+
        '<p class="labask">'+esc(ex.ask)+"</p>"+
-       '<div class="labteach">'+esc(ex.teach)+"</div>"+
+       (LAB.how?how:'<div class="labhowbar"><button class="btn ghost mini" id="labHow">\ud83e\udde0 Recall from the lesson</button></div>')+
        (LAB.hint?'<div class="labhint"><span class="caps">Hint</span>'+esc(ex.hint)+"</div>":"")+
        (LAB.shown?'<div class="labhint"><span class="caps">One way to write it</span><code>'+esc(ex.sol)+"</code></div>":"")+
-       '<textarea class="labed" id="labSql" spellcheck="false" placeholder="SELECT …">'+esc(LAB.sql)+"</textarea>"+
+       '<textarea class="labed" id="labSql" spellcheck="false" placeholder="SELECT \u2026">'+esc(LAB.sql)+"</textarea>"+
        '<div class="actions"><span style="display:flex;gap:8px;flex-wrap:wrap">'+
+         '<button class="btn ghost mini" id="labLesson">\ud83d\udcd6 Back to the unit</button>'+
          (LAB.hint?"":'<button class="btn ghost mini" id="labHint">Hint</button>')+
          (LAB.shown?"":'<button class="btn ghost mini" id="labShow">Show me</button>')+
-         '<button class="btn ghost mini" id="labAskAI">✨ Ask about this</button></span>'+
-         '<span style="display:flex;gap:8px"><button class="btn ghost" id="labRunBtn">Run ▸</button><button class="btn" id="labCheck">Check ✓</button></span></div>'+
+         '<button class="btn ghost mini" id="labAskAI">\u2728 Ask about this</button></span>'+
+         '<span style="display:flex;gap:8px"><button class="btn ghost" id="labRunBtn">Run \u25b8</button><button class="btn" id="labCheck">Check \u2713</button></span></div>'+
        (LAB.err?'<div class="laberr">'+esc(LAB.err)+"</div>":"")+
        (LAB.verdict?'<div class="'+(LAB.verdict.ok?"labok":"labno")+'">'+esc(LAB.verdict.msg)+"</div>":"")+
+       ((done&&ex.after)?'<div class="labafter"><span class="caps">Now notice this</span>'+esc(ex.after)+"</div>":"")+
        (LAB.res?'<div class="labres"><span class="caps">Your result</span>'+labGrid(LAB.res)+"</div>":"")+
-       '<div class="actions" style="margin-top:12px"><button class="btn ghost mini" id="labPrev">‹ previous</button><button class="btn ghost mini" id="labSkip">next ›</button></div></div>';
+       '<div class="actions" style="margin-top:12px"><button class="btn ghost mini" id="labPrev">\u2039 previous</button><button class="btn ghost mini" id="labSkip">next \u203a</button></div></div>';
     }
   }
   root.innerHTML=head+body;
   labWireHead();labWireBody();
+  var g9=document.getElementById("labGoU9");if(g9)g9.onclick=function(){learnUnit="u9";sess=null;sab=null;setTab("learn");window.scrollTo(0,0);};
 }
 function labBoot(){
   if(LAB.loading)return;LAB.loading=true;
@@ -1349,10 +1694,14 @@ function labWireHead(){
   var a=document.getElementById("labSchema");if(a)a.onclick=function(){LAB.showSchema=!LAB.showSchema;render();};
   var f=document.getElementById("labFree");if(f)f.onclick=function(){LAB.free=true;LAB.res=null;LAB.err="";LAB.verdict=null;LAB.sql="";render();};
   document.querySelectorAll("[data-stage]").forEach(function(b){b.onclick=function(){
-    var list=labStageEx(b.dataset.stage),nx=list.filter(function(e){return !labIsDone(e.id);})[0]||list[0];
-    LAB.free=false;labGo(nx);};});
+    var sid=b.dataset.stage;
+    LAB.free=false;LAB.lesson=null;
+    if(!labOpen(sid)){LAB.locked=sid;render();return;}
+    LAB.locked=null;
+    var list=labStageEx(sid),nx=list.filter(function(e){return !labIsDone(e.id);})[0]||list[0];
+    labGo(nx);};});
 }
-function labGo(ex){LAB.ex=ex;LAB.sql="";LAB.res=null;LAB.err="";LAB.verdict=null;LAB.hint=false;LAB.shown=false;render();}
+function labGo(ex){LAB.ex=ex;LAB.lesson=null;LAB.locked=null;LAB.free=false;LAB.sql="";LAB.res=null;LAB.err="";LAB.verdict=null;LAB.hint=false;LAB.shown=false;render();}
 function labWireBody(){
   var ta=document.getElementById("labSql");
   if(ta){ta.oninput=function(){LAB.sql=ta.value;};
@@ -1361,6 +1710,9 @@ function labWireBody(){
   var r=document.getElementById("labRunBtn");if(r)r.onclick=labDoRun;
   var c=document.getElementById("labCheck");if(c)c.onclick=labDoCheck;
   var h=document.getElementById("labHint");if(h)h.onclick=function(){LAB.hint=true;render();};
+  var hw=document.getElementById("labHow");if(hw)hw.onclick=function(){LAB.how=true;render();};
+  var hh=document.getElementById("labHowHide");if(hh)hh.onclick=function(){LAB.how=false;render();};
+  var ll=document.getElementById("labLesson");if(ll)ll.onclick=function(){learnUnit=labUnitFor(LAB.ex.s);sess=null;sab=null;setTab("learn");window.scrollTo(0,0);};
   var s=document.getElementById("labShow");if(s)s.onclick=function(){LAB.shown=true;if(labAssisted().indexOf(LAB.ex.id)<0)labAssisted().push(LAB.ex.id);save();render();};
   var p=document.getElementById("labPrev");if(p)p.onclick=function(){var i=LAB_EX.map(function(e){return e.id;}).indexOf(LAB.ex.id);if(i>0)labGo(LAB_EX[i-1]);};
   var n=document.getElementById("labSkip");if(n)n.onclick=function(){var i=LAB_EX.map(function(e){return e.id;}).indexOf(LAB.ex.id);if(i<LAB_EX.length-1)labGo(LAB_EX[i+1]);};
@@ -1395,12 +1747,280 @@ function labDoCheck(){
     var first=!labIsDone(LAB.ex.id);
     LAB.verdict={ok:true,msg:first?"That's it. Result matches.":"Still correct."};
     if(first){
-      var prev=state.xp;labSolved().push(LAB.ex.id);
+      var prev=state.xp;labSolved().push(LAB.ex.id);recStamp("ex:"+LAB.ex.id);
       addXP(labAssisted().indexOf(LAB.ex.id)>=0?8:20);
       bumpStreak();commitProgress(prev);
     }
   }else{LAB.verdict={ok:false,msg:v.why};}
   render();
+}
+
+/* ===== COMPETENCY RECORD ===== */
+const REC_SKILLS={
+ s1:{t:"Single-table querying",d:"SELECT, WHERE, ORDER BY, LIMIT and DISTINCT; reading a query and stating what it returns."},
+ s2:{t:"Aggregation into metrics",d:"COUNT, SUM, AVG, GROUP BY and HAVING; distinguishing COUNT(*), COUNT(column) and COUNT(DISTINCT column)."},
+ s3:{t:"Multi-table joins",d:"Inner versus left joins, NULL semantics, detecting join fan-out and silent row loss, common table expressions."},
+ s4:{t:"Funnel rates and reconciliation",d:"Denominator selection, integer-division handling, multi-CTE funnel tables, and proving why two sources disagree."},
+ s5:{t:"Window functions",d:"ROW_NUMBER, RANK, LAG and LEAD, running totals, share of total, and PARTITION BY."},
+ s6:{t:"Cohort retention analysis",d:"Cohort definition, offset-based measurement, and building a retention grid."}};
+
+function escA(v){return esc(v||"").replace(/"/g,"&quot;");}
+function recStamp(k){state.stamps=state.stamps||{};if(!state.stamps[k])state.stamps[k]=todayStr();}
+function recDates(){
+  var d=[];(state.history||[]).forEach(function(h){if(h.date)d.push(h.date);});
+  (state.queries||[]).forEach(function(q){if(q.d)d.push(q.d);});
+  var st=state.stamps||{};Object.keys(st).forEach(function(k){d.push(st[k]);});
+  d=d.filter(Boolean).sort();
+  return d.length?{from:d[0],to:d[d.length-1]}:null;
+}
+function recData(){
+  var learned=UNITS.filter(function(u){return state.learned.indexOf(u.id)>=0;});
+  var doorIds={};(state.history||[]).filter(function(h){return !h.type;}).forEach(function(h){doorIds[h.id]=h;});
+  var doors=DECISIONS.filter(function(d){return doorIds[d.id];}).map(function(d){
+    var h=doorIds[d.id];
+    return {id:d.id,group:d.group,project:d.project,context:d.context,
+      picked:(h.pick==="A"?d.doorA.k:d.doorB.k),
+      documented:(d.chosen==="A"?d.doorA.k:d.doorB.k),
+      agreed:h.pick===d.chosen,principle:d.principle,date:h.date||""};
+  });
+  var solved=labSolved(),assisted=labAssisted();
+  var stages=LAB_STAGES.map(function(st){
+    var ex=labStageEx(st.id),got=ex.filter(function(e){return solved.indexOf(e.id)>=0;});
+    var cold=got.filter(function(e){return assisted.indexOf(e.id)<0;});
+    return {id:st.id,name:st.n,unit:st.u,total:ex.length,solved:got.length,cold:cold.length,
+      skill:REC_SKILLS[st.id],complete:got.length===ex.length};
+  });
+  var groups={};doors.forEach(function(d){groups[d.group]=(groups[d.group]||0)+1;});
+  return {
+    name:(state.recName||"").trim(),url:(state.recUrl||"").trim(),
+    generated:todayStr(),span:recDates(),
+    rank:rankFor(state.xp).r.n,xp:state.xp,streak:state.streak||0,
+    units:{done:learned.length,total:UNITS.length,list:learned},
+    doors:{done:doors.length,total:DECISIONS.length,list:doors,groups:groups},
+    sabotage:{done:sabDoneCount(),total:SABOTAGE.length},
+    glossary:(state.glossary||[]).slice().sort(function(a,b){return a.t.localeCompare(b.t);}),
+    lab:{solved:solved.length,total:LAB_EX.length,cold:solved.filter(function(i){return assisted.indexOf(i)<0;}).length,stages:stages},
+    queries:(state.queries||[]),
+    badges:BADGES.filter(function(b){try{return b.test(state);}catch(e){return false;}}),
+    complete:(learned.length===UNITS.length&&solved.length===LAB_EX.length)
+  };
+}
+
+function recVerifyText(r){
+  return "This is a self-directed record, not a third-party certification. The curriculum and the practice environment were designed and built by "+
+  (r.name?r.name:"the author")+"; there is no external certifying body. What it documents is verifiable in two ways. "+
+  "The "+r.lab.total+" practice exercises run against a SQLite database executing in the browser, and each answer is graded by comparing the returned result set against a reference query rather than by matching text \u2014 so a query is judged correct only when it returns the same rows. "+
+  "The dataset is deterministically seeded and carries deliberate integrity defects (records with no matching row on a joined table, records duplicated by a one-to-many join, absent values that fail equality comparison), so each exercise reproduces a specific way a funnel metric goes wrong in practice. "+
+  "Exercises solved without hints are counted separately below.";
+}
+
+function recHTML(r){
+  var E=esc;
+  var stat=function(n,l){return '<div class="s"><b>'+n+"</b><span>"+E(l)+"</span></div>";};
+  var h='<!DOCTYPE html><html lang="en"><head><meta charset="utf-8">'+
+  '<meta name="viewport" content="width=device-width,initial-scale=1">'+
+  "<title>"+E((r.name?r.name+" \u2014 ":"")+"SQL & Data Architecture \u2014 Competency Record")+"</title>"+
+  '<link href="https://fonts.googleapis.com/css2?family=Playfair+Display:wght@600;700&family=Inter:wght@400;500;600&display=swap" rel="stylesheet">'+
+  "<style>"+
+  ":root{--ink:#22302c;--muted:#5f6f68;--faint:#93a29b;--teal:#2f8a72;--deep:#1f5f4f;--mint:#e9f4ef;--mint2:#f3faf6;--line:#e4ece8;--gold:#c2913a;--goldbg:#f8f2e4;--bg:#fbfcfb}"+
+  "*{box-sizing:border-box}body{margin:0;background:var(--bg);color:var(--ink);font-family:Inter,system-ui,sans-serif;line-height:1.65;font-size:15px}"+
+  ".wrap{max-width:820px;margin:0 auto;padding:44px 22px 70px}"+
+  "h1{font-family:'Playfair Display',Georgia,serif;font-size:35px;line-height:1.18;margin:0 0 8px;font-weight:700}"+
+  "h2{font-family:'Playfair Display',Georgia,serif;font-size:23px;margin:42px 0 4px;font-weight:600}"+
+  "h3{font-size:15px;margin:22px 0 6px}"+
+  ".eyebrow{text-transform:uppercase;letter-spacing:.10em;font-size:11px;font-weight:600;color:var(--teal)}"+
+  ".sub{color:var(--muted);margin:0 0 4px}"+
+  ".hr{height:1px;background:var(--line);margin:30px 0}"+
+  ".stats{display:grid;grid-template-columns:repeat(auto-fit,minmax(132px,1fr));gap:10px;margin:26px 0 6px}"+
+  ".s{background:#fff;border:1px solid var(--line);border-radius:12px;padding:14px 15px}"+
+  ".s b{display:block;font-family:'Playfair Display',Georgia,serif;font-size:27px;line-height:1.1;color:var(--deep)}"+
+  ".s span{display:block;font-size:11.5px;color:var(--muted);margin-top:3px}"+
+  ".note{background:var(--mint2);border:1px solid var(--line);border-left:3px solid var(--teal);border-radius:0 12px 12px 0;padding:15px 18px;margin:22px 0;font-size:14px;color:var(--muted)}"+
+  "table{border-collapse:collapse;width:100%;font-size:14px;margin-top:10px}"+
+  "th{text-align:left;background:var(--mint2);padding:9px 12px;border-bottom:1.5px solid var(--line);font-size:11.5px;text-transform:uppercase;letter-spacing:.06em;color:var(--deep)}"+
+  "td{padding:10px 12px;border-bottom:1px solid var(--line);vertical-align:top}"+
+  "tr:last-child td{border-bottom:none}"+
+  ".pill{display:inline-block;background:var(--mint);border:1px solid var(--line);border-radius:20px;padding:2px 10px;font-size:11.5px;color:var(--deep);white-space:nowrap}"+
+  ".pill.gold{background:var(--goldbg);border-color:#e6d5ab;color:#8a6520}"+
+  ".terms{display:flex;flex-wrap:wrap;gap:7px;margin-top:12px}"+
+  ".terms span{background:#fff;border:1px solid var(--line);border-radius:8px;padding:5px 10px;font-size:12.5px}"+
+  ".q{background:#fff;border:1px solid var(--line);border-radius:12px;padding:16px 18px;margin-top:12px}"+
+  ".q b{display:block;font-size:15px;margin-bottom:8px}"+
+  ".q pre{background:var(--mint2);border:1px solid var(--line);border-radius:9px;padding:11px 13px;overflow-x:auto;font-family:ui-monospace,SFMono-Regular,Menlo,monospace;font-size:12.5px;line-height:1.6;margin:0 0 8px}"+
+  ".q p{margin:0;color:var(--muted);font-size:14px}"+
+  "footer{margin-top:44px;padding-top:20px;border-top:1px solid var(--line);color:var(--faint);font-size:12.5px}"+
+  "a{color:var(--deep)}"+
+  "@media print{body{background:#fff}.wrap{padding:0}}"+
+  "</style></head><body><div class=\"wrap\">";
+
+  h+='<div class="eyebrow">Competency record</div><h1>SQL and data architecture</h1>';
+  if(r.name)h+='<p class="sub"><b>'+E(r.name)+"</b></p>";
+  h+='<p class="sub">Self-directed curriculum and practice environment, designed and built by the author.'+
+     (r.span?" Work logged "+E(r.span.from)+" to "+E(r.span.to)+".":"")+
+     " Record generated "+E(r.generated)+".</p>";
+  if(r.url)h+='<p class="sub">Environment and source: <a href="'+E(r.url)+'">'+E(r.url)+"</a></p>";
+  if(!r.complete)h+='<p class="sub"><span class="pill gold">In progress</span></p>';
+
+  h+='<div class="stats">'+
+    stat(r.units.done+"/"+r.units.total,"curriculum units completed")+
+    stat(r.lab.solved+"/"+r.lab.total,"exercises solved")+
+    stat(r.lab.cold,"solved without hints")+
+    stat(r.doors.done,"architecture decisions argued")+
+    stat(r.glossary.length,"terms earned")+
+  "</div>";
+
+  h+='<div class="note"><b>What this is, and how it can be checked.</b><br>'+E(recVerifyText(r))+"</div>";
+
+  h+="<h2>Competencies demonstrated</h2>"+
+    '<p class="sub">Each row is graded practice against a live database, not a reading list.</p><table><thead><tr>'+
+    "<th>Area</th><th>Covers</th><th>Solved</th><th>Unaided</th></tr></thead><tbody>"+
+    r.lab.stages.map(function(s){return "<tr><td><b>"+E(s.skill.t)+"</b></td><td>"+E(s.skill.d)+
+      '</td><td><span class="pill">'+s.solved+"/"+s.total+'</span></td><td><span class="pill">'+s.cold+"</span></td></tr>";}).join("")+
+    "</tbody></table>";
+
+  h+="<h2>Curriculum completed</h2><table><thead><tr><th>#</th><th>Unit</th><th>What it establishes</th></tr></thead><tbody>"+
+    r.units.list.map(function(u){return "<tr><td>"+(UNITS.indexOf(u)+1)+"</td><td><b>"+E(u.title)+"</b></td><td>"+E(u.objective)+"</td></tr>";}).join("")+
+    "</tbody></table>";
+
+  if(r.doors.done){
+    h+="<h2>Architecture decisions</h2>"+
+      '<p class="sub">Each is a real design decision with two defensible options, recorded in the shape of an architecture decision record: the choice made, and the cost of the option not taken. '+
+      r.doors.done+" walked"+(r.doors.total?" of "+r.doors.total+" available":"")+".</p>"+
+      "<table><thead><tr><th>Decision area</th><th>Choice made</th><th>Principle carried forward</th></tr></thead><tbody>"+
+      r.doors.list.map(function(d){return "<tr><td><b>"+E(d.group)+"</b><br><span style=\"color:#93a29b;font-size:12px\">"+E(d.project)+"</span></td><td>"+E(d.picked)+
+        (d.agreed?"":'<br><span class="pill gold">differed from the documented choice</span>')+"</td><td>"+E(d.principle)+"</td></tr>";}).join("")+
+      "</tbody></table>";
+    var gk=Object.keys(r.doors.groups).sort(function(a,b){return r.doors.groups[b]-r.doors.groups[a];});
+    h+='<p class="sub" style="margin-top:14px">Recurring tradeoff patterns: '+gk.map(function(g){return '<span class="pill">'+E(g)+" \u00d7"+r.doors.groups[g]+"</span>";}).join(" ")+"</p>";
+  }
+  if(r.sabotage.done)h+="<h2>Debugging rounds</h2><p class=\"sub\">"+r.sabotage.done+" of "+r.sabotage.total+
+    " sabotage rounds completed \u2014 locating a defect in working code by reading it, then naming the failure.</p>";
+
+  if(r.glossary.length){
+    h+="<h2>Vocabulary earned</h2><p class=\"sub\">"+r.glossary.length+
+      " terms, each recorded against the exercise or decision where it was first met rather than memorised from a list.</p><div class=\"terms\">"+
+      r.glossary.map(function(g){return "<span>"+E(g.t)+"</span>";}).join("")+"</div>";
+  }
+  if(r.queries.length){
+    h+="<h2>Applied write-ups</h2><p class=\"sub\">Queries written against real work data, with the business question and the outcome.</p>"+
+      r.queries.map(function(q){return '<div class="q"><b>'+E(q.q)+"</b><pre>"+E(q.sql)+"</pre>"+(q.note?"<p>"+E(q.note)+"</p>":"")+"</div>";}).join("");
+  }
+  h+="<footer>Generated by App Savvy, a browser-based SQL and data-architecture trainer built by the author. "+
+     "Practice exercises execute against SQLite compiled to WebAssembly and running client-side; answers are graded by result-set comparison. "+
+     "No third party certified this record."+(r.url?" \u2014 "+E(r.url):"")+"</footer></div></body></html>";
+  return h;
+}
+
+function recMarkdown(r){
+  var L=[];
+  L.push("# SQL and data architecture \u2014 competency record");
+  if(r.name)L.push("**"+r.name+"**  ");
+  L.push("Self-directed curriculum and practice environment, designed and built by the author."+
+    (r.span?" Work logged "+r.span.from+" to "+r.span.to+".":"")+" Record generated "+r.generated+".");
+  if(r.url)L.push("Environment and source: "+r.url);
+  if(!r.complete)L.push("*Status: in progress.*");
+  L.push("");
+  L.push("| | |");L.push("|---|---|");
+  L.push("| Curriculum units completed | "+r.units.done+" / "+r.units.total+" |");
+  L.push("| Exercises solved | "+r.lab.solved+" / "+r.lab.total+" |");
+  L.push("| Solved without hints | "+r.lab.cold+" |");
+  L.push("| Architecture decisions argued | "+r.doors.done+" |");
+  L.push("| Terms earned | "+r.glossary.length+" |");
+  L.push("");
+  L.push("## What this is, and how it can be checked");
+  L.push(recVerifyText(r));
+  L.push("");
+  L.push("## Competencies demonstrated");
+  L.push("| Area | Covers | Solved | Unaided |");L.push("|---|---|---|---|");
+  r.lab.stages.forEach(function(s){L.push("| **"+s.skill.t+"** | "+s.skill.d+" | "+s.solved+"/"+s.total+" | "+s.cold+" |");});
+  L.push("");
+  L.push("## Curriculum completed");
+  r.units.list.forEach(function(u){L.push((UNITS.indexOf(u)+1)+". **"+u.title+"** \u2014 "+u.objective);});
+  if(r.doors.done){
+    L.push("");L.push("## Architecture decisions");
+    L.push("Each is a real design decision with two defensible options, recorded as an architecture decision record: the choice made, and the cost of the option not taken.");
+    L.push("");
+    L.push("| Decision area | Choice made | Principle carried forward |");L.push("|---|---|---|");
+    r.doors.list.forEach(function(d){L.push("| "+d.group+" | "+d.picked+" | "+d.principle+" |");});
+  }
+  if(r.sabotage.done){L.push("");L.push("## Debugging rounds");L.push(r.sabotage.done+" of "+r.sabotage.total+" sabotage rounds completed \u2014 locating a defect in working code by reading it, then naming the failure.");}
+  if(r.glossary.length){L.push("");L.push("## Vocabulary earned");L.push(r.glossary.map(function(g){return g.t;}).join(" \u00b7 "));}
+  if(r.queries.length){
+    L.push("");L.push("## Applied write-ups");
+    r.queries.forEach(function(q){L.push("");L.push("### "+q.q);L.push("```sql");L.push(q.sql);L.push("```");if(q.note)L.push(q.note);});
+  }
+  return L.join("\n");
+}
+
+function recPost(r){
+  var s=[];
+  s.push("I finished something I built for myself, so this is an odd thing to announce: I wrote a SQL curriculum and then completed it.");
+  s.push("");
+  s.push("The short version of why. My work is enrollment funnel operations \u2014 conversion rates, persistence, channel performance. I could read those numbers and explain them. I could not always prove them, because proving them means writing the query yourself. That gap bothered me.");
+  s.push("");
+  s.push("So I built the practice environment I wanted: a browser app running a real SQLite database client-side, with a seeded funnel dataset carrying the specific defects that make funnel metrics wrong \u2014 records with no match on a joined table, records duplicated by a one-to-many join, absent values that quietly fail comparison. Every answer is graded by comparing result sets against a reference query rather than matching text, so a query counts as correct only when it returns the same rows.");
+  s.push("");
+  s.push("Then I worked through it: "+r.units.done+" units of instruction, "+r.lab.solved+" graded exercises from SELECT through cohort retention, "+r.lab.cold+" of them solved without hints, and "+r.doors.done+" architecture decisions argued and written up in the shape of an architecture decision record.");
+  s.push("");
+  s.push("What I can do now that I could not before: join two tables without silently dropping or duplicating people, and prove which happened. Build a funnel rate whose denominator I can defend. Write a cohort retention grid and explain why the columns are offsets rather than months. Settle a disagreement between two dashboards by asking what each one divided by.");
+  s.push("");
+  s.push("It is not a certification and there is no issuing body \u2014 I made it. But it is all checkable, which felt like the more useful thing to build."+(r.url?" Environment, source, and the full record are here: "+r.url:""));
+  s.push("");
+  s.push("#RevOps #BusinessOperations #SQL #Analytics #DataLiteracy");
+  return s.join("\n");
+}
+
+function recCopy(txt,btn,label){
+  function done(){if(btn){var o=btn.textContent;btn.textContent="\u2713 Copied";setTimeout(function(){btn.textContent=o;},1700);}}
+  if(navigator.clipboard&&navigator.clipboard.writeText)navigator.clipboard.writeText(txt).then(done,function(){window.prompt(label||"Copy this:",txt);});
+  else window.prompt(label||"Copy this:",txt);
+}
+function recDownload(name,txt,mime){
+  try{
+    var b=new Blob([txt],{type:mime||"text/plain;charset=utf-8"}),u=URL.createObjectURL(b);
+    var a=document.createElement("a");a.href=u;a.download=name;document.body.appendChild(a);a.click();
+    setTimeout(function(){document.body.removeChild(a);URL.revokeObjectURL(u);},400);
+  }catch(e){window.prompt("Copy this and save it as "+name,txt);}
+}
+
+function recordCardHTML(){
+  var r=recData();
+  var pct=Math.round(((r.units.done/r.units.total)+(r.lab.solved/r.lab.total))/2*100);
+  return '<div class="card"><span class="pilltag">\ud83e\uddfe Competency record</span><h2>Export what you have done</h2>'+
+   '<p class="sub">Builds a record from your actual progress \u2014 units finished, exercises solved, which ones you solved without hints, decisions argued, terms earned, and your applied write-ups. '+
+   (r.complete?"The curriculum is complete, so it reads as finished."
+    :"You are "+pct+"% through, so it labels itself in progress and stays accurate until you finish.")+"</p>"+
+   '<div class="recgrid">'+
+     '<div><span class="caps">Units</span><b>'+r.units.done+"/"+r.units.total+"</b></div>"+
+     '<div><span class="caps">Exercises</span><b>'+r.lab.solved+"/"+r.lab.total+"</b></div>"+
+     '<div><span class="caps">Unaided</span><b>'+r.lab.cold+"</b></div>"+
+     '<div><span class="caps">Decisions</span><b>'+r.doors.done+"</b></div>"+
+     '<div><span class="caps">Terms</span><b>'+r.glossary.length+"</b></div>"+
+   "</div>"+
+   '<div class="recfields">'+
+     '<input type="text" id="recName" placeholder="Your name, as it should appear" value="'+escA(state.recName)+'" autocomplete="off">'+
+     '<input type="text" id="recUrl" placeholder="Where this app lives (https://\u2026) \u2014 optional" value="'+escA(state.recUrl)+'" autocomplete="off">'+
+   "</div>"+
+   '<div class="actions" style="flex-wrap:wrap;gap:8px"><span style="display:flex;gap:8px;flex-wrap:wrap">'+
+     '<button class="btn ghost mini" id="recMd">\u29c9 Copy as Markdown</button>'+
+     '<button class="btn ghost mini" id="recLi">\u29c9 Copy the post</button>'+
+     '<button class="btn ghost mini" id="recPrev">Preview \u2197</button></span>'+
+     '<button class="btn" id="recDl">\u2b07 Download the record page</button></div>'+
+   '<p class="muted small" style="margin:12px 0 0">The download is a single self-contained HTML file. Commit it next to your index.html and it becomes a link you can point at \u2014 that link is what goes in your LinkedIn Featured section.</p>'+
+   "</div>";
+}
+function wireRecordCard(){
+  var nm=document.getElementById("recName");if(nm)nm.oninput=function(){state.recName=nm.value;save();};
+  var ur=document.getElementById("recUrl");if(ur)ur.oninput=function(){state.recUrl=ur.value;save();};
+  var md=document.getElementById("recMd");if(md)md.onclick=function(){recCopy(recMarkdown(recData()),md);};
+  var li=document.getElementById("recLi");if(li)li.onclick=function(){recCopy(recPost(recData()),li);};
+  var dl=document.getElementById("recDl");if(dl)dl.onclick=function(){
+    var r=recData(),base=(r.name?r.name.toLowerCase().replace(/[^a-z0-9]+/g,"-").replace(/^-|-$/g,"")+"-":"");
+    recDownload(base+"sql-competency-record.html",recHTML(r),"text/html;charset=utf-8");};
+  var pv=document.getElementById("recPrev");if(pv)pv.onclick=function(){
+    var wnd=window.open("","_blank");
+    if(!wnd){alert("Your browser blocked the preview window. Use Download instead.");return;}
+    wnd.document.write(recHTML(recData()));wnd.document.close();};
 }
 
 function renderPractice(){
@@ -1502,7 +2122,8 @@ function renderReference(){
  const c={};state.history.forEach(h=>{c[h.group]=(c[h.group]||0)+1;});const gs=Object.keys(c);let mp;
  if(!gs.length)mp=`<div class="empty">🗺️ The concept map fills in as you play. When a tradeoff shows up three times, that's the pattern landing.</div>`;
  else{const max=Math.max(...gs.map(g=>c[g]));mp=gs.sort((a,b)=>c[b]-c[a]).map(g=>{const n=c[g],hot=n>=3;return `<div class="cmap-row"><div class="rowtop"><span>${esc(g)}${hot?' ⭐':''}</span><span class="n">${n} ${n===1?'time':'times'}</span></div><div class="bar"><i class="${hot?'hot':''}" style="width:${Math.round(n/max*100)}%"></i></div></div>`;}).join("");}
- root.innerHTML=`<div class="card"><span class="pilltag">📚 Glossary</span><h2>Your glossary</h2><p class="sub">${state.glossary.length} term${state.glossary.length===1?'':'s'}, each anchored to where you met it.</p><div class="addterm"><input type="text" id="newTermT" placeholder="A term you picked up" autocomplete="off"><input type="text" id="newTermD" placeholder="What it means, in your words" autocomplete="off"><button class="btn ghost mini" id="newTermAdd">+ Add</button></div>${gl}</div>${queryLogHTML()}<div class="card"><span class="pilltag">🗺️ Concept map</span><h2>Tradeoffs that keep recurring</h2><p class="sub">⭐ marks a pattern you've hit three or more times — that's the signal.</p>${mp}</div><div class="card"><span class="pilltag">🧠 The thinking</span><h2>Why App Savvy works this way</h2><p class="sub">Not invented on a whim — built on how judgment and expertise are actually formed.</p><div class="fw"><div class="fwitem"><b>Judgment you can defend.</b> Real architecture usually comes down to a defensible choice, justified by naming what you trade. That is how experienced engineers frame it. <a href="https://martinfowler.com/articles/microservice-trade-offs.html" target="_blank" rel="noopener">Fowler on trade-offs ↗</a></div><div class="fwitem"><b>Testing makes it stick.</b> Retrieving an answer under a little pressure builds durable understanding — the well-replicated “testing effect.” That is why every lesson ends at a door. <a href="https://pmc.ncbi.nlm.nih.gov/articles/PMC3983480/" target="_blank" rel="noopener">Retrieval-practice research ↗</a></div><div class="fwitem"><b>Deliberate practice.</b> Skill grows from focused reps on well-defined tasks with immediate feedback — exactly the shape of the door loop. <a href="https://royalsocietypublishing.org/doi/10.1098/rsos.190327" target="_blank" rel="noopener">Ericsson, revisited ↗</a></div><div class="fwitem"><b>Decisions as the unit.</b> Each door mirrors an Architecture Decision Record: a decision, its context, and its consequences — how real teams capture the reasoning behind a system. <a href="https://adr.github.io/" target="_blank" rel="noopener">Architecture Decision Records ↗</a></div><div class="fwitem"><b>Aimed at the role.</b> Forward Deployed Engineers turn messy client problems into sound systems — fluency in tradeoffs is the job itself. <a href="https://en.wikipedia.org/wiki/Forward_Deployed_Engineer" target="_blank" rel="noopener">What an FDE is ↗</a> · <a href="https://posthog.com/blog/forward-deployed-engineer" target="_blank" rel="noopener">Why they are in demand ↗</a></div></div></div>`;
+ root.innerHTML=`<div class="card"><span class="pilltag">📚 Glossary</span><h2>Your glossary</h2><p class="sub">${state.glossary.length} term${state.glossary.length===1?'':'s'}, each anchored to where you met it.</p><div class="addterm"><input type="text" id="newTermT" placeholder="A term you picked up" autocomplete="off"><input type="text" id="newTermD" placeholder="What it means, in your words" autocomplete="off"><button class="btn ghost mini" id="newTermAdd">+ Add</button></div>${gl}</div>${queryLogHTML()}${recordCardHTML()}<div class="card"><span class="pilltag">🗺️ Concept map</span><h2>Tradeoffs that keep recurring</h2><p class="sub">⭐ marks a pattern you've hit three or more times — that's the signal.</p>${mp}</div><div class="card"><span class="pilltag">🧠 The thinking</span><h2>Why App Savvy works this way</h2><p class="sub">Not invented on a whim — built on how judgment and expertise are actually formed.</p><div class="fw"><div class="fwitem"><b>Judgment you can defend.</b> Real architecture usually comes down to a defensible choice, justified by naming what you trade. That is how experienced engineers frame it. <a href="https://martinfowler.com/articles/microservice-trade-offs.html" target="_blank" rel="noopener">Fowler on trade-offs ↗</a></div><div class="fwitem"><b>Testing makes it stick.</b> Retrieving an answer under a little pressure builds durable understanding — the well-replicated “testing effect.” That is why every lesson ends at a door. <a href="https://pmc.ncbi.nlm.nih.gov/articles/PMC3983480/" target="_blank" rel="noopener">Retrieval-practice research ↗</a></div><div class="fwitem"><b>Deliberate practice.</b> Skill grows from focused reps on well-defined tasks with immediate feedback — exactly the shape of the door loop. <a href="https://royalsocietypublishing.org/doi/10.1098/rsos.190327" target="_blank" rel="noopener">Ericsson, revisited ↗</a></div><div class="fwitem"><b>Decisions as the unit.</b> Each door mirrors an Architecture Decision Record: a decision, its context, and its consequences — how real teams capture the reasoning behind a system. <a href="https://adr.github.io/" target="_blank" rel="noopener">Architecture Decision Records ↗</a></div><div class="fwitem"><b>Aimed at the role.</b> Forward Deployed Engineers turn messy client problems into sound systems — fluency in tradeoffs is the job itself. <a href="https://en.wikipedia.org/wiki/Forward_Deployed_Engineer" target="_blank" rel="noopener">What an FDE is ↗</a> · <a href="https://posthog.com/blog/forward-deployed-engineer" target="_blank" rel="noopener">Why they are in demand ↗</a></div></div></div>`;
+ wireRecordCard();
  var na=document.getElementById("newTermAdd");if(na)na.onclick=function(){var t=(document.getElementById("newTermT").value||"").trim();var d=(document.getElementById("newTermD").value||"").trim();if(!t){document.getElementById("newTermT").focus();return;}addGlossaryTerm(t,d||"(your note)","Added by you");renderReference();};
  root.querySelectorAll("[data-gedit]").forEach(function(b){b.onclick=function(){glEdit=b.dataset.gedit;renderReference();};});
  root.querySelectorAll("[data-gcancel]").forEach(function(b){b.onclick=function(){glEdit=null;renderReference();};});
