@@ -213,7 +213,8 @@
   .wk.on .wl b{color:var(--muted)}
   .planhead{display:flex;align-items:baseline;justify-content:space-between;gap:12px;margin:24px 4px 2px}
   input:focus{outline:none;border-color:var(--teal)}
-  .pilllabel{display:inline-block;font-size:12px;padding:3px 11px;border-radius:30px;background:var(--mint2);border:1px solid var(--line);color:var(--muted)}
+  .pilllabel{display:inline-flex;align-items:center;gap:6px;font-size:12.5px;color:var(--faint);font-style:italic;background:none;border:none;padding:0;cursor:default}
+  .pilllabel:before{content:"";width:16px;height:16px;flex-shrink:0;border-radius:50%;background:var(--mint);border:1px solid var(--mintline)}
   .rev{border-left:3px solid var(--mintline);padding:2px 0 2px 15px;margin-bottom:16px}
   .rev.hl{border-color:var(--teal)}
   .rev .lab{font-size:11px;letter-spacing:.09em;text-transform:uppercase;color:var(--muted);margin-bottom:3px;font-weight:600}
@@ -291,7 +292,7 @@
   .askhint{background:var(--mint2);border:1px dashed var(--mintline);border-radius:12px;padding:10px 14px;margin:14px 0;font-size:13px;color:var(--muted);line-height:1.55}
   .askhint b{color:var(--teal-deep)}
   .actcard{position:relative}
-  .exitbtn{position:absolute;top:12px;right:14px;background:none;border:1px solid var(--line);border-radius:20px;color:var(--muted);font-size:12px;padding:3px 11px;cursor:pointer;z-index:2}
+  .exitbtn{position:absolute;top:12px;right:14px;z-index:2;background:var(--surface);background:none;border:1px solid var(--line);border-radius:20px;color:var(--muted);font-size:12px;padding:3px 11px;cursor:pointer;z-index:2}
   .exitbtn:hover{color:var(--bad);border-color:#e6c7bf}
   .stermbox{background:var(--mint2);border:1px solid var(--line);border-radius:12px;padding:12px 15px;margin:14px 0}
   .stermbox .caps{display:block;margin-bottom:8px}
@@ -346,6 +347,8 @@
   .stakebox{background:#fdf3ec;border:1px solid #f0d6c2;border-radius:12px;padding:12px 15px;margin:14px 0}
   .stakebox .caps{color:#a15a2c;display:block;margin-bottom:4px}
   .stakebox div{font-size:14.5px;line-height:1.6;color:#7a4423}
+  .tourhi{outline:3px solid var(--gold);outline-offset:3px;border-radius:30px;position:relative;z-index:3}
+  .tourn{display:block;font-size:11px;letter-spacing:.08em;text-transform:uppercase;color:var(--faint);margin-bottom:5px}
   .wick{position:fixed;right:22px;bottom:22px;z-index:58;display:flex;flex-direction:row-reverse;align-items:flex-end;gap:12px;pointer-events:none;max-width:min(470px,calc(100vw - 44px))}
   .wick .av{width:76px;height:76px;flex-shrink:0;pointer-events:auto;cursor:pointer;transition:transform .25s;filter:drop-shadow(0 6px 14px rgba(20,60,50,.20))}
   .wick .av:hover{transform:translateY(-5px) rotate(4deg) scale(1.05)}
@@ -1330,18 +1333,20 @@ function wickSVG(mood){
   eyes+face+'<circle cx="15" cy="31" r="2.6" fill="#f2b8a6" opacity=".75"/><circle cx="45" cy="31" r="2.6" fill="#f2b8a6" opacity=".75"/></svg>';
 }
 let wickTimer=null,wickLast="";
-function wickSay(msg,mood,ms){
+function wickSay(msg,mood,ms,acts){
  var host=document.getElementById("wick");if(!host)return;
- if(msg===wickLast&&document.querySelector("#wick .bub.show"))return;
+ if(msg===wickLast&&document.querySelector("#wick .bub.show")&&!acts)return;
  wickLast=msg;
  host.querySelector(".av").innerHTML=wickSVG(mood||"idle");
  var b=host.querySelector(".bub");
- b.innerHTML='<button class="x" id="wickX" aria-label="Dismiss">✕</button>'+msg+
-   '<div class="wact"><button class="wbtn go" id="wickAsk">✨ Ask me something</button><button class="wbtn" id="wickMore">Another thought</button></div>';
+ var row=acts||[{id:"wickAsk",t:"\u2728 Ask me something",go:true},{id:"wickMore",t:"Another thought"}];
+ b.innerHTML='<button class="x" id="wickX" aria-label="Dismiss">\u2715</button>'+msg
+   +'<div class="wact">'+row.map(function(a){return '<button class="wbtn'+(a.go?" go":"")+'" id="'+a.id+'">'+a.t+'</button>';}).join("")+'</div>';
  b.classList.add("show");
  document.getElementById("wickX").onclick=function(e){e.stopPropagation();wickHide();};
- document.getElementById("wickAsk").onclick=function(e){e.stopPropagation();wickHide();toggleAsk(true);};
- document.getElementById("wickMore").onclick=function(e){e.stopPropagation();wickLast="";wickNudge();};
+ var ask=document.getElementById("wickAsk");if(ask)ask.onclick=function(e){e.stopPropagation();wickHide();toggleAsk(true);};
+ var more=document.getElementById("wickMore");if(more)more.onclick=function(e){e.stopPropagation();wickLast="";wickNudge();};
+ (acts||[]).forEach(function(a){var el=document.getElementById(a.id);if(el&&a.fn)el.onclick=function(e){e.stopPropagation();a.fn();};});
  clearTimeout(wickTimer);
  if(ms!==0)wickTimer=setTimeout(wickHide,ms||14000);
 }
@@ -1363,6 +1368,13 @@ const WICK_IDLE=[
 ];
 function wickNudge(){
  if(!state.onboarded)return;
+ if(tourActive)return;
+ var today=todayStr();
+ if(!state.wickSeen||((new Date(today+"T00:00:00")-new Date(state.wickSeen+"T00:00:00"))/864e5)>=7){
+  state.wickSeen=today;save();
+  wickSay("Hi \u2014 I am <b>Wick</b>, in case it has been a while. I live down here, I can see what is on your screen, and I will never make you feel silly for asking.","cheer",13000);return;
+ }
+ state.wickSeen=today;
  var learned=state.learned.length,faced=state.faced;
  if(learned===0&&faced===0){wickSay("Hi — I am <b>"+WICK_NAME+"</b>. "+todGreet()+" Start anywhere in <b>Learn</b>, and ask me anything as you go.","cheer");return;}
  if(state.streak>=3){wickSay("<b>"+state.streak+" days running.</b> That is the part most people skip.","cheer");return;}
@@ -1370,13 +1382,48 @@ function wickNudge(){
  if(state.glossary.length>=10&&Math.random()<.4){wickSay("<b>"+state.glossary.length+" terms</b> in your glossary now. That is a vocabulary you did not have last month.","cheer");return;}
  wickSay(Math.random()<.3?todGreet():WICK_IDLE[Math.floor(Math.random()*WICK_IDLE.length)],"idle");
 }
+/* ===== FIRST-RUN TOUR ===== */
+let tourActive=false,tourI=0;
+const TOUR=[
+ {tab:"home", sel:"#tabs button[data-tab='home']", t:"This is <b>Home</b>. Your stage, what you can do now, and the roles that fluency maps to. The three grey rows collapse \u2014 open them when you want detail."},
+ {tab:"learn",sel:"#tabs button[data-tab='learn']",t:"<b>Learn</b> holds fourteen lessons in two chapters. Each is a short read with a diagram, a bit of history, and the tools you will actually hear named at work."},
+ {tab:"practice",sel:"#tabs button[data-tab='practice']",t:"<b>Practice</b> is where it sticks. A door is a real client decision with two defensible answers \u2014 you pick one and defend it. There is no right answer, only a defensible one."},
+ {tab:"reference",sel:"#tabs button[data-tab='reference']",t:"<b>Reference</b> keeps every term you have earned, plus the tradeoffs that keep recurring. You can edit or delete anything in here."},
+ {tab:"lab",sel:"#tabs button[data-tab='lab']",t:"The <b>SQL Lab</b> runs a real database inside your browser. You write a query, it actually executes. Nothing to install."},
+ {tab:"key",sel:"#tabs button[data-tab='key']",t:"<b>AI &amp; Data</b> is where your Anthropic key goes, so I can answer properly. It stays in this browser and never leaves it. Back up your progress here too."},
+ {tab:null,sel:"#wick",t:"That is the tour. Tap me any time \u2014 for a nudge, or to ask a question about whatever is on your screen. Use me liberally; that is the whole point of me."}
+];
+function startTour(){
+ tourActive=true;tourI=0;toggleAsk(false);runTourStep();
+}
+function runTourStep(){
+ document.querySelectorAll(".tourhi").forEach(function(e){e.classList.remove("tourhi");});
+ if(tourI>=TOUR.length){endTour(true);return;}
+ var s=TOUR[tourI];
+ if(s.tab){tab=s.tab;syncTabs();render();}
+ var el=document.querySelector(s.sel);if(el)el.classList.add("tourhi");
+ var last=(tourI===TOUR.length-1);
+ wickSay('<span class="tourn">'+(tourI+1)+' of '+TOUR.length+'</span>'+s.t,"cheer",0,
+  [{id:"tourNext",t:last?"Got it \u2713":"Next \u2192",go:true,fn:function(){tourI++;runTourStep();}},
+   {id:"tourSkip",t:last?"":"Skip",fn:function(){endTour(false);}}].filter(function(a){return a.t;}));
+}
+function endTour(done){
+ tourActive=false;
+ document.querySelectorAll(".tourhi").forEach(function(e){e.classList.remove("tourhi");});
+ state.tourDone=true;save();wickHide();
+ if(done){tab="home";syncTabs();render();setTimeout(function(){wickSay("Start wherever you like. One lesson is a real session.","cheer",8000);},400);}
+}
+function maybeTour(){
+ if(state.onboarded&&!state.tourDone&&!tourActive)setTimeout(startTour,900);
+}
 function mountWick(){
  if(document.getElementById("wick"))return;
  var d=document.createElement("div");d.className="wick";d.id="wick";
  d.innerHTML='<div class="av bob" title="'+WICK_NAME+'">'+wickSVG("idle")+'</div><div class="bub"></div>';
  document.body.appendChild(d);
  d.querySelector(".av").onclick=function(){var b=d.querySelector(".bub");if(b.classList.contains("show"))wickHide();else wickNudge();};
- setTimeout(function(){if(state.onboarded)wickNudge();},2600);
+ setTimeout(function(){if(state.tourDone||!state.onboarded)wickNudge();},2600);
+ maybeTour();
  applyTod();
  var chip=document.getElementById('todChip');if(chip)chip.onclick=cycleTod;
  clearInterval(todTimer);todTimer=setInterval(function(){if(!todOverride)applyTod();},600000);
@@ -1467,7 +1514,7 @@ function rolesCard(){
   +'<div class="codenext"><span class="caps">If you want the next tier, this is the price</span>'
   +CODEROLES.map(function(r){return '<div class="crow"><div><b>'+esc(r.t)+'</b> <span class="rpay">'+esc(r.pay)+'</span><p>'+esc(r.need)+'</p></div></div>';}).join("")
   +'<p class="muted small" style="margin:8px 0 0">App Savvy does not teach those skills. It gets you the judgment half, which is the harder half to fake.</p></div>'
-  +'<div class="actions" style="margin-top:14px"><span class="pilllabel">'+(AI_ON?"\u2728 tailored to you":"add a key for tailored advice")+'</span><button class="btn" id="planBtn"'+(AI_ON?"":" disabled")+'>Build me a search plan \u2192</button></div>'
+  +'<div class="actions" style="margin-top:14px"><span class="pilllabel">'+(AI_ON?"Wick will tailor this to you":"add a key for tailored advice")+'</span><button class="btn" id="planBtn"'+(AI_ON?"":" disabled")+'>Build me a search plan \u2192</button></div>'
   +'<div id="planOut"></div></div>';
 }
 async function buildPlan(){
@@ -1648,11 +1695,12 @@ function renderHome(){
   ${fold('badges','\u{1F3C5}','Badges',badgeSummary(),`<div class="badges">${BADGES.map(b=>{const got=state.badges.indexOf(b.id)>=0;return `<div class="badge2 ${got?'on':''}" title="${esc(b.d)}"><span>${got?b.e:'🔒'}</span><b>${esc(b.t)}</b></div>`;}).join("")}</div>`,false)}
   ${fold('ready','\u{1F9ED}','Your readiness',readySummary(),readinessCard(),false)}
   <div class="pair">${readCard()}${testsCard()}</div>
-  <div class="pair"><div class="card"><span class="pilltag">🧭 How it works</span>${howRow("🎓","Learn","Read a lesson, then test it with a door.")}${howRow("🎯","Practice","A decision to reason through, or a bug to hunt.")}${howRow("📚","Reference","Terms you've earned and recurring tradeoffs.")}${howRow("⬆️","Level up","Every step moves you along a real career path.")}</div><div class="card"><span class="pilltag">🧭 Suggested next</span><h3 style="margin:4px 0;font-size:19px">${esc(ru.title)}</h3><p class="muted small" style="margin:0 0 14px">${esc(rec.why)}</p><div class="prow"><button class="btn big" id="goRec">${state.learned.length?'Keep going →':'Start here →'}</button>${state.onboarded?'<button class="btn ghost mini" id="reIntake">Redo intro</button>':''}</div></div></div>
+  <div class="pair"><div class="card"><span class="pilltag">🧭 How it works</span>${howRow("🎓","Learn","Read a lesson, then test it with a door.")}${howRow("🎯","Practice","A decision to reason through, or a bug to hunt.")}${howRow("📚","Reference","Terms you've earned and recurring tradeoffs.")}${howRow("⬆️","Level up","Every step moves you along a real career path.")}</div><div class="card"><span class="pilltag">🧭 Suggested next</span><h3 style="margin:4px 0;font-size:19px">${esc(ru.title)}</h3><p class="muted small" style="margin:0 0 14px">${esc(rec.why)}</p><div class="prow"><button class="btn big" id="goRec">${state.learned.length?'Keep going →':'Start here →'}</button>${state.onboarded?'<button class="btn ghost mini" id="reIntake">Redo intro</button><button class="btn ghost mini" id="replayTour">Show me around</button>':''}</div></div></div>
  `;
  root.querySelector("#goRec").onclick=()=>{learnUnit=rec.id;setTab("learn");};
  var q=root.querySelector("#quickGo");if(q)q.onclick=quickPick;
  var pb=root.querySelector("#planBtn");if(pb)pb.onclick=buildPlan;
+ var rt2=root.querySelector("#replayTour");if(rt2)rt2.onclick=startTour;
  wireFolds();
  const ri=root.querySelector("#reIntake");if(ri)ri.onclick=()=>{quiz={type:"intake",i:0,answers:[]};render();window.scrollTo(0,0);};
  const si=root.querySelector("#startIntake2");if(si)si.onclick=()=>{quiz={type:"intake",i:0,answers:[]};render();window.scrollTo(0,0);};
@@ -1987,6 +2035,43 @@ function roleLine(){
  return r||"a business or client-facing role";
 }
 /* Generates a fresh client scenario. Always resolves — falls back when there is no key. */
+function ensureScenario(){
+ // door step 6
+ if(sess&&sess.step===5&&!sess.teachScenario&&!sess.scenLoading){
+   sess.scenLoading=true;
+   var uid=(sess.d.units&&sess.d.units[0])||sess.fromUnit||"u8";
+   var target=sess;
+   makeScenario(uid,sess.d.group).then(function(sc){
+     if(target!==sess||!sess)return;
+     sess.scenLoading=false;
+     sess.teachScenario=sc||fallbackScenario(uid,sess.d.group);
+     persistResume();if(sess.step===5)render();
+   }).catch(function(){
+     if(target!==sess||!sess)return;
+     sess.scenLoading=false;sess.teachScenario=fallbackScenario(uid,sess.d.group);
+     if(sess.step===5)render();
+   });
+ }
+ // standalone teach-back
+ if(teachSess&&!teachSess.scenario&&!teachSess.scenLoading){
+   teachSess.scenLoading=true;teachSess.loadingScenario=true;
+   var u=teachSess.u,t2=teachSess;
+   makeScenario(u.id,u.title).then(function(sc){
+     if(t2!==teachSess||!teachSess)return;
+     teachSess.scenLoading=false;teachSess.loadingScenario=false;
+     teachSess.scenario=sc||fallbackScenario(u.id,u.title);
+     persistResume();renderPractice();
+   }).catch(function(){
+     if(t2!==teachSess||!teachSess)return;
+     teachSess.scenLoading=false;teachSess.loadingScenario=false;
+     teachSess.scenario=fallbackScenario(u.id,u.title);renderPractice();
+   });
+ }
+}
+function reshuffleScenario(){
+ if(sess&&sess.step===5){sess.teachScenario=null;sess.scenLoading=false;render();ensureScenario();}
+ else if(teachSess){teachSess.scenario=null;teachSess.scenLoading=false;renderPractice();ensureScenario();}
+}
 async function makeScenario(uid,concept){
  var sys="You write short, vivid role-play prompts for an adult learning app that teaches software judgment to business-side people. Output ONE scenario, 2-3 sentences, no preamble and no quotation marks around it. Requirements: name a specific small or mid-size company and one named person with a job title; give a concrete reason they are asking right now; include a real consequence or deadline; end by asking the learner to explain the concept in plain words. Never use technical jargon in the ask itself. Vary the industry each time. Write in second person to the learner.";
  var usr="Concept to be explained: "+concept+". The learner works in: "+roleLine()+". Write the scenario.";
@@ -1996,8 +2081,9 @@ async function makeScenario(uid,concept){
 }
 async function teachFeedback(concept,model,text){const sys="You are a warm teaching coach for a business person becoming fluent in software (not an engineer). They just explained a concept to a non-technical client (a business owner) on a call. In 2-3 short sentences: praise what landed, then one concrete way to make it clearer or more accurate. Plain language, encouraging, no jargon. End with a short verdict line.";const usr="Concept: "+concept+". A strong explanation would get across: "+model+". Their explanation: "+text;const out=await callClaude(sys,usr,260);return out||((state.apiKey&&lastAIError)?("(AI feedback unavailable — "+lastAIError+") "):"")+"Nice work. The real test: would a non-technical friend get it from what you wrote? Check that you named the core idea and why it matters, in plain words — if yes, you have it.";}
 function startTeach(){const cands=UNITS.filter(u=>!u.sabotage);const learned=cands.filter(u=>state.learned.indexOf(u.id)>=0);const pool=learned.length?learned:cands;const u=pool[Math.floor(Math.random()*pool.length)];teachSess={u:u,text:"",fb:"",ownerTab:"practice",scenario:null,loadingScenario:true};tab="practice";syncTabs();render();window.scrollTo(0,0);makeScenario(u.id,u.title).then(function(sc){if(teachSess){teachSess.scenario=sc;teachSess.loadingScenario=false;persistResume();if(tab==="practice")renderPractice();}});}
-function renderTeachHTML(){const u=teachSess.u,x=EXTRAS[u.id]||{};return `<div class="card actcard"><button class="exitbtn" id="exitAct" title="Leave — you can start over later">✕ exit</button><span class="pilltag">🗣 ✨ Teach it back</span><h2>Teach: ${esc(u.title)}</h2><p class="sub">${teachSess.scenario?teachSess.scenario:(teachSess.loadingScenario?'<span class="thinking">\u2728 Setting the scene\u2026</span>':fallbackScenario(u.id,u.title))}</p><div class="objbox"><span class="caps">The idea to get across</span><div>${esc(x.obj||u.objective)}</div></div><textarea id="teachT" placeholder="In your own words, no jargon…">${esc(teachSess.text||"")}</textarea><div class="actions"><span class="pilllabel">${AI_ON?'✨ live feedback':'self-check'}</span><button class="btn" id="teachSubmit">Get feedback →</button></div>${teachSess.fb?`<div class="airead" style="margin-top:14px">${esc(teachSess.fb)}</div><div class="actions"><button class="btn ghost" id="teachAgain">Teach another →</button><button class="btn" id="teachDone">Done ✓ (+15 XP)</button></div>`:""}</div>`;}
-function wireTeach(){const s=root.querySelector("#teachSubmit");if(s)s.onclick=async()=>{const t=root.querySelector("#teachT");teachSess.text=t?t.value.trim():"";if(!teachSess.text){if(t)t.focus();return;}s.textContent="✨ Reading…";s.disabled=true;const u=teachSess.u,x=EXTRAS[u.id]||{};teachSess.fb=await teachFeedback(u.title,(x.obj||u.objective),teachSess.text);renderPractice();};const a=root.querySelector("#teachAgain");if(a)a.onclick=()=>startTeach();const dn=root.querySelector("#teachDone");if(dn)dn.onclick=()=>{const p=state.xp;state.resume=null;bumpStreak();addXP(15);commitProgress(p);teachSess=null;renderPractice();};var ex=root.querySelector("#exitAct");if(ex)ex.onclick=function(){exitActivity();};var tt=root.querySelector("#teachT");if(tt)tt.oninput=function(){teachSess.text=tt.value;persistResume();};}
+function renderTeachHTML(){const u=teachSess.u,x=EXTRAS[u.id]||{};return `<div class="card actcard"><button class="exitbtn" id="exitAct" title="Leave — you can start over later">✕ exit</button><span class="pilltag">🗣 ✨ Teach it back</span><h2>Teach: ${esc(u.title)}</h2><div class="scenline"><p class="sub">${teachSess.scenario?teachSess.scenario:'<span class="thinking">\u2728 Setting the scene\u2026</span>'}</p>${teachSess.scenario?'<button class="addg" id="scenNew" title="Give me a different situation">\u21bb another</button>':''}</div><div class="objbox"><span class="caps">The idea to get across</span><div>${esc(x.obj||u.objective)}</div></div><textarea id="teachT" placeholder="In your own words, no jargon…">${esc(teachSess.text||"")}</textarea><div class="actions"><span class="pilllabel">${AI_ON?'Wick reads this and replies':'no key — you will self-check this one'}</span><button class="btn" id="teachSubmit">Get feedback →</button></div>${teachSess.fb?`<div class="airead" style="margin-top:14px">${esc(teachSess.fb)}</div><div class="actions"><button class="btn ghost" id="teachAgain">Teach another →</button><button class="btn" id="teachDone">Done ✓ (+15 XP)</button></div>`:""}</div>`;}
+function wireTeach(){
+ ensureScenario();const s=root.querySelector("#teachSubmit");if(s)s.onclick=async()=>{const t=root.querySelector("#teachT");teachSess.text=t?t.value.trim():"";if(!teachSess.text){if(t)t.focus();return;}s.textContent="✨ Reading…";s.disabled=true;const u=teachSess.u,x=EXTRAS[u.id]||{};teachSess.fb=await teachFeedback(u.title,(x.obj||u.objective),teachSess.text);renderPractice();};const a=root.querySelector("#teachAgain");if(a)a.onclick=()=>startTeach();const dn=root.querySelector("#teachDone");if(dn)dn.onclick=()=>{const p=state.xp;state.resume=null;bumpStreak();addXP(15);commitProgress(p);teachSess=null;renderPractice();};var sn=root.querySelector("#scenNew");if(sn)sn.onclick=reshuffleScenario;var ex=root.querySelector("#exitAct");if(ex)ex.onclick=function(){exitActivity();};var tt=root.querySelector("#teachT");if(tt)tt.oninput=function(){teachSess.text=tt.value;persistResume();};}
 /* ===== SQL LAB ===== */
 const LAB_CDN="https://cdnjs.cloudflare.com/ajax/libs/sql.js/1.10.3/";
 let LAB={db:null,loading:false,error:"",ex:null,sql:"",res:null,err:"",verdict:null,hint:false,shown:false,free:false,stage:null};
@@ -2814,15 +2900,16 @@ function renderDoorHTML(){
  const d=sess.d;const dots=[0,1,2,3,4,5].map(i=>`<span class="${i<=sess.step?'on':''}"></span>`).join("");let inner="";
  if(sess.step===0){const fu=sess.fromUnit?UNITS.find(x=>x.id===sess.fromUnit):null;inner=`<span class="caps">Step 1 · The situation</span>${fu?`<div class="lessonchip">🎓 Testing what you just read — <b>${esc(fu.title)}</b></div>`:''}<div class="prompt" style="margin-top:10px">${d.context}</div>${stakeFor(d.id)}${DOORTERMS[d.id]?termsBox(d.id):""}<p class="muted small" style="margin:12px 0 0">Both doors are defensible — there is no single right answer. Pick the one you would argue for, then name the tradeoff you are accepting.</p>${scaffoldFor(d.id)}<div class="askhint">🔎 Run into a term you do not recognize (a scenario might mention something like a <b>dev server</b> or <b>bundling</b>)? That is part of it — figuring out the terms as you go is the real skill. Tap the <b>✨ bubble</b> in the corner and ask; it can read what is on this screen. Use it liberally.</div><p class="muted small" style="margin:0 0 6px">Which door?</p><div class="doors"><button class="door" data-pick="A"><div class="k">Door A</div><div class="s">${esc(d.doorA.k)}</div></button><button class="door" data-pick="B"><div class="k">Door B</div><div class="s">${esc(d.doorB.k)}</div></button></div>`;}
  else if(sess.step===1){const c=sess.pick==="A"?d.doorA.k:d.doorB.k;inner=`<span class="caps">Step 2 · Make your case</span><p class="muted small" style="margin:8px 0 10px">You picked <b style="color:var(--ink)">Door ${sess.pick} — ${esc(c)}</b>. A sentence or two is plenty.</p>${scaffoldFor(d.id)}<textarea id="defend" placeholder="Try: I would pick this because it trades [X] for [Y]. The risk is [how it could fail], and for this situation that is worth it.">${esc(sess.defend)}</textarea><div class="actions"><button class="btn ghost mini" data-back="0">← change door</button><button class="btn" id="go2">Submit reasoning →</button></div>`;}
- else if(sess.step===2){inner=`<span class="caps">Step 3 · ✨ The tutor probes</span><div class="probe" style="margin-top:8px"><div class="av">💬</div><div class="prompt" id="probeText">${sess.probe?esc(sess.probe):'<span class="thinking">The tutor is reading your reasoning…</span>'}</div></div><textarea id="answer" placeholder="Answer once — just a single exchange." style="margin-top:16px">${esc(sess.answer)}</textarea><div class="actions"><span class="pilllabel">${AI_ON?'✨ live tutor':'offline tutor'}</span><button class="btn" id="go3">Answer &amp; reveal →</button></div>`;}
+ else if(sess.step===2){inner=`<span class="caps">Step 3 · ✨ The tutor probes</span><div class="probe" style="margin-top:8px"><div class="av">💬</div><div class="prompt" id="probeText">${sess.probe?esc(sess.probe):'<span class="thinking">The tutor is reading your reasoning…</span>'}</div></div><textarea id="answer" placeholder="Answer once — just a single exchange." style="margin-top:16px">${esc(sess.answer)}</textarea><div class="actions"><span class="pilllabel">${AI_ON?'Wick is reading along':'no key — built-in tutor'}</span><button class="btn" id="go3">Answer &amp; reveal →</button></div>`;}
  else if(sess.step===3){const c=d.chosen,ct=c==="A"?d.doorA.k:d.doorB.k,m=sess.pick===c;inner=`<span class="caps">Step 4 · The reveal</span><div class="rev hl" style="margin-top:10px"><div class="lab">What was actually chosen, in the wild</div><div class="val">Door ${c} — ${esc(ct)} · <span class="muted">${esc(d.project)}, ${esc(d.when)}</span> ${m?'<span class="badge agree">you agreed</span>':'<span class="badge differ">you differed</span>'}</div></div><div class="rev"><div class="lab">What happened downstream ${d.downstreamDraft?'<span class="badge draft">DRAFT — your call</span>':''}</div><div class="val">${esc(d.downstream)}</div></div><div class="rev"><div class="lab">What the other door would have cost</div><div class="val">${esc(d.otherDoorCost)}</div></div><div class="actions"><div class="score">✨ Reasoning score: <span class="n" id="scoreN">${sess.score!=null?sess.score:'…'}</span><span class="muted small">/ 5</span></div><button class="btn" id="go4">Zoom out →</button></div>`;}
  else if(sess.step===4){const rc=countGroup(d.group);inner=`<span class="caps">Step 5 · Vocabulary &amp; principle</span><p class="muted small" style="margin:8px 0 4px">This decision was secretly about:</p><div class="vgrid">${d.terms.map(t=>`<div class="vcard"><b>${esc(t.t)}</b><div class="d">${esc(t.d)}</div></div>`).join("")}</div><div class="zoom"><h3>⤢ Zoom out — the principle</h3><div class="prompt" style="font-size:16px">${esc(d.principle)}</div><div class="rec">↻ You've hit “${esc(d.group)}” ${rc} ${rc===1?'time':'times'} now.${rc>=3?' When a shape shows up a third time, it\'s a pattern you own.':''}</div></div><div class="actions"><span class="muted small">One more — teaching it is how it sticks.</span><button class="btn" id="go5">Teach it back →</button></div>`;}
- else if(sess.step===5){inner=`<span class="caps">Step 6 · ✨ Teach it back</span><p class="muted small" style="margin:8px 0 10px">${sess.teachScenario?sess.teachScenario:'<span class="thinking">\u2728 Setting the scene\u2026</span>'}</p><textarea id="teach" placeholder="Explain it plainly, no jargon…">${esc(sess.teach||"")}</textarea><div class="actions"><span class="pilllabel">${AI_ON?'✨ live feedback':'self-check'}</span><button class="btn" id="teachGo">Get feedback →</button></div>${sess.teachFb?`<div class="airead" style="margin-top:14px">${esc(sess.teachFb)}</div><div class="rev" style="margin-top:12px"><div class="lab">A model explanation to compare with</div><div class="val">${esc(d.principle)}</div></div><div class="actions"><span class="muted small">+10 XP for teaching</span><button class="btn" id="done">Finish ✓</button></div>`:""}`;}
+ else if(sess.step===5){inner=`<span class="caps">Step 6 · ✨ Teach it back</span><div class="scenline"><p class="muted small" style="margin:8px 0 10px">${sess.teachScenario?sess.teachScenario:'<span class="thinking">\u2728 Setting the scene\u2026</span>'}</p>${sess.teachScenario?'<button class="addg" id="scenNew" title="Give me a different situation">\u21bb another</button>':''}</div><textarea id="teach" placeholder="Explain it plainly, no jargon…">${esc(sess.teach||"")}</textarea><div class="actions"><span class="pilllabel">${AI_ON?'Wick reads this and replies':'no key — you will self-check this one'}</span><button class="btn" id="teachGo">Get feedback →</button></div>${sess.teachFb?`<div class="airead" style="margin-top:14px">${esc(sess.teachFb)}</div><div class="rev" style="margin-top:12px"><div class="lab">A model explanation to compare with</div><div class="val">${esc(d.principle)}</div></div><div class="actions"><span class="muted small">+10 XP for teaching</span><button class="btn" id="done">Finish ✓</button></div>`:""}`;}
  return `<div class="card actcard"><button class="exitbtn" id="exitAct" title="Leave — you can start over later">✕ exit</button><div class="dots">${dots}</div>${inner}</div>`;
 }
 function fallbackProbe(d,pick){const other=pick==="A"?d.doorB.k:d.doorA.k;return `You've made the case for your door. What's the strongest reason someone would pick ${other} instead — and what does your choice cost you there?`;}
 function fallbackScore(s){const len=(s.defend+" "+s.answer).split(/\s+/).filter(Boolean).length;return len<15?2:len<40?3:4;}
 function wireDoor(){
+ ensureScenario();
  root.querySelectorAll("[data-pick]").forEach(b=>b.onclick=()=>{sess.pick=b.dataset.pick;sess.step=1;render();});
  const bk=root.querySelector("[data-back]");if(bk)bk.onclick=()=>{const t=root.querySelector("#defend");if(t)sess.defend=t.value;sess.step=0;render();};
  const g2=root.querySelector("#go2");if(g2)g2.onclick=async()=>{sess.defend=root.querySelector("#defend").value.trim();if(!sess.defend){root.querySelector("#defend").focus();return;}sess.step=2;sess.probe=null;render();const d=sess.d;const sys="You are a sharp architecture tutor. The learner chose a door and defended it. Reply with ONE probing question — the strongest counter to their position, or the thing their reasoning skipped. One or two sentences. No preamble, no praise, just the question.";const usr=`Decision: ${d.context}\nDoor A: ${d.doorA.k}. Door B: ${d.doorB.k}.\nThey chose Door ${sess.pick}.\nReasoning: "${sess.defend}"`;const out=await callClaude(sys,usr,200);sess.probe=out||fallbackProbe(d,sess.pick);const pt=root.querySelector("#probeText");if(pt&&sess.step===2)pt.textContent=sess.probe;};
@@ -2831,6 +2918,7 @@ function wireDoor(){
  const g5=root.querySelector("#go5");if(g5)g5.onclick=()=>{sess.step=5;render();if(!sess.teachScenario){var uid=(sess.d.units&&sess.d.units[0])||sess.fromUnit||"u8";makeScenario(uid,sess.d.group).then(function(sc){if(sess&&sess.step===5){sess.teachScenario=sc;persistResume();render();}});}};
  const tg=root.querySelector("#teachGo");if(tg)tg.onclick=async()=>{const tt=root.querySelector("#teach");sess.teach=tt?tt.value.trim():"";if(!sess.teach){if(tt)tt.focus();return;}tg.textContent="✨ Reading…";tg.disabled=true;sess.teachFb=await teachFeedback(sess.d.group,sess.d.principle,sess.teach);render();};
  const dn=root.querySelector("#done");if(dn)dn.onclick=()=>finishSession();
+ var sn=root.querySelector("#scenNew");if(sn)sn.onclick=reshuffleScenario;
  const ex=root.querySelector("#exitAct");if(ex)ex.onclick=()=>exitActivity();
  root.querySelectorAll("[data-addt]").forEach(function(b){b.onclick=function(){var p=b.dataset.addt.split("|");var arr=DOORTERMS[p[0]];var t=arr[parseInt(p[1])];addGlossaryTerm(t.t,t.d,"Scenario term");render();};});
  const df=root.querySelector("#defend");if(df)df.oninput=()=>{sess.defend=df.value;persistResume();};
