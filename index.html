@@ -1714,7 +1714,7 @@ function renderAsk(){
  if(!askState.ended){
   composer='<textarea id="askQ" placeholder="'+(t.length?"Ask a follow-up\u2026":"e.g. What is Postgres, and do I need to care?")+'" style="min-height:56px">'+esc(askState.q)+'</textarea>'
    +askImgHTML()
-   +'<div class="actions askrow"><label class="btn ghost mini" for="askImgIn">\U0001F4F7 Picture</label>'
+   +'<div class="actions askrow"><label class="btn ghost mini" for="askImgIn">📷 Picture</label>'
    +(t.length?'<button class="btn ghost mini" id="askDone">Done \u2713</button>':'')
    +'<button class="btn" id="askBtn"'+(disabled?" disabled":"")+'>\u2728 '+(t.length?"Send":"Ask")+'</button></div>'
    +'<input type="file" id="askImgIn" accept="image/*" style="display:none">';
