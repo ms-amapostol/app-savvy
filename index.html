@@ -61,6 +61,8 @@
   html[data-tod="night"] .fold>summary:hover{background:#1a2130}
   html[data-tod]{transition:background .8s ease}
   *{box-sizing:border-box}
+  /* form elements do not inherit colour by default — without this they fall back to UA black and vanish in dark mode */
+  button,summary,label,select,input,textarea{color:inherit}
   html,body{margin:0;background:var(--page);color:var(--ink);font-family:var(--sans);font-size:16px;line-height:1.6;-webkit-font-smoothing:antialiased}
   .wrap{max-width:1040px;margin:0 auto;padding:16px 22px 70px}
   h1,h2,h3{font-family:var(--serif);font-weight:600;letter-spacing:.01em;color:var(--ink)}
