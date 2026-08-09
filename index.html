@@ -267,6 +267,17 @@
   .askpanel.open{display:flex}
   .askpanel .head{display:flex;align-items:center;justify-content:space-between;padding:13px 16px;border-bottom:1px solid var(--line);flex-shrink:0}
   .askpanel .head b{font-family:var(--serif);font-size:16px;font-weight:600}
+  .askpanel .hbtns{display:flex;gap:4px;align-items:center}
+  .askpanel.big{width:min(780px,calc(100vw - 40px));max-height:86vh;bottom:20px;right:20px}
+  .askpanel.big .body{max-height:none}
+  .athread{display:flex;flex-direction:column;gap:10px;margin-bottom:14px}
+  .abub{padding:10px 13px;border-radius:13px;font-size:14.5px;line-height:1.62;max-width:92%}
+  .abub.me{background:var(--mint);border:1px solid var(--mintline);align-self:flex-end;border-bottom-right-radius:4px}
+  .abub.ai{background:var(--mint2);border:1px solid var(--line);align-self:flex-start;border-bottom-left-radius:4px}
+  .abimg{display:block;max-width:150px;border-radius:8px;margin-bottom:7px}
+  .askrow{gap:8px;flex-wrap:wrap}
+  html[data-tod="night"] .abub.me{background:#1a2130}
+  html[data-tod="night"] .abub.ai{background:#121822}
   .askpanel .body{padding:14px 16px;overflow-y:auto}
   .askclose{background:none;border:none;font-size:16px;cursor:pointer;color:var(--muted);padding:2px 6px}
   .askclose:hover{color:var(--ink)}
@@ -520,7 +531,7 @@
   </nav>
   <div class="meta" id="meta"></div>
   <div id="root"></div>
-  <div class="askpanel" id="askPanel"><div class="head"><b>✨ Ask Wick anything</b><button class="askclose" id="askClose" aria-label="Close">✕</button></div><div class="body" id="askBody"></div></div>
+  <div class="askpanel" id="askPanel"><div class="head"><b>✨ Ask Wick anything</b><span class="hbtns"><button class="askclose" id="askBig" aria-label="Expand" title="Expand">⤢</button><button class="askclose" id="askClose" aria-label="Close">✕</button></span></div><div class="body" id="askBody"></div></div>
   <footer>A free judgment-training tool, in the family of <a href="https://tinyurl.com/aafreeinterviewpractice" target="_blank" rel="noopener">Anastasia's Interview Practice</a>.<br>Everything stays in this browser. Built for vibecoders becoming fluent.</footer>
 </div>
 
@@ -1164,6 +1175,17 @@ function bumpStreak(){const t=todayStr();if(state.lastDay===t)return;
 function graceAvailable(){if(!state.graceUsed)return true;return (new Date(todayStr()+"T00:00:00")-new Date(state.graceUsed+"T00:00:00"))/864e5>=7;}
 
 /* ===== AI ===== */
+async function callClaudeThread(system,messages,maxTokens){
+ if(GAS){var flat=messages.map(function(m){return (m.role==="user"?"Q: ":"A: ")+(typeof m.content==="string"?m.content:m.content.filter(function(b){return b.type==="text";}).map(function(b){return b.text;}).join(" "));}).join("\n\n");
+  try{var t=await gcall("aiCall",system,flat,maxTokens||300);return t||null;}catch(e){return null;}}
+ if(!state.apiKey){lastAIError="No API key set.";return null;}
+ try{const r=await fetch("https://api.anthropic.com/v1/messages",{method:"POST",headers:{"content-type":"application/json","x-api-key":state.apiKey,"anthropic-version":"2023-06-01","anthropic-dangerous-direct-browser-access":"true"},body:JSON.stringify({model:"claude-sonnet-5",max_tokens:maxTokens||700,system:system,messages:messages})});
+  if(!r.ok){var msg="";try{var e=await r.json();msg=(e.error&&e.error.message)?e.error.message:JSON.stringify(e);}catch(_){msg=r.statusText||"";}lastAIError="Error "+r.status+": "+msg;return null;}
+  const j=await r.json();lastAIError="";var txt="";
+  if(j.content&&j.content.length){for(var i=0;i<j.content.length;i++){if(j.content[i]&&j.content[i].type==="text"&&j.content[i].text){txt=j.content[i].text;break;}}}
+  return txt?txt.trim():null;
+ }catch(e){lastAIError="Could not reach Anthropic (network or CORS): "+e.message;return null;}
+}
 let lastAIError="";async function callClaude(system,user,maxTokens){if(GAS&&Array.isArray(user)){user=user.filter(function(b){return b.type==="text";}).map(function(b){return b.text;}).join("\n");}if(GAS){try{var t=await gcall("aiCall",system,user,maxTokens||300);return t||null;}catch(e){return null;}} if(!state.apiKey){lastAIError="No API key set.";return null;} try{const r=await fetch("https://api.anthropic.com/v1/messages",{method:"POST",headers:{"content-type":"application/json","x-api-key":state.apiKey,"anthropic-version":"2023-06-01","anthropic-dangerous-direct-browser-access":"true"},body:JSON.stringify({model:"claude-sonnet-5",max_tokens:maxTokens||300,system:system,messages:[{role:"user",content:user}]})}); if(!r.ok){var msg="";try{var e=await r.json();msg=(e.error&&e.error.message)?e.error.message:JSON.stringify(e);}catch(_){msg=r.statusText||"";}lastAIError="Error "+r.status+": "+msg;return null;} const j=await r.json();lastAIError="";var txt="";if(j.content&&j.content.length){for(var i=0;i<j.content.length;i++){if(j.content[i]&&j.content[i].type==="text"&&j.content[i].text){txt=j.content[i].text;break;}}}if(!txt){lastAIError="Got a reply but found no text block. Blocks: "+(j.content?j.content.map(function(b){return b.type;}).join(", "):"none");}return txt?txt.trim():null; }catch(e){lastAIError="Could not reach Anthropic (network or CORS): "+e.message;return null;}}
 
 /* ===== GAMIFICATION ===== */
@@ -1379,7 +1401,7 @@ const DIAG=[
 /* ===== ENGINE ===== */
 const root=document.getElementById("root");
 let tab="home", learnUnit=null, sess=null, sab=null, quiz=null, teachSess=null;
-let askState={q:"",a:"",loading:false,suggest:null};let askOpen=false;let glEdit=null;
+let askState={thread:[],q:"",loading:false,suggest:null,img:null,big:false,ended:false};let askOpen=false;let glEdit=null;
 function esc(s){return(s||"").replace(/[&<>]/g,c=>({"&":"&amp;","<":"&lt;",">":"&gt;"}[c]));}
 function ring(pct,size,stroke){const r=(size-stroke)/2,c=2*Math.PI*r,off=c*(1-Math.max(0,Math.min(1,pct)));const h=size/2;return `<svg width="${size}" height="${size}" viewBox="0 0 ${size} ${size}"><circle cx="${h}" cy="${h}" r="${r}" fill="none" stroke="var(--line)" stroke-width="${stroke}"/><circle cx="${h}" cy="${h}" r="${r}" fill="none" stroke="var(--teal)" stroke-width="${stroke}" stroke-linecap="round" stroke-dasharray="${c.toFixed(1)}" stroke-dashoffset="${off.toFixed(1)}" transform="rotate(-90 ${h} ${h})"/></svg>`;}
 
@@ -1675,15 +1697,46 @@ function finishQuiz(){
 /* ===== LEARN ===== */
 function renderAsk(){
  const el=document.getElementById("askBody");if(!el)return;
- const disabled=!AI_ON;let ans="";
- if(askState.loading)ans=`<div class="airead" style="margin-top:12px"><span class="thinking">✨ Thinking…</span></div>`;
- else if(askState.a)ans=`<div class="airead" style="margin-top:12px">${esc(askState.a).replace(/\n/g,"<br>")}</div>${askAddHTML()}`;
- el.innerHTML=`<p class="muted small" style="margin:0 0 10px">Ask me about any concept, or about App Savvy itself. I can see what is on your screen, so “what does this mean?” works.${disabled?' <b>Add your key in AI &amp; Data to switch this on.</b>':''}</p><textarea id="askQ" placeholder="e.g. Why are Google Apps Script HTML files usually called Index?" style="min-height:64px">${esc(askState.q)}</textarea>${askImgHTML()}<div class="actions"><label class="btn ghost mini" for="askImgIn">📷 Add a picture</label><button class="btn" id="askBtn"${disabled?' disabled':''}>✨ Ask</button></div><input type="file" id="askImgIn" accept="image/*" style="display:none">${ans}`;
+ const disabled=!AI_ON;
+ var t=askState.thread,body="";
+ if(!t.length){
+  body='<p class="muted small" style="margin:0 0 10px">Ask me about any concept, or about App Savvy itself. I can see what is on your screen, so \u201cwhat does this mean?\u201d works. Keep asking follow-ups \u2014 I remember the conversation.'+(disabled?' <b>Add your key in AI &amp; Data to switch this on.</b>':'')+'</p>';
+ } else {
+  body='<div class="athread" id="athread">'+t.map(function(m){
+    var cls=m.role==="user"?"me":"ai";
+    var img=m.img?'<img class="abimg" src="'+m.img+'" alt="">':"";
+    return '<div class="abub '+cls+'">'+img+esc(m.text).replace(/\n/g,"<br>")+'</div>';
+  }).join("")+(askState.loading?'<div class="abub ai"><span class="thinking">\u2728 Thinking\u2026</span></div>':"")+'</div>';
+ }
+ var composer="";
+ if(!askState.ended){
+  composer='<textarea id="askQ" placeholder="'+(t.length?"Ask a follow-up\u2026":"e.g. What is Postgres, and do I need to care?")+'" style="min-height:56px">'+esc(askState.q)+'</textarea>'
+   +askImgHTML()
+   +'<div class="actions askrow"><label class="btn ghost mini" for="askImgIn">\U0001F4F7 Picture</label>'
+   +(t.length?'<button class="btn ghost mini" id="askDone">Done \u2713</button>':'')
+   +'<button class="btn" id="askBtn"'+(disabled?" disabled":"")+'>\u2728 '+(t.length?"Send":"Ask")+'</button></div>'
+   +'<input type="file" id="askImgIn" accept="image/*" style="display:none">';
+ }
+ el.innerHTML=body+composer+askAddHTML();
  const b=document.getElementById("askBtn");if(b)b.onclick=doAsk;
+ const dn=document.getElementById("askDone");if(dn)dn.onclick=askFinish;
+ var q=document.getElementById("askQ");
+ if(q)q.onkeydown=function(e){if(e.key==="Enter"&&(e.metaKey||e.ctrlKey)){e.preventDefault();doAsk();}};
  wireAskImg();
  wireAskAdd();
+ var th=document.getElementById("athread");if(th)el.scrollTop=el.scrollHeight;
 }
-
+function askFinish(){
+ askState.ended=true;askState.suggest={loading:true};renderAsk();askExtractTerms();
+}
+function askReset(){
+ askState={thread:[],q:"",loading:false,suggest:null,img:null,big:askState.big,ended:false};renderAsk();
+}
+function askToggleBig(){
+ askState.big=!askState.big;
+ var p=document.getElementById("askPanel");if(p)p.classList.toggle("big",askState.big);
+ var b=document.getElementById("askBig");if(b)b.textContent=askState.big?"\u2921":"\u2922";
+}
 function askImgHTML(){
   if(!askState.img)return '<p class="muted small" style="margin:8px 0 0">Add a picture of anything you want to ask about \u2014 a dashboard, a query on your work screen, an error. On a phone the button opens your camera. On a computer you can also just paste a screenshot into the box above.</p>';
   return '<div class="askimg"><img src="'+askState.img.preview+'" alt=""><span class="aif">Picture attached \u2014 it goes with your next question.</span><button id="askImgX">remove</button></div>';
@@ -1721,12 +1774,37 @@ function wireAskImg(){
 }
 function askAddHTML(){
  var s=askState.suggest;
- if(!s)return `<div class="addrow"><button class="addg" id="askAddTerm">＋ Add to glossary</button></div>`;
- if(s.loading)return `<div class="gsg"><span class="thinking">✨ Pulling the terms out…</span></div>`;
- if(s.error)return `<div class="gsg"><p class="small muted" style="margin:0 0 8px">${esc(s.error)}</p><button class="addg" id="askSugRetry">Try again</button></div>`;
- if(s.done)return `<div class="gsg"><p class="small muted" style="margin:0">✓ Added to your glossary — see the Reference tab.</p></div>`;
- if(!s.terms||!s.terms.length)return `<div class="gsg"><p class="small muted" style="margin:0 0 8px">No clear term to pull from that answer. You can still add one by hand in Reference.</p><button class="addg" id="askSugCancel">Close</button></div>`;
- return `<div class="gsg"><span class="caps">Add to glossary — edit anything, then save</span>${s.terms.map(function(t,i){return `<div class="gsrow${i===0?' first':''}"><label class="gschk"><input type="checkbox" data-sug="${i}" ${t.on?'checked':''}></label><div class="gsf"><input type="text" class="gsname" data-sugt="${i}" value="${esc(t.t).replace(/"/g,'&quot;')}"><textarea class="gsdef" data-sugd="${i}">${esc(t.d)}</textarea></div></div>`;}).join("")}<div class="actions" style="margin-top:10px"><button class="btn ghost mini" id="askSugCancel">Cancel</button><button class="btn mini" id="askSugSave">Add selected</button></div></div>`;
+ if(!s){
+  if(askState.ended&&askState.thread.length)return '<div class="gsg"><p class="small muted" style="margin:0 0 8px">Conversation closed.</p><button class="addg" id="askNew">Start a new one</button></div>';
+  return "";
+ }
+ if(s.loading)return '<div class="gsg"><span class="thinking">\u2728 Pulling the terms out of that conversation\u2026</span></div>';
+ if(s.error)return '<div class="gsg"><p class="small muted" style="margin:0 0 8px">'+esc(s.error)+'</p><button class="addg" id="askSugRetry">Try again</button> <button class="addg" id="askNew">Start fresh</button></div>';
+ if(s.done)return '<div class="gsg"><p class="small muted" style="margin:0 0 8px">\u2713 Added to your glossary \u2014 see the Reference tab.</p><button class="addg" id="askNew">Start a new conversation</button></div>';
+ if(!s.terms||!s.terms.length)return '<div class="gsg"><p class="small muted" style="margin:0 0 8px">No clear new term in that one. You can still add one by hand in Reference.</p><button class="addg" id="askNew">Start a new conversation</button></div>';
+ return '<div class="gsg"><span class="caps">Worth keeping from that conversation \u2014 edit anything, then save</span>'
+  +s.terms.map(function(t,i){return '<div class="gsrow'+(i===0?" first":"")+'"><label class="gschk"><input type="checkbox" data-sug="'+i+'" '+(t.on?"checked":"")+'></label><div class="gsf"><input type="text" class="gsname" data-sugt="'+i+'" value="'+esc(t.t).replace(/"/g,"&quot;")+'"><textarea class="gsdef" data-sugd="'+i+'">'+esc(t.d)+'</textarea></div></div>';}).join("")
+  +'<div class="actions" style="margin-top:10px"><button class="btn ghost mini" id="askSugCancel">Skip</button><button class="btn mini" id="askSugSave">Add selected</button></div></div>';
+}
+function wireAskAdd(){
+ var r=document.getElementById("askSugRetry");if(r)r.onclick=function(){askState.suggest={loading:true};renderAsk();askExtractTerms();};
+ var c=document.getElementById("askSugCancel");if(c)c.onclick=function(){askState.suggest={done:false,terms:null};askReset();};
+ var nw=document.getElementById("askNew");if(nw)nw.onclick=askReset;
+ var sv=document.getElementById("askSugSave");if(sv)sv.onclick=function(){
+   document.querySelectorAll("[data-sug]").forEach(function(cb){if(!cb.checked)return;var i=cb.dataset.sug;
+     var nm=(document.querySelector('.gsname[data-sugt="'+i+'"]').value||"").trim();
+     var df=(document.querySelector('.gsdef[data-sugd="'+i+'"]').value||"").trim();
+     if(nm)addGlossaryTerm(nm,df||"(from the Ask chat)","From the Ask chat");});
+   askState.suggest={done:true};renderAsk();
+ };
+}
+async function askExtractTerms(){
+ var convo=askState.thread.map(function(m){return (m.role==="user"?"Me: ":"Wick: ")+m.text;}).join("\n\n");
+ var sys="You extract glossary terms from a conversation, for a business person becoming software-fluent. Return ONLY a JSON array (no prose, no code fence) of at most 5 objects, each {\"t\":\"term\",\"d\":\"plain one-sentence definition\"}. Pull the key technical terms that were actually explained in the conversation, across all of it. Keep every definition under 20 words and free of jargon. If nothing technical was explained, return [].";
+ var out=await callClaude(sys,convo.slice(0,9000),600);
+ if(!out){askState.suggest={error:(state.apiKey?("Couldn't reach the tutor. "+lastAIError):"Add your Anthropic key in AI & Data first.")};renderAsk();return;}
+ var terms=parseTerms(out);terms.forEach(function(t){t.on=true;});
+ askState.suggest={terms:terms};renderAsk();
 }
 function wireAskAdd(){
  var a=document.getElementById("askAddTerm");if(a)a.onclick=function(){askState.suggest={loading:true};renderAsk();askExtractTerms();};
@@ -1751,14 +1829,23 @@ function parseTerms(s){
 function toggleAsk(open){askOpen=(open==null)?!askOpen:open;const p=document.getElementById("askPanel");if(p)p.classList.toggle("open",askOpen);if(askOpen){wickHide();renderAsk();}const av=document.querySelector("#wick .av");if(av)av.classList.toggle("bob",!askOpen);}
 function screenContext(){var r=document.getElementById("root");var t=r?(r.innerText||r.textContent||""):"";t=t.replace(/\s+/g," ").trim();if(t.length>2600)t=t.slice(0,2600)+"…";var tb=document.querySelector("#tabs button.on");return "Tab: "+(tb?tb.textContent.trim():"")+". Visible text: "+t;}
 async function doAsk(){
- const t=document.getElementById("askQ");const qv=t?t.value.trim():"";if(!qv)return;
- askState.q=qv;askState.loading=true;askState.a="";askState.suggest=null;renderAsk();
- const sys="You are App Savvy's built-in tutor. Answer two kinds of questions: (1) how software and apps work, in plain language for a business or client person becoming fluent by directing AI (not an engineer), and (2) how to use App Savvy itself. About the app: App Savvy builds architectural judgment. Its tabs are Home (a dashboard with your rank, XP, badges, streak, a readiness map across five capabilities, a personalized read, and a pre/post baseline check), Learn (fourteen lesson units in two chapters, foundations then working with data — read a lesson, then walk a Door to test it; unit nine is SQL, which also carries a twelve-week practice plan you tick off week by week), Practice (a quick Door or a Sabotage debugging round, both earning XP), Reference (a glossary of terms you have earned, a concept map of recurring tradeoffs, a query log where you record real SQL you have written alongside the business question it answered, and the sourced thinking behind the app), and AI & Data (your API key and backups). A Door is a real decision with two defensible options; you pick one, justify it, and a reveal shows what was actually chosen and the tradeoff. You earn XP and move through seven stages named after real, posted job titles — Curious, Customer Success Manager, Implementation Analyst, Business Systems Analyst, Implementation Consultant, Technical Account Manager, AI Solutions Consultant — ordered by how much technical fluency each role asks for rather than by seniority or pay. Reaching a stage means the learner's fluency is in range for that kind of role; it does not by itself qualify them. Those stages name what the learner can do, and they are deliberately not job titles: the app builds technical judgment, and roles like Solutions Engineer additionally require hands-on scripting and demo-building that App Savvy does not teach. Be honest about that distinction if asked. Progress saves in your browser, and the sparkle marks AI features that use your key. Answer warmly and concretely in a few short paragraphs, no jargon dumps. If a question is off-topic, answer briefly and steer back. The user's message may include the text currently on their screen (marked [Context — ...]); when they ask about 'this' or 'what does this mean', use that on-screen text to answer specifically.";
- var payload=qv+" [Context — what is on my screen right now, use it if my question is about this: "+screenContext()+"]";
+ const t=document.getElementById("askQ");const qv=t?t.value.trim():"";
+ if(!qv&&!askState.img)return;
+ const first=askState.thread.length===0;
+ askState.thread.push({role:"user",text:qv||"(picture)",img:askState.img?askState.img.preview:null});
+ var payload=qv;
+ if(first)payload+=" [Context \u2014 what is on my screen right now, use it if my question is about this: "+screenContext()+"]";
  var content=payload;
- if(askState.img){content=[{type:"image",source:{type:"base64",media_type:askState.img.media,data:askState.img.data}},{type:"text",text:payload+" [A picture is attached — read it and answer about what it shows.]"}];}
- const out=await callClaude(sys,content,700);
- askState.loading=false;askState.a=out||(state.apiKey?("Couldn't get an answer. "+lastAIError+(/credit|balance/i.test(lastAIError)?" → Add credits at console.anthropic.com under Plans & Billing.":"")):"Add your Anthropic key in the AI & Data tab to ask questions here.");
+ if(askState.img)content=[{type:"image",source:{type:"base64",media_type:askState.img.media,data:askState.img.data}},{type:"text",text:payload+" [A picture is attached \u2014 read it and answer about what it shows.]"}];
+ askState.api=askState.api||[];
+ askState.api.push({role:"user",content:content});
+ askState.q="";askState.img=null;askState.loading=true;renderAsk();
+ const sys="You are App Savvy's built-in tutor. Answer two kinds of questions: (1) how software and apps work, in plain language for a business or client person becoming fluent by directing AI (not an engineer), and (2) how to use App Savvy itself. About the app: App Savvy builds architectural judgment. Its tabs are Home (a dashboard with your rank, XP, badges, streak, a readiness map across five capabilities, a personalized read, and a pre/post baseline check), Learn (fourteen lesson units in two chapters, foundations then working with data — read a lesson, then walk a Door to test it; unit nine is SQL, which also carries a twelve-week practice plan you tick off week by week), Practice (a quick Door or a Sabotage debugging round, both earning XP), Reference (a glossary of terms you have earned, a concept map of recurring tradeoffs, a query log where you record real SQL you have written alongside the business question it answered, and the sourced thinking behind the app), and AI & Data (your API key and backups). A Door is a real decision with two defensible options; you pick one, justify it, and a reveal shows what was actually chosen and the tradeoff. You earn XP and move through seven stages named after real, posted job titles — Curious, Customer Success Manager, Implementation Analyst, Business Systems Analyst, Implementation Consultant, Technical Account Manager, AI Solutions Consultant — ordered by how much technical fluency each role asks for rather than by seniority or pay. Reaching a stage means the learner's fluency is in range for that kind of role; it does not by itself qualify them. Those stages name what the learner can do, and they are deliberately not job titles: the app builds technical judgment, and roles like Solutions Engineer additionally require hands-on scripting and demo-building that App Savvy does not teach. Be honest about that distinction if asked. Progress saves in your browser, and the sparkle marks AI features that use your key. Answer warmly and concretely in a few short paragraphs, no jargon dumps. If a question is off-topic, answer briefly and steer back. The user's message may include the text currently on their screen (marked [Context — ...]); when they ask about 'this' or 'what does this mean', use that on-screen text to answer specifically. The learner may ask follow-up questions; treat it as one continuing conversation and keep answers short after the first.";
+ const out=await callClaudeThread(sys,askState.api,700);
+ askState.loading=false;
+ var ans=out||(state.apiKey?("Couldn't get an answer. "+lastAIError+(/credit|balance/i.test(lastAIError)?" \u2192 Add credits at console.anthropic.com under Plans & Billing.":"")):"Add your Anthropic key in the AI & Data tab to ask questions here.");
+ askState.thread.push({role:"assistant",text:ans});
+ if(out)askState.api.push({role:"assistant",content:out});
  renderAsk();
 }
 function renderLearn(){
@@ -2821,6 +2908,7 @@ function renderKey(){
 document.querySelectorAll("#tabs button").forEach(b=>b.onclick=()=>setTab(b.dataset.tab));
 document.getElementById("levelChip").onclick=()=>setTab("home");
 document.getElementById("askClose").onclick=function(){toggleAsk(false);};
+document.getElementById("askBig").onclick=askToggleBig;
 let lastQ=-1;
 function showQuote(){const el=document.getElementById("qtext");if(!el)return;let i;do{i=Math.floor(Math.random()*QUOTES.length);}while(i===lastQ&&QUOTES.length>1);lastQ=i;const q=QUOTES[i];el.style.opacity=0;setTimeout(function(){el.innerHTML=esc(q.t)+(q.a?` <span style="color:var(--faint);font-style:normal">— ${esc(q.a)}</span>`:"");el.style.opacity=1;},300);}
 document.getElementById("qref").onclick=showQuote;
