@@ -25,38 +25,40 @@
   html[data-tod="day"]{--page:#eef3f1;--mint2:#f4faf7;--tod-wash:linear-gradient(180deg,rgba(255,255,255,.20),rgba(180,220,235,.10));--tod-op:1;--tod-blend:soft-light}
   html[data-tod="dusk"]{--page:#f3eee6;--mint2:#faf6ee;--tod-wash:linear-gradient(180deg,rgba(255,150,70,.34),rgba(210,120,150,.24) 60%,rgba(70,80,130,.26));--tod-op:1;--tod-blend:soft-light}
   html[data-tod="night"]{
-    --page:#101a2e; --surface:#18243d; --mint:#1f2d4a; --mint2:#16203a;
-    --line:#283652; --mintline:#3a4a6b;
+    --page:#0d1118; --surface:#151a25; --mint:#1a2130; --mint2:#121822;
+    --line:#232b39; --mintline:#333d4f;
     --teal:#4fb8a0; --teal-deep:#7ed6bf; --teal-ink:#a6e6d6;
-    --ink:#e7ecf6; --muted:#a5b3cc; --faint:#7e8da9;
-    --gold:#e0b45f; --gold-bg:#2a2519; --bad:#e28a70; --bad-bg:#33211d;
-    --tod-wash:linear-gradient(180deg,rgba(9,20,54,.66),rgba(20,38,78,.52));--tod-op:1;--tod-blend:multiply}
+    --ink:#e7ebf2; --muted:#a2abbb; --faint:#7b8493;
+    --gold:#dcb163; --gold-bg:#241f14; --bad:#e08a70; --bad-bg:#2d1d19;
+    --tod-wash:linear-gradient(180deg,rgba(7,14,34,.68),rgba(15,27,52,.54));--tod-op:1;--tod-blend:multiply}
   html[data-tod="night"] body{color:var(--ink)}
-  html[data-tod="night"] .histbeat{background:#241f13;border-color:#453a21}
-  html[data-tod="night"] .histbeat .caps{color:#dcbd77}
-  html[data-tod="night"] .histbeat p{color:#d0c09b}
-  html[data-tod="night"] .stakebox{background:#2b1d18;border-color:#4d3428}
-  html[data-tod="night"] .stakebox .caps{color:#e5a274}
-  html[data-tod="night"] .stakebox div{color:#dab29b}
-  html[data-tod="night"] .toolbox{background:#17233f;border-color:#31456d}
-  html[data-tod="night"] .toolbox .caps{color:#93b6e8}
-  html[data-tod="night"] .toolbox p{color:#bac9e2}
-  html[data-tod="night"] .toolbox b{color:#d5e3fa}
-  html[data-tod="night"] .toolbox code{background:#26375a;color:#dbe7fb}
-  html[data-tod="night"] .evogap{color:#d1bd90}
-  html[data-tod="night"] .evogap b{color:#e6c47c}
-  html[data-tod="night"] .codenext{border-color:#483c22}
-  html[data-tod="night"] .codenext .caps,html[data-tod="night"] .crow b{color:#e6c47c}
-  html[data-tod="night"] .crow{border-color:#483c22}
-  html[data-tod="night"] .crow p{color:#c7b691}
-  html[data-tod="night"] .todchip{background:rgba(24,36,61,.9);color:var(--teal-deep)}
+  html[data-tod="night"] .histbeat{background:#1e1a10;border-color:#3a3220}
+  html[data-tod="night"] .histbeat .caps{color:#d5b672}
+  html[data-tod="night"] .histbeat p{color:#c8b795}
+  html[data-tod="night"] .stakebox{background:#241a15;border-color:#432d23}
+  html[data-tod="night"] .stakebox .caps{color:#e09c6e}
+  html[data-tod="night"] .stakebox div{color:#d3aa93}
+  html[data-tod="night"] .toolbox{background:#141c2c;border-color:#2a3650}
+  html[data-tod="night"] .toolbox .caps{color:#8db0e2}
+  html[data-tod="night"] .toolbox p{color:#b4c2d8}
+  html[data-tod="night"] .toolbox b{color:#d2e0f5}
+  html[data-tod="night"] .toolbox code{background:#222f47;color:#d8e4f7}
+  html[data-tod="night"] .evogap{color:#cab68a}
+  html[data-tod="night"] .evogap b{color:#dfbc74}
+  html[data-tod="night"] .codenext{border-color:#3d331d}
+  html[data-tod="night"] .codenext .caps,html[data-tod="night"] .crow b{color:#dfbc74}
+  html[data-tod="night"] .crow{border-color:#3d331d}
+  html[data-tod="night"] .crow p{color:#c0b08c}
+  html[data-tod="night"] .todchip{background:rgba(21,26,37,.92);color:var(--teal-deep)}
   html[data-tod="night"] .diagram{background:#eef4f2;border-radius:12px;padding:10px 12px}
-  html[data-tod="night"] .labshape,html[data-tod="night"] .code{background:#131e34;border-color:#283652}
-  html[data-tod="night"] .wick .bub{box-shadow:0 8px 26px rgba(0,0,0,.55)}
+  html[data-tod="night"] .labshape,html[data-tod="night"] .code{background:#0f141d;border-color:#232b39}
+  html[data-tod="night"] .wick .bub{box-shadow:0 8px 26px rgba(0,0,0,.6)}
   html[data-tod="night"] .celebrate .toast{background:var(--surface);color:var(--ink)}
-  html[data-tod="night"] .quick{background:#16203a;border-color:#3a4a6b}
-  html[data-tod="night"] .rolecard{background:#18243d}
-  html[data-tod="night"] .lsetup{background:#16203a}
+  html[data-tod="night"] .quick{background:#121822;border-color:#333d4f}
+  html[data-tod="night"] .rolecard{background:#151a25}
+  html[data-tod="night"] .lsetup{background:#121822}
+  html[data-tod="night"] .fold{background:#151a25;border-color:#232b39}
+  html[data-tod="night"] .fold>summary:hover{background:#1a2130}
   html[data-tod]{transition:background .8s ease}
   *{box-sizing:border-box}
   html,body{margin:0;background:var(--page);color:var(--ink);font-family:var(--sans);font-size:16px;line-height:1.6;-webkit-font-smoothing:antialiased}
@@ -354,6 +356,20 @@
   .crow:first-of-type{border-top:none;padding-top:0}
   .crow b{font-size:14.5px}
   .crow p{margin:3px 0 0;font-size:13.5px;color:#6b5220;line-height:1.5}
+  .fold{background:var(--surface);border:1.5px solid var(--line);border-radius:14px;margin-bottom:12px;overflow:hidden}
+  .fold>summary{list-style:none;cursor:pointer;display:flex;align-items:center;gap:12px;padding:15px 18px;user-select:none}
+  .fold>summary::-webkit-details-marker{display:none}
+  .fold>summary:hover{background:var(--mint2)}
+  .fold .fe{font-size:19px;line-height:1}
+  .fold .ft{font-family:var(--serif);font-size:17px;font-weight:600;flex-shrink:0}
+  .fold .fs{flex:1;text-align:right;font-size:13.5px;color:var(--muted)}
+  .fold .fc{color:var(--faint);font-size:19px;transition:transform .2s;flex-shrink:0}
+  .fold[open] .fc{transform:rotate(90deg)}
+  .fold .fbody{padding:2px 18px 18px}
+  .fold .fbody>.card{border:none;padding:0;margin:0;background:none}
+  .fold .fbody>.card>.pilltag{display:none}
+  .fold .fbody>.card>h2{display:none}
+  @media(max-width:600px){.fold .fs{display:none}}
   .evo{background:var(--surface);border:1.5px solid var(--mintline);border-radius:16px;padding:18px 20px;margin-bottom:16px}
   .evohead{display:flex;align-items:center;gap:14px}
   .evohead .ge{font-size:34px;line-height:1}
@@ -615,7 +631,7 @@ const UNITS = [
     <div class="toolbox"><span class="caps">🔧 Tools you will actually hear — Writing decisions down</span><p><b>Architecture Decision Records</b> are a plain convention: one short file per decision, saying what you chose, why, and what you traded. Teams keep them in the repo, or in <b>Notion</b> or <b>Confluence</b>. Doing this is the cheapest way to look senior, because it makes your reasoning reviewable.</p></div>`,
     vocab:[{t:"Tradeoff",d:"What you give up to get the thing you chose."},{t:"Failure mode",d:"The specific way a choice goes wrong."},{t:"Defensible decision",d:"A choice you can justify by naming what you traded."},{t:"Premature optimization",d:"Solving a problem you do not have yet."},{t:"Cost over time",d:"What a decision charges you after the day you make it."},{t:"Taste",d:"Judgment about fit and restraint — a legitimate input."}],
     unlock:"You lead the conversation instead of following it — naming the axis so the whole room can decide well." },
-  { id:"u9", emoji:"\U0001F5C3\uFE0F", title:"Asking data a question",
+  { id:"u9", emoji:"🗃️", title:"Asking data a question",
     objective:"Read a query out loud, say what it returns, write your own against a real table, and name the way it could be quietly wrong.",
     lesson:`<p class="lsetup">Every dashboard you have ever trusted is a query underneath. <b>SQL</b> is the language for asking a database a question, and it is smaller than it looks.</p>
     <p>A table is a grid, and you already know how to read one. <b>Rows</b> are records \u2014 one lead, one application, one enrollment. <b>Columns</b> are the facts about each record. What SQL adds is a way to ask for a slice of that grid without opening it: which columns you want, which table they live in, which rows qualify, how to sort them, and how many to hand back. Those five things always appear in the same order, and the order is not optional.</p>
@@ -636,7 +652,7 @@ LIMIT    how many to return</pre>
       {d:"The silent failure \u2014 wrong case, zero rows, no error",q:"SELECT id FROM leads WHERE channel = 'events'"}],
     unlock:"You stop being the person who receives the number and become the person who can check it. When two dashboards disagree in a meeting, you are the one who opens the query and says which is right, and why." },
 
-  { id:"u10", emoji:"\U0001F4CA", title:"Rows into a number",
+  { id:"u10", emoji:"📊", title:"Rows into a number",
     objective:"Turn a table of rows into the number somebody wants on a slide, and say which of three possible counts you actually used.",
     lesson:`<p class="lsetup">Every number on every dashboard you have ever read started life as a pile of rows that got collapsed. This is where that happens, and it is the single most useful thing in SQL for a business role.</p>
     <p>An <b>aggregate function</b> takes many rows and returns one value. <code>COUNT()</code> counts them, <code>SUM()</code> adds them, <code>AVG()</code>, <code>MIN()</code> and <code>MAX()</code> do what they say. On their own they hand back a single row for the whole table. <code>GROUP BY</code> is what makes them useful: it splits the rows into buckets first, then aggregates each bucket separately, giving you one output row per bucket. "Leads by channel" is nothing more than that.</p>
@@ -655,7 +671,7 @@ GROUP BY channel</pre>
       {d:"Three counts side by side \u2014 watch them disagree",q:"SELECT COUNT(*) AS rows_, COUNT(submitted_date) AS has_date, COUNT(DISTINCT lead_id) AS people\nFROM applications"}],
     unlock:"When somebody quotes you a conversion rate, you can ask what the denominator counted \u2014 and you already know the three different answers that one word could mean." },
 
-  { id:"u11", emoji:"\U0001F517", title:"Two tables, and the rows that vanish",
+  { id:"u11", emoji:"🔗", title:"Two tables, and the rows that vanish",
     objective:"Join two tables without silently dropping or duplicating people, and prove which of the two just happened.",
     lesson:`<p class="lsetup">Your funnel is not one table. Leads live in one place, applications in another, enrollments in a third, and the only reason they connect is a shared value: <code>applications.lead_id</code> holds the same number as <code>leads.id</code>. That shared value is a <b>key</b>, and a <code>JOIN</code> is the instruction to line two tables up along it.</p>
     <pre class="labshape">SELECT   l.channel, a.status
@@ -676,7 +692,7 @@ JOIN     applications a ON a.lead_id = l.id</pre>
       {d:"A CTE, so the steps read in order",q:"WITH applied AS (\n  SELECT DISTINCT lead_id FROM applications\n)\nSELECT l.channel, COUNT(*) AS leads, COUNT(applied.lead_id) AS applicants\nFROM leads l\nLEFT JOIN applied ON applied.lead_id = l.id\nGROUP BY l.channel"}],
     unlock:"You can say in the meeting that the number dropped 782 people, and then show it on the screen. That is a different kind of authority than having an opinion about the number." },
 
-  { id:"u12", emoji:"\U0001F4D0", title:"Rates, denominators, and disagreements",
+  { id:"u12", emoji:"📐", title:"Rates, denominators, and disagreements",
     objective:"Build a funnel rate whose denominator you can defend out loud, and settle an argument between two numbers.",
     lesson:`<p class="lsetup">Everything so far produced counts. This unit produces <b>rates</b>, and a rate is where judgment enters, because a rate is two decisions wearing one number.</p>
     <p>Mechanically it is division, with one catch that bites immediately. Divide an integer by an integer and many databases hand back an integer \u2014 <code>538 / 1320</code> becomes <code>0</code>. Multiply one side by <code>1.0</code> to force decimal arithmetic, then wrap it in <code>ROUND(x, 3)</code> so the output is readable.</p>
@@ -694,7 +710,7 @@ JOIN     applications a ON a.lead_id = l.id</pre>
       {d:"Counting conditionally without a second query",q:"SELECT channel,\n       COUNT(*) AS leads,\n       SUM(CASE WHEN created_date >= '2025-01-01' THEN 1 ELSE 0 END) AS leads_2025\nFROM leads\nGROUP BY channel"}],
     unlock:"You stop arguing about whose rate is right and start asking what each side divided by. That question ends the argument, and asking it is what a RevOps hire is for." },
 
-  { id:"u13", emoji:"\U0001FA9F", title:"Calculations that look sideways",
+  { id:"u13", emoji:"🪟", title:"Calculations that look sideways",
     objective:"Compute rank, previous period, running total and share without collapsing your rows \u2014 and know when it belongs in the query rather than the dashboard.",
     lesson:`<p class="lsetup"><code>GROUP BY</code> has one cost: it destroys the rows. Ask for a count per channel and the individual leads are gone. Usually that is what you want. Sometimes you need a number that depends on <em>other</em> rows while every row stays on screen \u2014 this term against last term, each program's rank, a running total, each channel's share of the whole.</p>
     <p>A <b>window function</b> does that. The syntax is a normal function followed by <code>OVER (\u2026)</code>, and what goes inside the parentheses defines which other rows it may look at.</p>
@@ -714,7 +730,7 @@ SUM(enrollments) OVER ()</pre>
       {d:"PARTITION BY \u2014 rank restarts inside each credential",q:"SELECT credential, term_code, COUNT(*) AS enrollments,\n       ROW_NUMBER() OVER (PARTITION BY credential ORDER BY COUNT(*) DESC) AS rank_in_credential\nFROM enrollments\nGROUP BY credential, term_code"}],
     unlock:"You can answer a period-over-period question inside the query instead of exporting to a spreadsheet \u2014 and you can say why the calculation belongs there rather than in the workbook." },
 
-  { id:"u14", emoji:"\U0001F4C8", title:"Cohorts, and why offsets beat calendars",
+  { id:"u14", emoji:"📈", title:"Cohorts, and why offsets beat calendars",
     objective:"Build a cohort retention grid, and defend measuring it in offsets rather than calendar periods.",
     lesson:`<p class="lsetup">A <b>cohort</b> is a group defined by when it entered. Everyone who started in Fall 2024 is a cohort, and the question you ask of it is always the same shape: of the people who entered then, how many are still here later?</p>
     <p>You already run this calculation. Term-over-term persistence is cohort retention with different nouns, and it is the same arithmetic as logo retention at a SaaS company. What makes it a SQL exercise rather than a spreadsheet exercise is the shape of the answer: a grid with cohorts down the side and time across the top.</p>
@@ -1134,31 +1150,31 @@ const RANKS=[
  {n:"Technical Account Manager",xp:780},{n:"AI Solutions Consultant",xp:1100}];
 /* What each stage means in the actual market — the point of the ladder. */
 const STAGES={
- "Curious":{e:"\U0001F331",
+ "Curious":{e:"🌱",
   can:"You are asking what is underneath the things you build, instead of taking them on faith.",
   feeds:"Not a title \u2014 the honest starting line, and where almost everyone begins.",
   gap:"Keep going. The vocabulary starts paying off around the third or fourth lesson."},
- "Customer Success Manager":{e:"\U0001F91D",
+ "Customer Success Manager":{e:"🤝",
   can:"You can follow a technical conversation about the product you support without losing the thread, and ask a question that lands.",
   feeds:"CSM at a technical company. Client skill is the main requirement and fluency is what separates the ones who get escalated to from the ones who forward the ticket.",
   gap:"Also wants depth in that company's specific product, and usually renewal or account ownership history."},
- "Implementation Analyst":{e:"\U0001F9F0",
+ "Implementation Analyst":{e:"🧰",
   can:"You can sit between a client and a delivery team during onboarding and keep both moving.",
   feeds:"Implementation Analyst and Onboarding Specialist. Postings describe it as the bridge between technical teams and clients during onboarding, covering data integration, user training and project execution.",
   gap:"Expects hands-on configuration in their platform, which you learn on the job, plus real project delivery history \u2014 your operations background likely already covers that."},
- "Business Systems Analyst":{e:"\U0001F50E",
+ "Business Systems Analyst":{e:"🔎",
   can:"You can hear a messy request and turn it into requirements a builder can act on, naming cost and risk.",
   feeds:"Business Systems Analyst and Solutions Analyst. The core of the job is gathering and analysing requirements and business processes, and bridging business priorities with technical execution. No coding in most postings.",
   gap:"Wants documented requirements work you can point at. If you have run process improvement, that is the same muscle \u2014 write it up that way."},
- "Implementation Consultant":{e:"\U0001F3D7\uFE0F",
+ "Implementation Consultant":{e:"🏗️",
   can:"You can own a client build from signed to live, making the design calls it needs along the way.",
   feeds:"Implementation Consultant. Responsible for integrating a solution into a client's existing infrastructure \u2014 solution design, configuration approach, and quality assurance. It expects judgment about systems, which is exactly what this app trains.",
   gap:"Usually wants prior delivery on a comparable platform, and comfort configuring software rather than only advising on it."},
- "Technical Account Manager":{e:"\U0001F4DE",
+ "Technical Account Manager":{e:"📞",
   can:"You can own the technical relationship with a client \u2014 anticipate problems, translate a roadmap, and be believed when you say something is a bad idea.",
   feeds:"Technical Account Manager. Postings explicitly value project management and business analysis backgrounds plus the ability to simplify technical concepts for non-technical stakeholders. This is arguably the strongest honest fit for your profile.",
   gap:"Trust is the product, and it is built on delivered engagements. Expect to show a track record rather than a certificate."},
- "AI Solutions Consultant":{e:"\U0001F916",
+ "AI Solutions Consultant":{e:"🤖",
   can:"You can scope an AI solution for a client, bound what the model is allowed to do, and defend every tradeoff you took.",
   feeds:"AI Consultant, AI Solutions Consultant, Principal Consultant. The newest and least crowded corner of this family, and the one where business judgment plus AI fluency is genuinely scarce.",
   gap:"Titles vary wildly here \u2014 some are advisory and reachable, others are engineering roles wearing a consulting name. Read the posting for whether it asks you to build. Solutions Engineer and Forward Deployed Engineer sit next door and do require scripting and hands-on cloud work that this app does not teach."}
@@ -1384,7 +1400,7 @@ function roleCards(){
  }).join("");
 }
 function rolesCard(){
- return '<div class="card"><span class="pilltag">\U0001F4BC Roles at your level</span>'
+ return '<div class="card"><span class="pilltag">💼 Roles at your level</span>'
   +'<p class="sub">Real titles people hold at your current fluency, with what they actually pay. Ranges are wide because sources disagree and location matters more than anything else.</p>'
   +roleCards()
   +'<div class="codenext"><span class="caps">If you want the next tier, this is the price</span>'
@@ -1400,6 +1416,30 @@ async function buildPlan(){
  var usr="Their current fluency stage: "+stage+". Their background: "+roleLine()+". They have completed "+state.learned.length+" of "+UNITS.length+" lessons and worked through "+state.faced+" decision scenarios. They have not learned to code.";
  var out=await callClaude(sys,usr,700);
  if(o)o.innerHTML='<div class="airead" style="margin-top:12px">'+(out?esc(out).replace(/\n/g,"<br>"):"Could not reach the tutor. "+esc(lastAIError))+'</div>';
+}
+function badgeSummary(){return state.badges.length+" of "+BADGES.length+" earned";}
+function readySummary(){
+ if(!state.profile||state.profile.cap_read==null)return "not measured yet";
+ var conf=CAPS.filter(function(c){return effCap(c.k)>=2;}).length;
+ return conf+" of "+CAPS.length+" at confident";
+}
+function rolesSummary(){
+ var st=rankFor(state.xp).r.n,l=ROLEDEX[st]||[];
+ return l.length?(l.length+" roles \u00b7 "+l[0].pay):"unlocks after your first lesson";
+}
+function fold(id,emoji,title,summary,body,open){
+ var isOpen=(state.folds&&state.folds[id])||open;
+ return '<details class="fold" data-fold="'+id+'"'+(isOpen?" open":"")+'>'
+  +'<summary><span class="fe">'+emoji+'</span><span class="ft">'+esc(title)+'</span>'
+  +'<span class="fs">'+summary+'</span><span class="fc">\u203A</span></summary>'
+  +'<div class="fbody">'+body+'</div></details>';
+}
+function wireFolds(){
+ root.querySelectorAll("[data-fold]").forEach(function(d){
+  d.addEventListener("toggle",function(){
+   state.folds=state.folds||{};state.folds[d.dataset.fold]=d.open;save();
+  });
+ });
 }
 function evoCard(){
  var f=rankFor(state.xp),r=f.r,nx=f.nx,s=STAGES[r.n]||{},i=RANKS.map(function(x){return x.n;}).indexOf(r.n);
@@ -1536,7 +1576,7 @@ function renderHome(){
   <p class="persona">Built for people who run the client side — sales, accounts, operations — building real fluency in how software works, at the level a business role needs, to ship with confidence.</p>
   ${quickHTML()}
   ${evoCard()}
-  ${rolesCard()}
+  ${fold('roles','\u{1F4BC}','Roles at your level',rolesSummary(),rolesCard(),false)}
   <div class="card levelcard">
     <div class="lc-ring">${ring(pct,92,8)}<div class="lc-emoji">${rankEmoji(r.n)}</div></div>
     <div class="lc-body"><span class="caps">Your progress</span><h2>${r.n}</h2>
@@ -1544,15 +1584,15 @@ function renderHome(){
       <p class="muted small" style="margin:0">${state.xp} XP · ${nextTxt}</p></div>
   </div>
   <div class="snap">${stat(state.graceJustUsed?"🧊":"🔥",state.streak,state.graceJustUsed?"streak (I covered you)":"day streak")}${stat("🎯",state.faced,"decisions")}${stat("📖",state.glossary.length,"terms")}${stat("🎓",state.learned.length+"/"+UNITS.length,"lessons")}</div>
-  <h3 class="hd">Badges — ${state.badges.length}/${BADGES.length}</h3>
-  <div class="badges">${BADGES.map(b=>{const got=state.badges.indexOf(b.id)>=0;return `<div class="badge2 ${got?'on':''}" title="${esc(b.d)}"><span>${got?b.e:'🔒'}</span><b>${esc(b.t)}</b></div>`;}).join("")}</div>
-  ${readinessCard()}
+  ${fold('badges','\u{1F3C5}','Badges',badgeSummary(),`<div class="badges">${BADGES.map(b=>{const got=state.badges.indexOf(b.id)>=0;return `<div class="badge2 ${got?'on':''}" title="${esc(b.d)}"><span>${got?b.e:'🔒'}</span><b>${esc(b.t)}</b></div>`;}).join("")}</div>`,false)}
+  ${fold('ready','\u{1F9ED}','Your readiness',readySummary(),readinessCard(),false)}
   <div class="pair">${readCard()}${testsCard()}</div>
   <div class="pair"><div class="card"><span class="pilltag">🧭 How it works</span>${howRow("🎓","Learn","Read a lesson, then test it with a door.")}${howRow("🎯","Practice","A decision to reason through, or a bug to hunt.")}${howRow("📚","Reference","Terms you've earned and recurring tradeoffs.")}${howRow("⬆️","Level up","Every step moves you along a real career path.")}</div><div class="card"><span class="pilltag">🧭 Suggested next</span><h3 style="margin:4px 0;font-size:19px">${esc(ru.title)}</h3><p class="muted small" style="margin:0 0 14px">${esc(rec.why)}</p><div class="prow"><button class="btn big" id="goRec">${state.learned.length?'Keep going →':'Start here →'}</button>${state.onboarded?'<button class="btn ghost mini" id="reIntake">Redo intro</button>':''}</div></div></div>
  `;
  root.querySelector("#goRec").onclick=()=>{learnUnit=rec.id;setTab("learn");};
  var q=root.querySelector("#quickGo");if(q)q.onclick=quickPick;
  var pb=root.querySelector("#planBtn");if(pb)pb.onclick=buildPlan;
+ wireFolds();
  const ri=root.querySelector("#reIntake");if(ri)ri.onclick=()=>{quiz={type:"intake",i:0,answers:[]};render();window.scrollTo(0,0);};
  const si=root.querySelector("#startIntake2");if(si)si.onclick=()=>{quiz={type:"intake",i:0,answers:[]};render();window.scrollTo(0,0);};
  const sh=root.querySelector("[data-shipped]");if(sh)sh.onclick=()=>{state.shippedIntegration=true;const p=state.xp;addXP(40);commitProgress(p);render();};
