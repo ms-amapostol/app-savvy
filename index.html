@@ -1605,7 +1605,30 @@ function refreshStats(){const {r,nx}=rankFor(state.xp);let pct=1;if(nx)pct=(stat
 function doorsForUnit(uid){return DECISIONS.filter(d=>d.units.indexOf(uid)>=0);}
 function doneCountUnit(uid){const ids=new Set(state.history.filter(h=>!h.type).map(h=>h.id));return doorsForUnit(uid).filter(d=>ids.has(d.id)).length;}
 function sabDoneCount(){return new Set(state.history.filter(h=>h.type==="sab").map(h=>h.id)).size;}
-function recommendStart(){if(!state.profile||state.profile.cap_tradeoff==null)return {id:"u1",why:"Start at the beginning: how an app fits together."};const t=state.profile.cap_tradeoff;if(t<=0)return {id:"u1",why:"We'll start with the big picture: how an app is put together."};if(t===1)return {id:"u2",why:"You've got the basics — let's go deeper into where the data lives."};return {id:"u3",why:"You're already naming tradeoffs — go where the FDE value is: APIs and AI."};}
+function recommendStart(){
+ var learned=function(id){return state.learned.indexOf(id)>=0;};
+ var doorsLeft=function(u){
+   if(u.sabotage)return SABOTAGE.length-sabDoneCount();
+   var t=doorsForUnit(u.id).length;return t?t-doneCountUnit(u.id):0;
+ };
+ // 1. the first lesson you have not read yet — straight down the path
+ for(var i=0;i<UNITS.length;i++){
+   var u=UNITS[i];
+   if(!learned(u.id)){
+     if(i===0)return {id:u.id,why:"Start at the beginning: how an app fits together."};
+     var prev=UNITS[i-1];
+     return {id:u.id,why:learned(prev.id)
+       ? "You finished \u201c"+prev.title+"\u201d \u2014 this is what comes next."
+       : "Next unread lesson on the path."};
+   }
+ }
+ // 2. everything read — go back to whatever still has practice left
+ var best=null;
+ for(var j=0;j<UNITS.length;j++){var v=UNITS[j],n=doorsLeft(v);if(n>0&&(!best||n>best.n))best={u:v,n:n};}
+ if(best)return {id:best.u.id,why:"You have read them all. "+best.n+" "+(best.u.sabotage?"sabotage round":"door")+(best.n===1?"":"s")+" left here \u2014 that is where it sticks."};
+ // 3. fully complete
+ return {id:UNITS[0].id,why:"You have finished everything. Revisit any lesson, or keep practising."};
+}
 
 const METAS={home:"Your dashboard — how far you've come, and where to go next.",learn:"Read a lesson, then test it with a door. Your curriculum's at the bottom.",practice:"A quick decision or a bug to hunt — perfect for ten minutes. Earns XP.",reference:"Look things up: the terms you've earned, the tradeoffs that recur, and the thinking behind it all.",lab:"A live database in the page. Write a query, run it, and see whether it holds up.",key:"Turn on the AI tutor and manage your synced data."};
 function setMeta(){const m=document.getElementById("meta");if(quiz){m.style.display="none";return;}m.style.display="block";m.textContent=METAS[tab]||"";}
