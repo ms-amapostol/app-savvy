@@ -442,7 +442,7 @@
   .jmap .here .slbl{fill:var(--gold)}
   .jmap .halo{fill:none;stroke:var(--gold);stroke-width:2;opacity:.35}
   .jmap .mkey text{font-size:11.5px;fill:var(--faint);font-family:var(--sans)}
-  .jmap .mkey .stn{stroke-width:2.5}
+  .jmap .mkey .stn{stroke-width:2.5}.jmap .mkey .stn.done{fill:var(--teal);stroke:var(--teal);stroke-width:2.5}.jmap .mkey .stn.here{fill:var(--gold-bg);stroke:var(--gold);stroke-width:3.5}.jmap .mkey text.kdone{fill:var(--teal)}.jmap .mkey text.khere{fill:var(--gold)}
   html[data-tod="night"] .jmap .tk{fill:#0d1118}
   .lockbox{background:var(--gold-bg);border:1px solid #e6d5ab;border-radius:13px;padding:15px 18px;margin-top:16px}
   .lockbox .caps{color:#8a6a1f;display:block;margin-bottom:7px}
@@ -581,7 +581,7 @@
   <div class="meta" id="meta"></div>
   <div id="root"></div>
   <div class="askpanel" id="askPanel"><div class="head"><b>✨ Ask Wick anything</b><span class="hbtns"><button class="askclose" id="askBig" aria-label="Expand" title="Expand">⤢</button><button class="askclose" id="askClose" aria-label="Close">✕</button></span></div><div class="body" id="askBody"></div></div>
-  <footer>A free judgment-training tool, in the family of <a href="https://tinyurl.com/aafreeinterviewpractice" target="_blank" rel="noopener">Anastasia's Interview Practice</a>.<br>Everything stays in this browser. Built for vibecoders becoming fluent.</footer>
+  <footer>A free judgment-training tool, in the family of <a href="https://yournextstepai.com" target="_blank" rel="noopener">Your Next Step</a>.<br>Everything stays in this browser. Built for vibecoders becoming fluent.</footer>
 </div>
 
   <script>
@@ -2017,8 +2017,8 @@ function journeyHTML(){
  return '<div class="jmapwrap"><svg class="jmap" viewBox="0 0 '+W+' '+H+'" preserveAspectRatio="xMidYMid meet" role="img" aria-label="Your learning journey">'
    +out
    +'<g class="mkey" transform="translate('+padX+','+(H-26)+')">'
-   +'<circle class="stn done" cx="0" cy="-4" r="7"/><text x="14" y="0">read</text>'
-   +'<circle class="stn here" cx="86" cy="-4" r="7"/><text x="100" y="0">you are here</text>'
+   +'<circle class="stn done" cx="0" cy="-4" r="7"/><text class="kdone" x="14" y="0">read</text>'
+   +'<circle class="stn here" cx="86" cy="-4" r="7"/><text class="khere" x="100" y="0">you are here</text>'
    +'<circle class="stn" cx="212" cy="-4" r="7"/><text x="226" y="0">ahead</text>'
    +'</g></svg></div>';
 }
