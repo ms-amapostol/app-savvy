@@ -2508,6 +2508,48 @@ function wireLearn(){
 /* ===== PRACTICE ===== */
 /* Fallback bank — concrete client scenarios, used when there is no key. */
 const TEACH_FALLBACK={
+ "u15":["Brightline Dental’s practice manager calls: the booking site is down, and she has already told two patients the whole system is broken. Walk her through what “down” could actually mean here, and why it matters which one it is.",
+  "A Cedar &amp; Fig owner points at the padlock in the address bar and asks, “so our customer data is safe, right?” Explain what that padlock is actually promising — and what it says nothing about.",
+  "Kestrel Fitness moved hosts on Thursday. On Monday a member says the site “looks like the old one.” The owner thinks something is broken. Explain what is really happening and how long it lasts."],
+ "u28":["Ridgeline Outfitters’ new European partner sends a security questionnaire asking where customer data is stored. The founder says “it’s in the cloud.” Explain to him why that is not an answer, and what is.",
+  "A Harbor Point board member asks why they are paying a monthly bill for servers they were told they would not have to buy. Explain what they are actually renting.",
+  "Lantern House’s director read that their vendor is “multi-region” and wants to know if that is worth anything. Explain what it means and what question it answers."],
+ "u16":["A Lantern House coordinator wants one shared login for the overnight desk because volunteers keep forgetting passwords. Explain what the shelter gives up, without making her feel foolish for asking.",
+  "Verity Legal’s office administrator asks why she cannot just be told a paralegal’s password so she can check something in their account. Explain why no one can tell her.",
+  "Northwind’s ops director says a dispatcher “has access” to the rate tool, so the missing-data problem cannot be a permissions issue. Explain the two different questions a login actually answers."],
+ "u17":["Cedar &amp; Fig’s owner wants a pricing fix live before the weekend and does not understand why the team is hesitating on a Friday afternoon. Explain what they are weighing.",
+  "A Brightline Dental partner asks why work has to be “tested somewhere else first” when it already works on the developer’s screen. Explain what that somewhere else is for.",
+  "Harbor Point’s director asks what happens if the update going out tomorrow turns out to be wrong. Explain the answer she should be insisting on before it ships."],
+ "u18":["Kestrel Fitness’s owner asks how they will know if the booking page stops working over a bank holiday weekend. Explain the difference between hoping someone notices and actually knowing.",
+  "A Ridgeline Outfitters exec is comparing two vendors, one promising 99.9% uptime and one 99.99%, and cannot see why the second costs so much more. Explain what those numbers actually allow.",
+  "Verity Legal’s managing partner says the team tests everything thoroughly, so monitoring seems redundant. Explain what monitoring catches that testing never will."],
+ "u19":["Two Northwind reports show different revenue for the same month and both teams insist theirs is right. Explain to the ops director the four places this could have gone wrong, and why only one of them means everything else is wrong too.",
+  "A Cedar &amp; Fig manager asks why the analytics team wants two weeks to “build models” before she sees a single chart. Explain what those two weeks buy her.",
+  "Harbor Point’s finance lead asks why they cannot just run reports directly out of the CRM like they always have. Explain what a warehouse is for."],
+ "u20":["Ridgeline’s founder is preparing for an investor meeting and asks what NRR is and why anyone cares more about it than new sales. Explain both, plainly.",
+  "A Brightline Dental partner asks why the marketing spend per new patient is not the whole story on whether marketing is working. Explain payback.",
+  "Kestrel Fitness’s owner says they lost only three members last quarter, so retention is fine. Explain why that number alone does not tell her what she thinks it does."],
+ "u21":["Verity Legal’s managing partner has already decided which task to automate and wants you to start building Monday. Explain, without dismissing him, why you want two days sitting with the people doing the work first.",
+  "A Northwind dispatcher is proud of a spreadsheet she built to track exceptions the main system cannot handle. Explain to her manager why that spreadsheet is the most interesting thing you found all week.",
+  "Cedar &amp; Fig automated their invoice step and the owner is frustrated that month-end still takes just as long. Explain what happened."],
+ "u22":["A Harbor Point director watched a demo of a ticket-categorising agent, loved it, and wants it live Monday. Explain what you would want to see before agreeing.",
+  "Ridgeline’s ops lead says the agent gets it right 92% of the time, which sounds too risky to launch. Explain what number that has to be compared against.",
+  "Brightline Dental’s manager asks how anyone can test something that gives a slightly different answer each time. Explain how it is actually done."],
+ "u23":["A Lantern House volunteer used an AI tool to change something on their intake form and it broke the following week. Explain to the director what reviewing a change would have caught, and why she does not need a developer to do it.",
+  "Kestrel Fitness’s owner pastes an error message into chat and says “it says something about undefined.” Explain how to read it well enough to say something useful.",
+  "A Cedar &amp; Fig manager asks why the developer keeps asking her to look at something called a pull request when she cannot write code. Explain what she is actually being asked to check."],
+ "u24":["A Brightline Dental partner just found out the conversion number in Tuesday’s report was wrong. Before she asks anything else, explain what happens in the first hour and why finding the bug is not step one.",
+  "Northwind’s ops director wants to wait until the corrected figure is ready before telling the client anything. Explain what that costs.",
+  "Harbor Point’s finance lead asks how they stop this from happening again, and expects to hear about being more careful. Explain what actually prevents it."],
+ "u25":["Every month, Ridgeline’s partner call opens with ten minutes explaining why the newest bar looks like a collapse. Explain to the ops lead what is happening and the three ways to fix it.",
+  "A Cedar &amp; Fig owner wants twelve more metrics added to a dashboard that already has twenty. Explain the question you want to ask before adding any of them.",
+  "Kestrel Fitness’s board disputes a conversion rate that the team is confident in. Explain the three labels that would have prevented the argument."],
+ "u26":["Lantern House needs an internal portal and the director has heard low-code is faster and cheaper. Explain what she is choosing, including the parts that arrive later.",
+  "A Verity Legal partner asks why they should not just buy the off-the-shelf tool everyone else uses. Explain when buying is right and when it is not.",
+  "Northwind’s CFO is looking at a licence price and calling it the cost. Explain what else belongs in that number."],
+ "u27":["Harbor Point’s director wants an agent that handles member enquiries end to end, including refunds. Explain what you would let it do on its own and what it should propose instead.",
+  "A Ridgeline exec asks why a chatbot and an agent are different things. Explain the difference in a way that makes the risk clear.",
+  "Cedar &amp; Fig’s owner asks why the agent needs “all this setup” when the model already knows everything. Explain what it does not know."],
  "u1":["Rosa, the office manager at Brightline Dental, asks why the booking tool needs “a server at all” when it already works on her screen. She is paying for that server. Explain the split so it justifies the line item.",
   "A Cedar &amp; Fig owner says: “Can the waste tracker just remember what every location logged?” Explain, without jargon, what that request actually requires.",
   "A Kestrel Fitness board member asks why the free version of their site cannot store member logins. Explain the ceiling."],
@@ -2551,9 +2593,19 @@ const TEACH_FALLBACK={
   "Explain to a Cedar &amp; Fig owner what a cohort is, using her own customers as the example.",
   "A board member sees a cohort grid for the first time and asks what he is looking at. Walk him through one row."]
 };
+function doorConcept(d){
+ var t=(d.terms||[]).map(function(x){return x.t;}).filter(Boolean);
+ var uid=(d.units&&d.units[0])||null;
+ var u=uid?UNITS.filter(function(x){return x.id===uid;})[0]:null;
+ var parts=[];
+ if(t.length)parts.push(t.join(", "));
+ if(u)parts.push("from the lesson \u201c"+u.title+"\u201d");
+ if(d.group)parts.push("the underlying tradeoff is "+d.group);
+ return parts.length?parts.join(" \u2014 "):(d.group||"a technical tradeoff");
+}
 function fallbackScenario(uid,concept){
  var arr=TEACH_FALLBACK[uid];
- if(!arr||!arr.length)return "A client asks you to explain <b>"+esc(concept)+"</b> in plain words. Two or three sentences.";
+ if(!arr||!arr.length)return "A client has just asked you about <b>"+esc(concept)+"</b>. Explain it to them in plain words \u2014 two or three sentences, no jargon.";
  return arr[Math.floor(Math.random()*arr.length)];
 }
 function roleLine(){
@@ -2568,14 +2620,14 @@ function ensureScenario(){
    sess.scenLoading=true;
    var uid=(sess.d.units&&sess.d.units[0])||sess.fromUnit||"u8";
    var target=sess;
-   makeScenario(uid,sess.d.group).then(function(sc){
+   makeScenario(uid,doorConcept(sess.d)).then(function(sc){
      if(target!==sess||!sess)return;
      sess.scenLoading=false;
-     sess.teachScenario=sc||fallbackScenario(uid,sess.d.group);
+     sess.teachScenario=sc||fallbackScenario(uid,doorConcept(sess.d));
      persistResume();if(sess.step===5)render();
    }).catch(function(){
      if(target!==sess||!sess)return;
-     sess.scenLoading=false;sess.teachScenario=fallbackScenario(uid,sess.d.group);
+     sess.scenLoading=false;sess.teachScenario=fallbackScenario(uid,doorConcept(sess.d));
      if(sess.step===5)render();
    });
  }
@@ -2600,7 +2652,7 @@ function reshuffleScenario(){
  else if(teachSess){teachSess.scenario=null;teachSess.scenLoading=false;renderPractice();ensureScenario();}
 }
 async function makeScenario(uid,concept){
- var sys="You write short, vivid role-play prompts for an adult learning app that teaches software judgment to business-side people. Output ONE scenario, 2-3 sentences, no preamble and no quotation marks around it. Requirements: name a specific small or mid-size company and one named person with a job title; give a concrete reason they are asking right now; include a real consequence or deadline; end by asking the learner to explain the concept in plain words. Never use technical jargon in the ask itself. Vary the industry each time. Write in second person to the learner.";
+ var sys="You write short, vivid role-play prompts for an adult learning app that teaches software judgment to business-side people. Output ONE scenario, 2-3 sentences, no preamble and no quotation marks around it. Requirements: the situation MUST be about the specific concept given \u2014 if the concept is about DNS, the scenario is about a domain or a cutover; if it is about data residency, the scenario is about where data physically lives. Do not substitute a generic build-versus-patch or spreadsheet-outgrown-itself story. Name a specific small or mid-size company and one named person with a job title; give a concrete reason they are asking right now; include a real consequence or deadline; end by asking the learner to explain that concept in plain words. Never use technical jargon in the ask itself. Vary the industry each time. Write in second person to the learner.";
  var usr="Concept to be explained: "+concept+". The learner works in: "+roleLine()+". Write the scenario.";
  var out=await callClaude(sys,usr,300);
  if(!out)return fallbackScenario(uid,concept);
@@ -3470,8 +3522,8 @@ function wireDoor(){
  const eg=root.querySelector("#egToggle");if(eg)eg.onclick=()=>{const w=root.querySelector("#defendWhy"),k=root.querySelector("#defendCost");if(w)sess.defendWhy=w.value;if(k)sess.defendCost=k.value;sess.showEg=!sess.showEg;render();};const g2=root.querySelector("#go2");if(g2)g2.onclick=async()=>{sess.defendWhy=root.querySelector("#defendWhy").value.trim();sess.defendCost=root.querySelector("#defendCost").value.trim();const msg=root.querySelector("#dMsg");if(!sess.defendWhy){if(msg)msg.textContent="Take a swing at the first one — even one sentence.";root.querySelector("#defendWhy").focus();return;}if(!sess.defendCost){if(msg)msg.textContent="Now the second one. Every door costs something — naming it is the whole exercise.";root.querySelector("#defendCost").focus();return;}sess.defend="Why this door: "+sess.defendWhy+"\nWhat it costs: "+sess.defendCost;sess.step=2;sess.probe=null;render();const d=sess.d;const sys="You are a sharp architecture tutor. The learner chose a door and defended it. Reply with ONE probing question — the strongest counter to their position, or the thing their reasoning skipped. One or two sentences. No preamble, no praise, just the question.";const usr=`Decision: ${d.context}\nDoor A: ${d.doorA.k}. Door B: ${d.doorB.k}.\nThey chose Door ${sess.pick}.\nReasoning: "${sess.defend}"`;const out=await callClaude(sys,usr,200);sess.probe=out||fallbackProbe(d,sess.pick);const pt=root.querySelector("#probeText");if(pt&&sess.step===2)pt.textContent=sess.probe;};
  const g3=root.querySelector("#go3");if(g3)g3.onclick=async()=>{sess.answer=root.querySelector("#answer").value.trim();sess.step=3;sess.score=null;render();const d=sess.d;const sys="You are an architecture tutor scoring reasoning quality 1-5. Score whether the learner named the real tradeoff, considered the failure mode, and accounted for cost over time — NOT which door they picked. Reply with ONLY a single integer 1-5.";const usr=`Decision: ${d.context}\nChose Door ${sess.pick}. Reasoning: "${sess.defend}"\nProbe: "${sess.probe}"\nAnswer: "${sess.answer}"`;const out=await callClaude(sys,usr,10);let n=out?parseInt((out.match(/[1-5]/)||[])[0]):NaN;if(!(n>=1&&n<=5))n=fallbackScore(sess);sess.score=n;const el=root.querySelector("#scoreN");if(el)el.textContent=n;};
  const g4=root.querySelector("#go4");if(g4)g4.onclick=()=>{sess.step=4;render();};
- const g5=root.querySelector("#go5");if(g5)g5.onclick=()=>{sess.step=5;render();if(!sess.teachScenario){var uid=(sess.d.units&&sess.d.units[0])||sess.fromUnit||"u8";makeScenario(uid,sess.d.group).then(function(sc){if(sess&&sess.step===5){sess.teachScenario=sc;persistResume();render();}});}};
- const tg=root.querySelector("#teachGo");if(tg)tg.onclick=async()=>{const tt=root.querySelector("#teach");sess.teach=tt?tt.value.trim():"";if(!sess.teach){if(tt)tt.focus();return;}tg.textContent="✨ Reading…";tg.disabled=true;sess.teachFb=await teachFeedback(sess.d.group,sess.d.principle,sess.teach);render();};
+ const g5=root.querySelector("#go5");if(g5)g5.onclick=()=>{sess.step=5;render();if(!sess.teachScenario){var uid=(sess.d.units&&sess.d.units[0])||sess.fromUnit||"u8";makeScenario(uid,doorConcept(sess.d)).then(function(sc){if(sess&&sess.step===5){sess.teachScenario=sc;persistResume();render();}});}};
+ const tg=root.querySelector("#teachGo");if(tg)tg.onclick=async()=>{const tt=root.querySelector("#teach");sess.teach=tt?tt.value.trim():"";if(!sess.teach){if(tt)tt.focus();return;}tg.textContent="✨ Reading…";tg.disabled=true;sess.teachFb=await teachFeedback(doorConcept(sess.d),sess.d.principle,sess.teach);render();};
  const dn=root.querySelector("#done");if(dn)dn.onclick=()=>finishSession();
  var sn=root.querySelector("#scenNew");if(sn)sn.onclick=reshuffleScenario;
  const ex=root.querySelector("#exitAct");if(ex)ex.onclick=()=>exitActivity();
