@@ -1369,7 +1369,7 @@ const DECISIONS = [
     chosen:"A", downstreamDraft:true,
     downstream:"Defining it as people meant every rate built on it divided by a population that exists, and the number matched the headcount finance already had. It also meant every future query needed COUNT(DISTINCT \u2026) rather than COUNT(*), which is a small tax you pay forever and a habit worth having.",
     otherDoorCost:"Counting rows gives a number that is genuinely useful to the processing team and quietly wrong everywhere else. Any conversion rate divided by it overstates the funnel, and nobody notices, because 607 and 538 both look like plausible numbers of applicants.",
-    principle:"A metric definition names the thing being counted, not the table it came from. Decide the grain \u2014 one row equals one what \u2014 then write whichever count preserves it. Publish both numbers under different names when both are genuinely needed.",
+    principle:"A metric definition names the thing being counted. Decide what one row equals before you decide where the number lives. Decide the grain \u2014 one row equals one what \u2014 then write whichever count preserves it. Publish both numbers under different names when both are genuinely needed.",
     terms:[{t:"Grain",d:"What one row of a result represents. Naming it prevents most counting mistakes."},{t:"Fan-out",d:"One row becoming many, quietly inflating any count of rows."},{t:"House definition",d:"The single agreed formula for a metric that every tool is expected to read."}] },
   { id:"window-where", units:["u13"], project:"Enrollment trend view", when:"month 4", group:"Trusting a number",
     context:"Leadership wants term-over-term change and a running total on the enrollment view. You can compute both in the query with window functions, so the columns arrive already calculated \u2014 or build them as table calculations in Tableau, which is faster to do and lets you adjust the view without touching the query.",
@@ -1414,7 +1414,7 @@ const DECISIONS = [
     chosen:"A", downstreamDraft:true,
     downstream:"The dashboard went from painful to instant and the bill dropped hard. The tradeoff bit exactly once: someone made a decision at 4pm off a number that was accurate as of 2am, so you added a visible as-of timestamp to every view and the confusion stopped.",
     otherDoorCost:"Live queries are always right and always current, and they get slower and more expensive on precisely the day your data gets interesting. They also put the load on the source system at the worst possible moment — when everyone is looking.",
-    principle:"Precomputing trades freshness for speed and cost. The question is never which is better but how stale a number is allowed to be before somebody makes a bad decision with it. Answer that first, then pick.",
+    principle:"Precomputing trades freshness for speed and cost. The question to settle first is how stale a number is allowed to be before somebody makes a bad decision with it. Answer that first, then pick.",
     terms:[{t:"Materialized view",d:"Query results stored ahead of time so reads are instant."},{t:"Freshness",d:"How far behind the real world a stored number is allowed to fall."},{t:"As-of timestamp",d:"Showing when a number was last true, so nobody assumes it is live."}] },
 ];
 const SABOTAGE=[
