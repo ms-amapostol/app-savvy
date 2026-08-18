@@ -2067,7 +2067,7 @@ function journeyHTML(){
   {t:"Turning work into systems",sub:"where this gets paid for",cls:"ld",ids:["u19","u20","u21","u22"]},
   {t:"Holding your own",sub:"the technical half of the job",cls:"le",ids:["u23","u24","u25","u26","u27"]}
  ];
- var W=1000,padX=74,H=120+(LINES.length-1)*180+130,out="";
+ var W=1000,padX=74,H=140+(LINES.length-1)*196+134,out="";
  function wrap(s){
   if(s.length<=17)return [s];
   var w=s.split(" "),a="",b="";
@@ -2076,13 +2076,13 @@ function journeyHTML(){
   return [a,b];
  }
  LINES.forEach(function(L,li){
-  var y=120+li*180, n=L.ids.length, span=W-padX*2;
+  var y=140+li*196, n=L.ids.length, span=W-padX*2;
   var xs=L.ids.map(function(_,i){return padX+(n===1?span/2:(i/(n-1))*span);});
   // how far along this line the learner has walked
   var lastDone=-1;
   L.ids.forEach(function(id,i){if(state.learned.indexOf(id)>=0)lastDone=i;});
-  out+='<text class="lname '+L.cls+'" x="'+padX+'" y="'+(y-58)+'">'+esc(L.t.toUpperCase())+'</text>'
-     +'<text class="lsub" x="'+(padX+L.t.length*9.4+10)+'" y="'+(y-58)+'">'+esc(L.sub)+'</text>'
+  out+='<text class="lname '+L.cls+'" x="'+padX+'" y="'+(y-92)+'">'+esc(L.t.toUpperCase())+'</text>'
+     +'<text class="lsub" x="'+padX+'" y="'+(y-75)+'">'+esc(L.sub)+'</text>'
      +'<line class="mline '+L.cls+'" x1="'+xs[0]+'" y1="'+y+'" x2="'+xs[n-1]+'" y2="'+y+'"/>'
      +(lastDone>0?'<line class="mline walked" x1="'+xs[0]+'" y1="'+y+'" x2="'+xs[lastDone]+'" y2="'+y+'"/>':'');
   L.ids.forEach(function(id,i){
