@@ -3287,7 +3287,7 @@ function confetti(count,ms){
  }
  setTimeout(function(){host.remove();},ms+1400);
 }
-function celebrate(opt){
+function milestoneBanner(opt){
  confetti(opt.big?170:70,opt.big?4200:2600);
  var old=document.querySelector(".celeb");if(old)old.remove();
  var el=document.createElement("div");el.className="celeb";
@@ -3303,14 +3303,15 @@ function celebrate(opt){
   setTimeout(function(){var r=document.querySelector(".recgrid");if(r&&r.scrollIntoView)r.scrollIntoView({behavior:"smooth",block:"center"});},220);};
  if(!opt.big)setTimeout(function(){if(document.body.contains(el))close();},9000);
 }
-/* Fires once per chapter, and once for the whole curriculum. */
+/* Fires once per chapter, and once for the whole curriculum.
+   Distinct from celebrate(), which handles badges and rank-ups. */
 function checkMilestones(){
  if(!state.milestones)state.milestones={};
  var done=function(id){return state.learned.indexOf(id)>=0;};
  var all=UNITS.every(function(u){return done(u.id);});
  if(all&&!state.milestones.all){
   state.milestones.all=true;save();
-  celebrate({big:true,title:"You finished the whole thing.",
+  milestoneBanner({big:true,title:"You finished the whole thing.",
    cta:"Build my record",
    body:"All "+UNITS.length+" lessons, across every chapter. That is the entire curriculum \u2014 and the record in <b>AI &amp; data</b> now reads as complete, with your decisions and exercises in it."});
   return;
@@ -3320,7 +3321,7 @@ function checkMilestones(){
   if(L.ids.every(done)&&!state.milestones["ch:"+L.t]){
    state.milestones["ch:"+L.t]=true;save();
    var left=CHAPTERS.filter(function(x){return !x.ids.every(done);}).length;
-   celebrate({title:"Congratulations \u2014 "+L.t+" complete.",
+   milestoneBanner({title:"Congratulations \u2014 "+L.t+" complete.",
     body:"That is all "+L.ids.length+" lessons in this chapter"+(left?", with "+left+" chapter"+(left>1?"s":"")+" still ahead. Keep the momentum going.":"." )});
    return;
   }
