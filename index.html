@@ -1499,7 +1499,49 @@ const DECISIONS = [
     terms:[{t:"Materialized view",d:"Query results stored ahead of time so reads are instant."},{t:"Freshness",d:"How far behind the real world a stored number is allowed to fall."},{t:"As-of timestamp",d:"Showing when a number was last true, so nobody assumes it is live."}] },
 ];
 const SABOTAGE=[
- { id:"stringify", blurb:"Saving your journal to the browser.",
+ { id:"backup-overwrite", needs:["u7"], blurb:"The nightly backup job for a client\u2019s case system. Read it as a set of instructions.",
+   lines:['EVERY NIGHT AT 02:00',
+          '  1. Export all records from the live database',
+          '  2. Save the export to  /backups/nightly-backup.csv',
+          '  3. Confirm the file exists',
+          '  4. Email the team: "Backup complete"'],
+   fixLine:2, fix:'  2. Save the export to  /backups/backup-YYYY-MM-DD.csv',
+   options:[
+     {t:'Every night writes to the same filename, so each backup overwrites the one before it. Only last night exists.',ok:true,why:'Step 3 confirms a file is there, and a file is always there \u2014 last night\u2019s. If a problem is noticed on Wednesday that started on Monday, there is nothing to go back to. Dating the filename keeps a history.'},
+     {t:'02:00 is too early; the database may still be in use.',ok:false},
+     {t:'The export should be compressed to save space.',ok:false},
+     {t:'The team should be emailed before the backup, not after.',ok:false}],
+   method:"Ask what this leaves behind after a week, rather than whether it works tonight. Step 3 checks the wrong thing: it proves a file exists, and never that the right ones do.",
+   term:{t:"Retention",d:"How far back your copies actually go, as distinct from whether a copy exists."} },
+ { id:"alert-gap", needs:["u7"], blurb:"The alerting rules for a partner data feed. Read what each one watches.",
+   lines:['ALERT RULES',
+          '  A. Error rate above 5% for 10 minutes   -> page the on-call engineer',
+          '  B. Response time above 2 seconds        -> post to the team channel',
+          '  C. Database storage above 90% full      -> email the administrator',
+          '  D. Nightly file fails to load           -> post to the team channel'],
+   fixLine:4, fix:'  E. No file received by 06:00            -> page the on-call engineer',
+   options:[
+     {t:'Nothing watches for the file simply never arriving. Every rule here waits for something to happen, and a missing file makes nothing happen.',ok:true,why:'Rule D catches a file that arrives broken. A file that never turns up produces no error, no slow response and no failed load \u2014 so it trips none of these, and yesterday\u2019s numbers quietly stand in as today\u2019s.'},
+     {t:'5% is too high a threshold for the error rate.',ok:false},
+     {t:'Storage warnings should page someone rather than email.',ok:false},
+     {t:'Response time should be measured in milliseconds.',ok:false}],
+   method:"Go through each rule and ask what event triggers it. Then ask which failures produce no event at all \u2014 that is the gap.",
+   term:{t:"Alert on absence",d:"Watching for an expected thing that did not happen, since silence raises no error."} },
+ { id:"role-creep", needs:["u7"], blurb:"The access roles for a clinic\u2019s booking system, as written in the setup document.",
+   lines:['ROLES',
+          '  Front desk    : view appointments, create appointments, view patient contact details',
+          '  Clinician     : view appointments, view full patient records, add clinical notes',
+          '  Billing       : view appointments, view invoices, issue refunds, view full patient records',
+          '  Administrator : everything above, plus manage users'],
+   fixLine:3, fix:'  Billing       : view appointments, view invoices, issue refunds',
+   options:[
+     {t:'Billing can read full patient records, which it does not need in order to bill.',ok:true,why:'Least privilege means each role gets the narrowest access that still lets it do the job. Billing needs appointments and invoices. Clinical notes are not part of raising an invoice, and every role holding them widens what a single compromised account exposes.'},
+     {t:'Front desk should not be able to create appointments.',ok:false},
+     {t:'Clinicians should be able to issue refunds.',ok:false},
+     {t:'Administrator should be split into two separate roles.',ok:false}],
+   method:"Take each role and ask what task requires each permission. Anything you cannot tie to a task is access nobody asked for.",
+   term:{t:"Least privilege",d:"The narrowest access that still lets someone do their job."} },
+ { id:"stringify", needs:["u23"], blurb:"Saving your journal to the browser.",
    lines:['function save(entries){','  localStorage.setItem("journal", entries);','}','function load(){','  return JSON.parse(localStorage.getItem("journal"));','}'],
    fixLine:1, fix:'localStorage.setItem("journal", JSON.stringify(entries));',
    options:[
@@ -1509,7 +1551,7 @@ const SABOTAGE=[
      {t:'localStorage is not supported, so it fails.',ok:false}],
    method:"Reproduce, then look at the stored value itself — seeing “[object Object]” points straight at a missing stringify.",
    term:{t:"Serialization",d:"Turning a live object into text you can store, and back again."} },
- { id:"assign", blurb:"Deciding whether today continues the streak.",
+ { id:"assign", needs:["u23"], blurb:"Deciding whether today continues the streak.",
    lines:['function updateStreak(state, today){','  if(state.lastDay = today){','    return state.streak;','  }','  state.streak += 1;','  return state.streak;','}'],
    fixLine:1, fix:'if(state.lastDay === today){',
    options:[
@@ -1519,7 +1561,7 @@ const SABOTAGE=[
      {t:'today is never passed in.',ok:false}],
    method:"When a branch always goes the same way, suspect the condition — a lone = where you meant === is the classic culprit.",
    term:{t:"Assignment vs comparison",d:"= sets a value; === checks equality. Mixing them is a top-tier bug."} },
- { id:"offbyone", blurb:"Grabbing the last five glossary terms.",
+ { id:"offbyone", needs:["u23"], blurb:"Grabbing the last five glossary terms.",
    lines:['function lastFive(terms){','  var out = [];','  for(var i = terms.length; i > terms.length - 5; i--){','    out.push(terms[i]);','  }','  return out;','}'],
    fixLine:2, fix:'for(var i = terms.length - 1; i >= terms.length - 5; i--){',
    options:[
@@ -1529,7 +1571,7 @@ const SABOTAGE=[
      {t:'The number 5 should not be hardcoded.',ok:false}],
    method:"Array indexes stop at length-1. An undefined sitting in the very first slot is the signature of an off-by-one.",
    term:{t:"Off-by-one",d:"Landing one step past the right boundary — the most common counting bug."} },
- { id:"await", blurb:"Getting the tutor's question from the AI.",
+ { id:"await", needs:["u23"], blurb:"Getting the tutor's question from the AI.",
    lines:['async function probe(reasoning){','  var q = callModel(reasoning);','  return q.text;','}'],
    fixLine:1, fix:'var q = await callModel(reasoning);',
    options:[
@@ -1539,7 +1581,7 @@ const SABOTAGE=[
      {t:'async cannot be used on this function.',ok:false}],
    method:"An undefined property on the result of an async call almost always means a missing await.",
    term:{t:"await",d:"Pause until a Promise resolves, then use its real value."} },
- { id:"datauri", blurb:"Showing an image embedded as Base64.",
+ { id:"datauri", needs:["u23"], blurb:"Showing an image embedded as Base64.",
    lines:['function show(b64){','  var img = document.createElement("img");','  img.src = b64;','  document.body.appendChild(img);','}'],
    fixLine:2, fix:'img.src = "data:image/png;base64," + b64;',
    options:[
@@ -1549,7 +1591,7 @@ const SABOTAGE=[
      {t:'The image needs an explicit width to appear.',ok:false}],
    method:"A blank image fed valid-looking data usually means the data: URI prefix is missing.",
    term:{t:"Data URI",d:"A way to put a file's bytes directly into a src as text."} },
- { id:"sql-inner-join", blurb:"Measuring lead-to-application conversion by channel.",
+ { id:"sql-inner-join", needs:["u11"], blurb:"Measuring lead-to-application conversion by channel.",
    lines:["SELECT l.channel,","       COUNT(*) AS leads,","       COUNT(a.application_id) AS apps","FROM leads l","JOIN applications a ON a.lead_id = l.lead_id","GROUP BY l.channel;"],
    fixLine:4, fix:"LEFT JOIN applications a ON a.lead_id = l.lead_id",
    options:[
@@ -1559,7 +1601,7 @@ const SABOTAGE=[
      {t:"The join should be on application_id rather than lead_id.",ok:false}],
    method:"Check the denominator against a number you already know. If total leads in your result is smaller than total leads in the table, the join is eating rows.",
    term:{t:"Inner join",d:"A join that keeps only matching rows, silently dropping everything else."} },
- { id:"sql-left-join-where", blurb:"Listing every lead, flagging the ones with a paid application.",
+ { id:"sql-left-join-where", needs:["u11"], blurb:"Listing every lead, flagging the ones with a paid application.",
    lines:["SELECT l.lead_id, a.status","FROM leads l","LEFT JOIN applications a ON a.lead_id = l.lead_id","WHERE a.status = 'paid';"],
    fixLine:3, fix:"LEFT JOIN applications a ON a.lead_id = l.lead_id AND a.status = 'paid'",
    options:[
@@ -1569,7 +1611,7 @@ const SABOTAGE=[
      {t:"status should be matched with LIKE instead of =.",ok:false}],
    method:"If a LEFT JOIN returns the same row count an inner join would, look straight at the WHERE clause for a condition on the optional table.",
    term:{t:"Join filter placement",d:"Conditions on an outer-joined table belong in ON — in WHERE they cancel the outer join."} },
- { id:"sql-fan-out", blurb:"Reporting how many leads each partner sent you.",
+ { id:"sql-fan-out", needs:["u11"], blurb:"Reporting how many leads each partner sent you.",
    lines:["SELECT p.partner_name,","       COUNT(l.lead_id) AS leads","FROM partners p","JOIN leads l ON l.partner_id = p.partner_id","JOIN applications a ON a.lead_id = l.lead_id","GROUP BY p.partner_name;"],
    fixLine:1, fix:"COUNT(DISTINCT l.lead_id) AS leads",
    options:[
@@ -2164,7 +2206,7 @@ function sabDoneCount(){return new Set(state.history.filter(h=>h.type==="sab").m
 function recommendStart(){
  var learned=function(id){return state.learned.indexOf(id)>=0;};
  var doorsLeft=function(u){
-   if(u.sabotage)return SABOTAGE.length-sabDoneCount();
+   if(u.sabotage)return sabPool().length-sabDoneCount();
    var t=doorsForUnit(u.id).length;return t?t-doneCountUnit(u.id):0;
  };
  // 1. the first lesson you have not read yet — straight down the path
@@ -2735,7 +2777,7 @@ function expandAcronyms(html){
   }
   return parts.join("");
 }
-function lessonHTML(u){const doors=doorsForUnit(u.id),dc=doneCountUnit(u.id),learned=state.learned.indexOf(u.id)>=0;const x=EXTRAS[u.id]||{};const obj=x.obj||u.objective;const next=UNITS[UNITS.indexOf(u)+1];return `<div class="card"><span class="pilltag">${u.emoji} Unit ${UNITS.indexOf(u)+1} · Lesson</span><h2>${esc(u.title)}</h2><div class="objbox"><span class="caps">By the end, you'll be able to</span><div>${esc(obj)}</div></div><h3 style="font-size:18px;margin:22px 0 8px">Key terms</h3><div class="vgrid">${u.vocab.map(v=>`<div class="vcard"><b>${esc(v.t)}</b><div class="d">${esc(v.d)}</div></div>`).join("")}</div><div class="lessonhead"><h3 style="margin:0;font-size:18px">The concept</h3><button class="btn ghost mini" id="listenBtn" data-u="${u.id}">🔊 Listen</button></div>${x.diagram?`<div class="diagram">${x.diagram}</div>`:""}${expandAcronyms(u.lesson)}${sourcesHTML(u.id)}${x.example?`<h3 style="font-size:18px;margin:22px 0 8px">Worked example</h3><div class="example">${esc(x.example)}</div>`:""}${(u.tries&&u.tries.length)?`<h3 style="font-size:18px;margin:22px 0 8px">Try it in the Lab</h3><p class="muted small" style="margin:0 0 10px">These run against the Lab\u2019s database. Reading them is not the same as running them.</p><div class="labtry">${u.tries.map((t,i)=>`<div class="labtryrow"><div><p>${esc(t.d)}</p><pre>${esc(t.q)}</pre></div><button class="btn ghost mini" data-labtry="${u.id}:${i}">Run it in the Lab ▸</button></div>`).join("")}</div>`:""}${u.id==="u9"?sqlPlanHTML():""}<div class="mentor"><span class="caps">\u{1F9ED} Before you walk the door</span><p class="mlead">Quick sense-check — if either of these is fuzzy, the lesson is worth a second pass.</p><ul class="mchk">${(CHECKS[u.id]||[]).map(c=>`<li>${esc(c)}</li>`).join("")}</ul><div class="msay"><span class="caps">And when it comes up, say it like this</span><p>${esc(u.unlock)}</p></div></div><div class="actions"><button class="btn ghost mini" data-learned="${u.id}">${learned?'✓ Marked as learned':'Mark as learned (+15 XP)'}</button>${u.sabotage?`<button class="btn" data-sabotage="${u.id}">Try a sabotage round → <span class="small" style="opacity:.8">(${sabDoneCount()}/${SABOTAGE.length})</span></button>`:`<button class="btn" data-door-unit="${u.id}">Walk through a door → <span class="small" style="opacity:.8">(${dc}/${doors.length})</span></button>`}${next?`<button class="btn ghost mini" data-nextunit="${next.id}">Next lesson →</button>`:""}</div></div>`;}
+function lessonHTML(u){const doors=doorsForUnit(u.id),dc=doneCountUnit(u.id),learned=state.learned.indexOf(u.id)>=0;const x=EXTRAS[u.id]||{};const obj=x.obj||u.objective;const next=UNITS[UNITS.indexOf(u)+1];return `<div class="card"><span class="pilltag">${u.emoji} Unit ${UNITS.indexOf(u)+1} · Lesson</span><h2>${esc(u.title)}</h2><div class="objbox"><span class="caps">By the end, you'll be able to</span><div>${esc(obj)}</div></div><h3 style="font-size:18px;margin:22px 0 8px">Key terms</h3><div class="vgrid">${u.vocab.map(v=>`<div class="vcard"><b>${esc(v.t)}</b><div class="d">${esc(v.d)}</div></div>`).join("")}</div><div class="lessonhead"><h3 style="margin:0;font-size:18px">The concept</h3><button class="btn ghost mini" id="listenBtn" data-u="${u.id}">🔊 Listen</button></div>${x.diagram?`<div class="diagram">${x.diagram}</div>`:""}${expandAcronyms(u.lesson)}${sourcesHTML(u.id)}${x.example?`<h3 style="font-size:18px;margin:22px 0 8px">Worked example</h3><div class="example">${esc(x.example)}</div>`:""}${(u.tries&&u.tries.length)?`<h3 style="font-size:18px;margin:22px 0 8px">Try it in the Lab</h3><p class="muted small" style="margin:0 0 10px">These run against the Lab\u2019s database. Reading them is not the same as running them.</p><div class="labtry">${u.tries.map((t,i)=>`<div class="labtryrow"><div><p>${esc(t.d)}</p><pre>${esc(t.q)}</pre></div><button class="btn ghost mini" data-labtry="${u.id}:${i}">Run it in the Lab ▸</button></div>`).join("")}</div>`:""}${u.id==="u9"?sqlPlanHTML():""}<div class="mentor"><span class="caps">\u{1F9ED} Before you walk the door</span><p class="mlead">Quick sense-check — if either of these is fuzzy, the lesson is worth a second pass.</p><ul class="mchk">${(CHECKS[u.id]||[]).map(c=>`<li>${esc(c)}</li>`).join("")}</ul><div class="msay"><span class="caps">And when it comes up, say it like this</span><p>${esc(u.unlock)}</p></div></div><div class="actions"><button class="btn ghost mini" data-learned="${u.id}">${learned?'✓ Marked as learned':'Mark as learned (+15 XP)'}</button>${u.sabotage?`<button class="btn" data-sabotage="${u.id}">Try a sabotage round → <span class="small" style="opacity:.8">(${sabDoneCount()}/${sabPool().length})</span></button>`:`<button class="btn" data-door-unit="${u.id}">Walk through a door → <span class="small" style="opacity:.8">(${dc}/${doors.length})</span></button>`}${next?`<button class="btn ghost mini" data-nextunit="${next.id}">Next lesson →</button>`:""}</div></div>`;}
 function wireLearn(){
  root.querySelectorAll("[data-open]").forEach(function(b){var go=function(){learnUnit=b.dataset.open;sess=null;sab=null;renderLearn();window.scrollTo(0,0);};b.onclick=go;b.onkeydown=function(e){if(e.key==="Enter"||e.key===" "){e.preventDefault();go();}};});
  root.querySelectorAll("[data-learned]").forEach(b=>b.onclick=()=>{const id=b.dataset.learned;if(state.learned.indexOf(id)<0){state.learned.push(id);recStamp("unit:"+id);const p=state.xp;addXP(15);commitProgress(p);setTimeout(checkMilestones,260);}renderLearn();});
@@ -4163,7 +4205,10 @@ function finishSession(){
 }
 
 /* ===== SABOTAGE ===== */
-function sabReady(){return state.learned.indexOf("u7")>=0;}
+function sabReady(){return state.learned.indexOf("u7")>=0&&sabPool().length>0;}
+/* A round is offered only when every unit it assumes has been read. */
+function sabPool(){return SABOTAGE.filter(function(r){
+ return (r.needs||[]).every(function(u){return state.learned.indexOf(u)>=0;});});}
 function sabLockHTML(){
  return '<div class="lockbox"><span class="caps">\u{1F512} Sabotage rounds are waiting for you</span>'
   +'<p>These show you a few lines of real code with exactly one thing wrong, and ask you to find it. '
@@ -4171,10 +4216,10 @@ function sabLockHTML(){
   +'<p><b>Read Unit 7, \u201cReading the machine when it breaks\u201d</b>, and mark it as learned. It is a three-minute read that gives you the four steps, and then these become genuinely satisfying.</p>'
   +'<button class="btn mini" id="goSab7">Read Unit 7 \u2192</button></div>';
 }
-function startSabotage(uid){if(!sabReady()){tab="learn";learnUnit="u7";syncTabs();render();window.scrollTo(0,0);wickSay("Those rounds show real code. Read this one first \u2014 three minutes, and it gives you the method so it is not guesswork.","think",11000);return;}const seen=new Set(state.history.filter(h=>h.type==="sab").map(h=>h.id.replace("sab-","")));const fresh=SABOTAGE.filter(r=>!seen.has(r.id));const pool=fresh.length?fresh:SABOTAGE;sab={r:pool[Math.floor(Math.random()*pool.length)],from:uid,step:0,choice:null,ownerTab:uid?"learn":"practice"};tab=uid?"learn":"practice";syncTabs();render();window.scrollTo(0,0);}
+function startSabotage(uid){if(!sabReady()){tab="learn";learnUnit="u7";syncTabs();render();window.scrollTo(0,0);wickSay(state.learned.indexOf("u7")<0?"Read this one first \u2014 three minutes, and it gives you the method so the rounds are not guesswork.":"You have used the rounds that fit what you have read so far. More unlock as you go \u2014 the SQL ones after the joins lesson, the code ones after \u201cReading code without writing it\u201d.","think",11000);return;}const seen=new Set(state.history.filter(h=>h.type==="sab").map(h=>h.id.replace("sab-","")));const avail=sabPool();const fresh=avail.filter(r=>!seen.has(r.id));const pool=fresh.length?fresh:avail;if(!pool.length)return;sab={r:pool[Math.floor(Math.random()*pool.length)],from:uid,step:0,choice:null,ownerTab:uid?"learn":"practice"};tab=uid?"learn":"practice";syncTabs();render();window.scrollTo(0,0);}
 function renderSabotageHTML(){
  const r=sab.r;const code=r.lines.map(function(ln,i){return `<div class="cl${(sab.step===1&&i===r.fixLine)?' bug':''}"><span class="ln">${i+1}</span><span>${esc(ln)}</span></div>`;}).join("");let inner;
- if(sab.step===0){inner=`<span class="caps">🔍 Sabotage round</span><p class="muted small" style="margin:8px 0 12px">${esc(r.blurb)} <b style="color:var(--ink)">Exactly one thing here is broken — find it.</b></p><p class="muted small" style="margin:-4px 0 12px;font-style:italic">You are reading, not writing. Compare what each line says to what it should do, and trust the four steps from Unit 7.</p><div class="code">${code}</div><p class="muted small" style="margin:16px 0 8px">What's wrong?</p><div class="opts">${r.options.map(function(o,i){return `<button class="opt" data-opt="${i}">${esc(o.t)}</button>`;}).join("")}</div>`;}
+ if(sab.step===0){inner=`<span class="caps">🔍 Sabotage round</span><p class="muted small" style="margin:8px 0 12px">${esc(r.blurb)} <b style="color:var(--ink)">Exactly one thing here is broken — find it.</b></p><p class="muted small" style="margin:-4px 0 12px;font-style:italic">You are reading, not writing. Compare what each line says to what it should do, and trust the four steps from “Reading the machine when it breaks”.</p><div class="code">${code}</div><p class="muted small" style="margin:16px 0 8px">What's wrong?</p><div class="opts">${r.options.map(function(o,i){return `<button class="opt" data-opt="${i}">${esc(o.t)}</button>`;}).join("")}</div>`;}
  else{const o=r.options[sab.choice],ok=o.ok,correct=r.options.filter(function(x){return x.ok;})[0];inner=`<span class="caps">🔍 The fault</span><div class="code" style="margin-top:8px">${code}</div><div class="rev ${ok?'hl':''}" style="margin-top:16px"><div class="lab">${ok?'✓ You found it':'Not quite — the real bug is on line '+(r.fixLine+1)}</div><div class="val">${esc(correct.why)}</div></div><div class="rev"><div class="lab">The fix</div><div class="val"><code>${esc(r.fix)}</code></div></div><div class="zoom"><h3>🧭 The method</h3><div class="prompt" style="font-size:15.5px">${esc(r.method)}</div><div class="rec">New term earned — <b>${esc(r.term.t)}</b>: ${esc(r.term.d)}</div></div><div class="actions"><span class="muted small">${ok?'Nice debugging.':'Now you\'ll spot it next time.'}</span><button class="btn" id="sabDone">Finish ✓</button></div>`;}
  return `<div class="card actcard"><button class="exitbtn" id="exitAct" title="Leave — you can start over later">✕ exit</button>${inner}</div>`;
 }
