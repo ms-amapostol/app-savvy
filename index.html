@@ -1259,9 +1259,123 @@ GROUP BY cohort_term, pt.seq - start_seq</pre>
     `,
     vocab:[{t:"Key on a server",d:"The credential lives in something you control, never in the browser."},{t:"Cost ceiling",d:"Turn limits, context caps and a spend alert, set before anyone else uses it."},{t:"Run log",d:"Request, tool calls, results and turn count — what answers ‘why did it do that’."},{t:"Handoff rate",d:"How often it declines to a person. Moves before quality visibly drops."},{t:"Ownership",d:"The named person who updates the tools when the process changes."}],
     unlock:"“I’ve built and shipped a working agent — here are its tools, here’s where it hands off, here’s what it scored against a gold set, and here’s what it costs to run.”" },
+  { id:"u34", emoji:"📚", title:"Answering from your own documents",
+    objective:"Explain how a system answers from a private document set, choose between retrieval, long context and fine-tuning for a given job, and name the two places a retrieval answer goes quietly wrong.",
+    lesson:`
+    <p class="lsetup">Start here: <b>the model answers from what is in front of it, and retrieval decides what gets put there.</b> Nothing about your business is in the model. Everything it says about your business arrived in the request.</p>
+    <p><b>Lantern House</b> want an assistant that answers staff questions from their case-handling manual. Think about how a new coordinator would do that job on their first week: they would not memorise the manual. Somebody asks a question, they find the two or three relevant pages, read them, and answer from what they just read. Retrieval is the finding step, and it is the part you build.</p>
+    <p>The technical name for the pattern is <b>RAG</b>, retrieval-augmented generation, and the sequence has four steps. Documents are cut into pieces — <b>chunking</b>. Each piece is converted to an <b>embedding</b>, a numerical representation that puts passages about similar things near each other. Those go in a <b>vector database</b>. When a question arrives, it is embedded the same way, the nearest pieces are pulled, and they are placed in the request alongside the question. The model then answers from that, which is called <b>grounding</b>.</p>
+    <div class="toolbox"><span class="caps">🔧 Tools you will actually hear — Retrieval</span><p><b>Pinecone</b>, <b>Weaviate</b> and <b>Chroma</b> are dedicated vector databases; <b>pgvector</b> adds the same capability to a Postgres database you already run, which is often the lower-friction answer. <b>LlamaIndex</b> and <b>LangChain</b> handle the chunking and retrieval plumbing. <b>Voyage</b> and <b>OpenAI</b> both sell embedding models, which are separate and cheaper than the model that writes the answer. The question that sorts these quickly is whether you already have a database that could hold vectors, because a second system is a second thing to keep current.</p></div>
+    <p>Three approaches compete for this job and they are chosen on different grounds. <b>Retrieval</b> suits a corpus that is large or changes often, because updating means re-indexing a document rather than retraining anything. <b>Long context</b> — putting the whole manual in every request — is simpler to build and worth considering when the corpus is small and stable, at the cost of paying for those tokens on every single call. <b>Fine-tuning</b> teaches format and style rather than facts, so it is rarely the answer to “it does not know our policies”.</p>
+    <p><b>Two failures are worth knowing by name, because both are quiet.</b> A <b>stale index</b> means the documents changed and the index did not, so the assistant confidently cites a superseded policy — and it will sound exactly as certain as it does when it is right. And <b>retrieval that finds nothing relevant</b> hands the model an empty or off-topic set of passages, at which point it may answer from general knowledge rather than saying it does not know. That second one is a design decision: the instruction has to say what to do when the retrieved material does not contain the answer.</p>
+    <div class="histbeat"><span class="caps">📜 A bit of history</span><p>The pattern was named in a 2020 paper by Patrick Lewis and colleagues at Facebook AI Research, presented at NeurIPS that December. Their framing is the part worth carrying: they described a model as holding <i>parametric</i> memory — what is baked into its weights — and proposed pairing it with <i>non-parametric</i> memory, an external index that could be swapped or updated without retraining. Two of the problems they set out to address were providing provenance for an answer and updating a model’s knowledge, which are precisely the two things a business cares about. The architecture became the default enterprise pattern because those were the right problems.</p></div>
+    <p><b>Here is the useful part.</b> Three questions locate any retrieval project, and they are the ones to ask before anyone builds: <i>what is in the corpus</i>, <i>who keeps it current</i>, and <i>what does it say when it finds nothing</i>. The third is the one that gets skipped, and it is the one that decides whether the assistant is trustworthy on the day it does not know.</p>
+    `,
+    vocab:[{t:"RAG",d:"Retrieval-augmented generation — find the relevant passages, then answer from them."},{t:"Chunking",d:"Cutting documents into pieces small enough to retrieve usefully."},{t:"Embedding",d:"Text as numbers, so passages about similar things sit near each other."},{t:"Vector database",d:"Where embeddings live, and what gets searched by meaning."},{t:"Grounding",d:"Answering from supplied passages rather than from general knowledge."},{t:"Stale index",d:"The documents changed and the index did not. The answer stays confident."}],
+    unlock:"“What’s in the corpus, who keeps it current, and what does it say when it finds nothing? That last one decides whether we can trust it on a bad day.”" },
+  { id:"u35", emoji:"🔌", title:"The plug the industry standardised",
+    objective:"Say what MCP and connectors are, explain why one standard port beats a custom integration per tool, and ask what a security review asks about a connector.",
+    lesson:`
+    <p class="lsetup">Start here: <b>every AI tool needs to reach your systems, and until recently each pairing was built by hand.</b> The standard that replaced that is worth understanding, because it is how your organisation will connect things.</p>
+    <p>Think about what changed when devices agreed on USB-C. Before it, every manufacturer shipped its own cable, and a drawer full of chargers was the normal state of affairs. Afterwards, one port shape meant any cable worked with any device — and the real win was that nobody had to build a new cable for each pairing.</p>
+    <p>The problem it solves has a name: <b>M×N</b>. Ten AI applications and a hundred tools, each pairing built separately, is a thousand integrations to write and maintain. A shared protocol collapses that: each application implements it once, each tool implements it once, and everything connects.</p>
+    <p><b>MCP</b> is the Model Context Protocol, and the arrangement has two sides. An <b>MCP server</b> sits in front of a system — your Drive, your CRM, a database — and exposes what it can do in the standard shape. An <b>MCP client</b> lives inside the AI application and knows how to talk to any server. A <b>connector</b> is the packaged version your organisation actually switches on.</p>
+    <div class="toolbox"><span class="caps">🔧 What a review will ask</span><p>Because a connector is a door into a system, the questions are the ones from earlier in this curriculum, applied here. <b>Scope</b>: what exactly can it read, and can it write? <b>Authentication</b>: does it act as the individual user with their own permissions, or as one service account with everybody’s? <b>Allowlist</b>: which servers may be connected at all, and who approves a new one? <b>Audit</b>: is there a record of what was accessed? A connector that reads as one shared service account is the shared-login problem from the accounts lesson, wearing new clothes.</p></div>
+    <p>The reason this matters commercially is that it moves the work. Where connecting an AI assistant to a system used to be a project, it becomes a configuration decision — and configuration decisions get made faster, by more people, with less review. That is genuinely good for speed, and it is the reason the governance questions above need answering before someone connects something on a Tuesday afternoon.</p>
+    <div class="histbeat"><span class="caps">📜 A bit of history</span><p>Anthropic open-sourced the Model Context Protocol on 25 November 2024, describing it as a universal open standard for connecting AI systems to the places data lives, and released reference servers for Google Drive, Slack, GitHub, Git, Postgres and Puppeteer alongside it. It was created by two engineers, David Soria Parra and Justin Spahr-Summers, and the origin is unglamorous — the frustration of repeatedly copying code between an assistant and an editor. Adoption followed from outside the company: OpenAI added support across its products in March 2025, and Google confirmed support for Gemini shortly after. In December 2025 Anthropic donated the protocol to the Agentic AI Foundation, which is the usual signal that a standard has outgrown its author.</p></div>
+    <p><b>Here is the useful part.</b> When someone proposes connecting an AI tool to a system that holds real records, the sentence that opens the right conversation is about identity: <i>does it act as the person using it, or as one account with everyone’s access</i>. Everything else follows from the answer.</p>
+    `,
+    vocab:[{t:"MCP",d:"Model Context Protocol — a shared standard for connecting AI applications to systems."},{t:"MCP server",d:"Sits in front of a system and exposes what it can do in the standard shape."},{t:"Connector",d:"The packaged integration your organisation switches on."},{t:"M×N problem",d:"Every application-tool pairing built by hand, which multiplies fast."},{t:"Allowlist",d:"The set of servers that may be connected, and who approves additions."}],
+    unlock:"“Does the connector act as the person using it, with their permissions — or as one service account with everyone’s access? That decides the rest of the review.”" },
+
+  { id:"u36", emoji:"📋", title:"Writing it down so it can be built",
+    objective:"Produce a one-page requirements brief — functional and non-functional requirements, data, integrations, and acceptance criteria — precise enough that a builder can start and a vendor can quote.",
+    lesson:`
+    <p class="lsetup">Start here: <b>a requirement is a sentence somebody could test.</b> If two reasonable builders would ship different things from your page, the page is a wish list wearing a requirements costume.</p>
+    <p><b>Kestrel Fitness</b> ask for \u201ca booking system that just works.\u201d Every project starts this way, and the consultant\u2019s first deliverable is the translation: turning what was said into what can be built, checked, and priced. That translation has a standard shape, and the shape is the skill.</p>
+    <p>The technical name for the document is a <b>requirements brief</b> \u2014 the one-page ancestor of what larger projects call an SRS or a PRD \u2014 and five sections earn their place on it. <b>Functional requirements</b> say what the system does: \u201ca member can cancel a booking up to two hours before class.\u201d One behaviour per line, numbered, each one testable. <b>Non-functional requirements</b> say how well: how fast, how many at once, on which devices, up how often \u2014 always with numbers, because \u201cfast\u201d is an argument waiting to happen and \u201cunder two seconds\u201d is a check. <b>Data requirements</b> say what information is involved, where it lives today, and who owns it. The <b>integration inventory</b> lists every system this thing must talk to, and how \u2014 API, file, or a person retyping. And <b>acceptance criteria</b> say how you will know it is done: observable checks a client could run without you in the room.</p>
+    <div class="toolbox"><span class="caps">🔧 The vocabulary a builder expects</span><p><b>Functional requirement</b> \u2014 a behaviour the system must have. <b>Non-functional requirement</b>, or NFR \u2014 a quality the system must meet, stated with a number. <b>Acceptance criteria</b> \u2014 the checks that define done. <b>Scope</b> and <b>out of scope</b> \u2014 the second list matters more, because it is the one that prevents the project growing a tail. <b>Assumption</b> \u2014 anything you are treating as true without having checked, written down so it can be checked.</p></div>
+    <p>The out-of-scope list deserves its own sentence. Every project accumulates good ideas mid-build, and each one is small. A written out-of-scope list converts \u201cwhile you\u2019re in there, could it also\u2026\u201d from a negotiation into a note for phase two \u2014 which protects the budget, the timeline, and the relationship, in that order.</p>
+    <div class="histbeat"><span class="caps">📜 A bit of history</span><p>The shape is older than the tools. The IEEE published a recommended practice for software requirements specifications as standard 830 in 1984, revised in 1998, and its core tests \u2014 that each requirement be unambiguous and verifiable \u2014 have outlived every methodology fashion since. Agile practice compressed the format into user stories and acceptance criteria; the discipline underneath survived the compression, because the failure it prevents, two people agreeing to different projects in the same meeting, has never gone away.</p></div>
+    <p><b>Here is the useful part.</b> Read any requirement you have written and ask: <i>could someone check this without asking me what I meant?</i> \u201cThe system should be easy to use\u201d fails. \u201cA front-desk coordinator completes a booking in under a minute on their second try\u201d passes. The rewrite from the first to the second is the entire craft \u2014 and the Practice tab has a room where you draft a full brief and have it reviewed line by line.</p>
+    `,
+    vocab:[{t:"Functional requirement",d:"A behaviour the system must have. One per line, each testable."},{t:"Non-functional requirement",d:"A quality the system must meet — speed, volume, availability — stated with a number."},{t:"Acceptance criteria",d:"Observable checks that define done, runnable without the author in the room."},{t:"Out of scope",d:"The written list of what this project will deliberately leave alone."},{t:"Integration inventory",d:"Every system this one touches, and how: API, file, or a person retyping."}],
+    unlock:"\u201cIf two reasonable builders would ship different things from this page, the page isn\u2019t done.\u201d" },
+  { id:"u37", emoji:"🧮", title:"Making the case in money",
+    objective:"Build the ROI model for an automation — hours saved at loaded cost, run cost at volume, payback period — and defend its assumptions out loud.",
+    lesson:`
+    <p class="lsetup">Start here: <b>an ROI model is three assumptions in a trench coat.</b> The arithmetic is a spreadsheet\u2019s job. Knowing which assumption moves the answer, and saying so before anyone asks, is yours.</p>
+    <p><b>Cedar &amp; Fig</b> want to automate ticket triage, and somebody senior wants to know whether it pays for itself. The honest shape of the answer has four parts, and each has a name a finance person will recognise.</p>
+    <p><b>Loaded cost</b> is what an hour of somebody\u2019s time actually costs the organisation \u2014 salary plus benefits, tax, and overhead \u2014 typically 1.25 to 1.4 times the wage. Savings computed on bare salary understate, and finance will quietly re-run your numbers with the loaded figure anyway, so start there. <b>Run cost</b> is what the automation costs per use \u2014 for AI systems, mostly tokens \u2014 and it scales with volume, which is why a per-ticket cost that looks like pennies deserves a second look at ten times the traffic. <b>Payback period</b> is the build cost divided by the net monthly saving: the number of months before the thing has paid for itself. And <b>sensitivity</b> is the question that separates a model from a pitch: <i>which input, moved a realistic amount, moves the answer most?</i></p>
+    <div class="toolbox"><span class="caps">🔧 The three assumptions every ROI hides</span><p><b>Adoption</b> \u2014 the model says 90% of eligible work goes through the new path; week three says 60%. Adoption is nearly always the input the answer is most sensitive to, and it is the one owned by change management rather than by engineering. <b>Error cost</b> \u2014 the automation is wrong sometimes; what does one wrong answer cost, and who absorbs it? <b>The freed hours</b> \u2014 saved time only becomes money when it is redeployed to something, and \u201cwhat will those hours do instead\u201d is a fair question to have an answer for.</p></div>
+    <div class="histbeat"><span class="caps">📜 A bit of history</span><p>In a 1987 piece in the <i>New York Times Book Review</i>, the economist Robert Solow observed that computers were visible everywhere except in the productivity statistics \u2014 a remark that named what became known as the productivity paradox. The decades of research that followed converged on an explanation with direct operational advice in it: technology pays off when the surrounding work is redesigned around it, and lags when a new tool is dropped into an old process. Which is to say the adoption line in your model was always the story.</p></div>
+    <p><b>Here is the useful part.</b> Present the payback number alongside its weakest assumption, unprompted: \u201cnine months at 85% adoption, fourteen at 60 \u2014 and adoption is the lever, so here is the rollout plan.\u201d A model presented with its own sensitivity is trusted; a single confident number invites the room to find the assumption for you. The Practice tab has a payback room where you run these numbers against seeded Cedar &amp; Fig data and find the lever yourself.</p>
+    `,
+    vocab:[{t:"Loaded cost",d:"What an hour truly costs — salary plus benefits, tax and overhead. The figure finance will use."},{t:"Run cost",d:"What the automation costs per use. Scales with volume; re-check it at 10x."},{t:"Payback period",d:"Build cost divided by net monthly saving — months until it has paid for itself."},{t:"Sensitivity",d:"Which input, moved a realistic amount, moves the answer most."},{t:"Adoption rate",d:"The share of eligible work that actually goes through the new path. Usually the lever."}],
+    unlock:"\u201cNine months at 85% adoption, fourteen at 60 \u2014 adoption is the lever, so the rollout plan is part of the ROI.\u201d" },
+  { id:"u38", emoji:"🧭", title:"The rollout is the product",
+    objective:"Plan the human side of a deployment — who goes first, what training looks like, how adoption is measured, and what to do in week three when usage stalls.",
+    lesson:`
+    <p class="lsetup">Start here: <b>adoption is a metric on the dashboard, next to accuracy.</b> A system nobody uses has an error rate of one hundred percent for the organisation that bought it, whatever the eval says.</p>
+    <p><b>Brightline Dental</b> are switching twelve offices to an AI scheduling assistant. The technology will be identical in every office; the outcomes will be decided by sequencing, training, and what happens the first time it embarrasses somebody. That work has a discipline behind it, and the discipline has vocabulary a client will expect a consultant to hold.</p>
+    <p>A <b>pilot cohort</b> is the small group that goes first \u2014 chosen for honest feedback more than for enthusiasm, because a pilot that only recruits believers tells you how the tool performs among believers. A <b>champion</b> is the respected insider who answers colleagues\u2019 questions in their own language; one sceptic converted by evidence is worth three volunteers. An <b>adoption metric</b> is the number that tells you whether the change is real \u2014 share of eligible work going through the new path, measured weekly \u2014 and it belongs on the same dashboard as the system\u2019s accuracy. A <b>feedback loop</b> is the visible route from a user\u2019s complaint to a change they can see, and its speed in the first month sets the tone for the year. And a <b>sunset plan</b> names the date the old way switches off \u2014 because while both paths stay open, the old one is rest and the new one is effort, and effort loses that race every time.</p>
+    <div class="toolbox"><span class="caps">🔧 When usage stalls in week three</span><p>It will. The stall is information, and the first move is diagnosis at the desk where the work happens: watch three people use the thing before changing anything. Stalls sort into <b>capability</b> (they were shown once and forgot \u2014 fix with training shaped like the work), <b>trust</b> (it was wrong once, publicly \u2014 fix with the feedback loop and visible repair), and <b>incentive</b> (the old way is still easier or still open \u2014 fix with the sunset plan). Mandates fix none of these; they convert quiet non-use into quiet workarounds, which are harder to see.</p></div>
+    <div class="histbeat"><span class="caps">📜 A bit of history</span><p>The field has two load-bearing sources worth naming. Kurt Lewin\u2019s \u201cFrontiers in Group Dynamics,\u201d in the first volume of <i>Human Relations</i> in 1947, framed organisations as fields of forces and change as unfreezing, moving, and refreezing \u2014 the observation underneath every sunset plan. John Kotter\u2019s \u201cLeading Change: Why Transformation Efforts Fail,\u201d in <i>Harvard Business Review</i> in 1995, reported the failure patterns of over a hundred corporate transformations, and his first two \u2014 insufficient urgency and no guiding coalition \u2014 are the pilot cohort and champion questions in older clothes. AI rollouts are the newest instance of a problem with fifty years of findings attached.</p></div>
+    <p><b>Here is the useful part.</b> A deployment plan that names the pilot cohort, the champion, the adoption metric, the feedback route, and the sunset date fits on one page \u2014 and it is the page most AI projects skip. Walking in with it is the difference between selling a tool and selling an outcome, and it is the page this curriculum has been building toward: the technical judgment and the landing, together.</p>
+    `,
+    vocab:[{t:"Pilot cohort",d:"The group that goes first — chosen for honest feedback, sized so failure is survivable."},{t:"Champion",d:"The respected insider who answers colleagues in their own language."},{t:"Adoption metric",d:"Share of eligible work going through the new path, weekly, on the same dashboard as accuracy."},{t:"Sunset plan",d:"The named date the old way switches off. While both run, the old way wins."},{t:"Feedback loop",d:"The visible route from a user\u2019s complaint to a change they can see."}],
+    unlock:"\u201cAdoption is a metric on the dashboard, next to accuracy \u2014 and week three is when we find out which one needs work.\u201d" },
+  { id:"u39", emoji:"🛂", title:"Governing the AI you just bought",
+    objective:"Read a vendor\u2019s data-use terms and answer whether customer data trains their models, sketch an acceptable-use policy, and name what the major frameworks ask of a deployer.",
+    lesson:`
+    <p class="lsetup">Start here: <b>the first question for any AI vendor is whether your data trains their models \u2014 and where that is written.</b> Everything else in an AI governance review hangs off the answers to that shape of question: what goes in, where it goes, and what the vendor may do with it once it is there.</p>
+    <p><b>Ridgeline Outfitters</b> are evaluating an AI customer-service platform, and the security review lands on your desk because you are the person who speaks both languages. The vocabulary is small and learnable. <b>Data-use terms</b> are the contract clauses saying what the vendor may do with what you send \u2014 and \u201cwe may use customer content to improve our services\u201d is the sentence to find, because improving services can mean training models on your customers\u2019 messages. <b>Zero data retention</b>, or ZDR, is the arrangement where the vendor processes your requests and keeps nothing \u2014 commonly an enterprise tier or a box to be ticked, and the difference between tiers is often exactly this clause. A <b>DPIA</b>, a data protection impact assessment, is the structured write-up privacy law expects when a new system processes personal data at scale. And a <b>model card</b> is the vendor\u2019s published description of what a model was trained for and where it fails \u2014 the spec sheet to ask for when the sales deck runs out.</p>
+    <p><b>Shadow AI</b> deserves its own paragraph, because it is already happening at every client you will ever have: staff pasting real work into free consumer tools, with case notes, customer names, and draft contracts leaving the building through a browser tab. The instinctive response is a ban; the observed result of a ban is the same behaviour, quieter. The governance answer is a sanctioned alternative that is genuinely good, an acceptable-use policy that fits on a page, and a route for \u201ccan I use it for this?\u201d that answers in hours \u2014 because the demand is real, and unmet demand routes around policy.</p>
+    <div class="toolbox"><span class="caps">🔧 What the frameworks actually ask</span><p>Two anchors cover most conversations. The <b>NIST AI Risk Management Framework</b>, published as version 1.0 in January 2023, is voluntary and organises the work into four functions \u2014 govern, map, measure, manage \u2014 which in practice means: know what AI you run, know what could go wrong with each, measure it, and have somebody own it. The <b>EU AI Act</b> entered into force on 1 August 2024 with obligations phasing in over the following years, and its move worth understanding is tiering by risk: the same underlying model carries different duties depending on what it is used <i>for</i>, and most of the duties land on the <b>deployer</b> \u2014 the organisation using the system \u2014 which is your client, whether or not they have noticed yet.</p></div>
+    <div class="histbeat"><span class="caps">📜 A bit of history</span><p>Both anchors are recent enough to date precisely: NIST released the AI RMF 1.0 on 26 January 2023 after an eighteen-month public drafting process, and the EU AI Act was published in the Official Journal in July 2024, entering into force that August. The practical consequence of their youth is that most organisations have no settled practice yet \u2014 which is why \u201chelp us write our AI policy\u201d has become a common first engagement, and a natural door-opener for exactly the consulting this curriculum trains.</p></div>
+    <p><b>Here is the useful part.</b> A useful vendor review asks five questions, in order: <i>does our data train your models, and where is that written \u00b7 what is retained, and for how long \u00b7 where is it processed \u00b7 who are your subprocessors \u00b7 what happens to our data when we leave.</i> A vendor who answers all five crisply is telling you about their engineering, too \u2014 the ones with good answers tend to have good systems underneath.</p>
+    `,
+    vocab:[{t:"Data-use terms",d:"The clauses saying what a vendor may do with what you send — including whether it trains their models."},{t:"ZDR",d:"Zero data retention — the vendor processes your requests and keeps nothing."},{t:"Shadow AI",d:"Staff using unsanctioned AI tools with real work. Bans quieten it; alternatives fix it."},{t:"Deployer",d:"The organisation using an AI system — where most EU AI Act duties land."},{t:"DPIA",d:"Data protection impact assessment — the write-up expected when a new system processes personal data at scale."}],
+    unlock:"\u201cDoes our data train your models, and where is that written? A vendor who answers that crisply usually has good systems underneath.\u201d" },
 
   ];
 const DECISIONS = [
+  { id:"connector-identity", units:["u35"], project:"Harbor Point member portal", when:"connector review", group:"APIs &amp; secrets",
+    context:"<b>Harbor Point</b> want their AI assistant connected to the document store so it can answer from member files. The connector can run as a single service account that can see everything, which works for every member of staff on day one, or as each individual user, which means each person only reaches what their own permissions already allow \u2014 and several staff will find the assistant unhelpfully blind to files they assumed it could see.",
+    doorA:{k:"Each user, with their own permissions", s:"Setup per person, and some staff see less than they expected"},
+    doorB:{k:"One service account that sees everything", s:"Works for everyone immediately, and permissions stop meaning anything"},
+    chosen:"A", downstreamDraft:true,
+    downstream:"Running as the individual user meant the assistant inherited the access model the organisation had already agreed, and the audit log named a person rather than a robot. It also meant three weeks of complaints from staff who discovered the assistant could not reach folders they had been reading through a colleague\u2019s share.",
+    otherDoorCost:"A single service account is one setup, works for everyone, and demonstrates well. It also means every member of staff can reach, through the assistant, anything the account can reach \u2014 which quietly repeals the permission structure somebody designed \u2014 and the audit trail records the connector rather than the person who asked.",
+    principle:"A connector should carry the identity of the person using it, so existing permissions and the audit trail both keep working. Where a shared account is genuinely necessary, narrow what it can reach rather than what people are told not to ask it.",
+    terms:[{t:"Service account",d:"One identity used by a system, holding the union of everyone\u2019s access."},{t:"Delegated identity",d:"The connector acting as the individual, inheriting their permissions."},{t:"Permission inheritance",d:"Whether existing access rules still apply once a tool is in the middle."}] },
+  { id:"corpus-scope", units:["u34"], project:"Lantern House case-handling assistant", when:"week 1", group:"Trusting a number",
+    context:"<b>Lantern House</b> want an assistant that answers from their documentation. Their shared drive holds about 4,000 files \u2014 policies, drafts, old versions, meeting notes, a folder called <i>Archive 2019</i>. You can index the whole drive, which takes an afternoon and covers everything, or curate roughly forty canonical documents, which takes a fortnight of a coordinator\u2019s time and covers what is current.",
+    doorA:{k:"Curate forty canonical documents", s:"A fortnight of somebody\u2019s time, and gaps the assistant will decline"},
+    doorB:{k:"Index the whole shared drive", s:"Live this week, and drafts rank alongside policy"},
+    chosen:"A", downstreamDraft:true,
+    downstream:"Curating meant every answer came from something a manager had approved, and the coordinator doing the curating found four contradictory versions of the intake policy in the process \u2014 which was worth the fortnight on its own. Questions outside the forty got a clear decline, which staff learned to read as \u201cask a person\u201d.",
+    otherDoorCost:"Indexing everything covers questions the curated set will miss, at no upfront cost. It also means a 2019 draft can be retrieved as readily as the current policy, the assistant cannot tell you which is authoritative, and the first wrong answer traced to an archived file costs more trust than the fortnight would have cost time.",
+    principle:"Retrieval quality is decided by what goes into the corpus rather than by the model reading it. Curate where being wrong has consequences, and treat the curation pass as an audit of your own documents, since it usually turns up contradictions somebody needed to know about.",
+    terms:[{t:"Corpus",d:"The document set the assistant may retrieve from. The main quality lever."},{t:"Canonical document",d:"The approved current version, as distinct from drafts and copies."},{t:"Coverage gap",d:"A question the corpus cannot answer, which should produce a decline."}] },
+  { id:"stale-retrieval", units:["u34"], project:"Brightline Dental policy assistant", when:"month 4", group:"Failure you can survive",
+    context:"<b>Brightline Dental</b>\u2019s assistant quoted a superseded fee schedule to a front-desk coordinator, who repeated it to a patient. The index rebuilds nightly. You can move to re-indexing the moment a document is saved, which is a day of work and adds a moving part, or keep nightly and display the index date on every answer.",
+    doorA:{k:"Re-index on save", s:"A day of work, and one more thing that can fail quietly"},
+    doorB:{k:"Nightly, with the index date shown", s:"Unchanged mechanics, and a window where it is wrong"},
+    chosen:"A", downstreamDraft:true,
+    downstream:"Re-indexing on save closed the window for fee changes, which was the case that had actually caused harm. It also introduced a job that failed silently twice in the first month, which was caught only because someone had added a check that the index timestamp was moving.",
+    otherDoorCost:"Nightly with a visible date is honest, costs nothing, and puts the judgement where a human can exercise it. It also leaves up to twenty-four hours in which a coordinator can quote a fee that changed this morning, and \u201ccheck the date on the answer\u201d is guidance people follow least well when they are busy.",
+    principle:"Match index freshness to how fast the underlying documents change and how much a wrong answer costs. Where you keep a lag, show it on the answer rather than in the documentation \u2014 and where you remove it, watch the indexing job, because it is now a thing that can fail without telling anyone.",
+    terms:[{t:"Stale index",d:"The documents moved on and the index did not."},{t:"Re-index",d:"Rebuilding the searchable copy after documents change."},{t:"Freshness indicator",d:"Showing when the underlying material was last read."}] },
+  { id:"rag-or-context", units:["u34"], project:"Verity Legal intake assistant", when:"design", group:"Simplicity vs. maintainability",
+    context:"<b>Verity Legal</b>\u2019s intake manual is about sixty pages and changes two or three times a year. You can build a retrieval pipeline \u2014 chunking, embeddings, a vector store, a week of work and a system to maintain \u2014 or put the whole manual into every request, which is an afternoon and costs tokens on every single call.",
+    doorA:{k:"Put the whole manual in each request", s:"An afternoon, and you pay for sixty pages every time"},
+    doorB:{k:"Build the retrieval pipeline", s:"A week and a new system, and it scales past this manual"},
+    chosen:"A", downstreamDraft:true,
+    downstream:"Sending the whole manual worked, cost a predictable amount per call at their volume, and had no index to go stale \u2014 an update was replacing a file. When the corpus later grew to include precedent documents, the retrieval pipeline was built then, against a real requirement rather than an anticipated one.",
+    otherDoorCost:"The retrieval pipeline handles a corpus this size without paying for it repeatedly, and it is the architecture they will eventually need. It also means a week of work, an index that can go stale, and a retrieval step that can return the wrong passages \u2014 three new failure modes to hold a small, stable manual.",
+    principle:"Size the machinery to the corpus. Where the material is small and stable, sending it whole is fewer moving parts and no staleness, and the arithmetic that decides it is token cost multiplied by call volume against a week of build and ongoing upkeep.",
+    terms:[{t:"Long context",d:"Sending the whole document set each time rather than retrieving from it."},{t:"Token economics",d:"Cost per call multiplied by volume, which is what decides this."},{t:"Premature architecture",d:"Building for a scale the problem has not reached."}] },
   { id:"agent-or-workflow", units:["u29"], project:"Kestrel Fitness member enquiries", when:"scoping", group:"Automation that survives contact",
     context:"<b>Kestrel Fitness</b> get the same six enquiry types all week: opening hours, class times, membership freezes, refunds, lost passes, and personal-training bookings. You can build an agent with tools that decides what each message needs, or a fixed workflow that classifies the message and runs one of six predetermined paths.",
     doorA:{k:"A fixed workflow with six paths", s:"Predictable and cheap, and it fails on anything unusual"},
@@ -1631,6 +1745,114 @@ const DECISIONS = [
     otherDoorCost:"Live queries are always right and always current, and they get slower and more expensive on precisely the day your data gets interesting. They also put the load on the source system at the worst possible moment — when everyone is looking.",
     principle:"Precomputing trades freshness for speed and cost. The question to settle first is how stale a number is allowed to be before somebody makes a bad decision with it. Answer that first, then pick.",
     terms:[{t:"Materialized view",d:"Query results stored ahead of time so reads are instant."},{t:"Freshness",d:"How far behind the real world a stored number is allowed to fall."},{t:"As-of timestamp",d:"Showing when a number was last true, so nobody assumes it is live."}] },
+  { id:"requirements-precision", units:["u36"], project:"Northwind Logistics rate tool rebuild", when:"scoping", group:"Saying what you mean",
+    context:"<b>Northwind</b> have signed off a rebuild of their rate-lookup tool. The ops lead\u2019s brief says the new one \u201cmust be fast.\u201d You can press now for a number \u2014 p95 under two seconds on the warehouse network \u2014 which means an awkward meeting where nobody knows what to answer, or accept \u201cfast,\u201d keep the momentum, and let the build settle it.",
+    doorA:{k:"Press for the number now", s:"One awkward meeting, and a requirement someone can test"},
+    doorB:{k:"Accept \u201cfast\u201d and keep moving", s:"Momentum today, and an argument at acceptance"},
+    chosen:"A", downstreamDraft:true,
+    downstream:"Nobody in the meeting knew what number to pick, which was itself the finding \u2014 so you timed the old tool: 6 seconds, and dispatchers hated it. \u201cUnder 2 seconds on the warehouse wifi, measured on the dispatch floor\u201d went in the brief, the builder quoted against it, and acceptance day was a stopwatch instead of a mood.",
+    otherDoorCost:"Accepting \u201cfast\u201d keeps the kickoff friendly and trusts reasonable people to converge. It also books the argument for the worst possible moment \u2014 delivery \u2014 when the builder\u2019s \u201cfast\u201d (faster than before) meets the dispatchers\u2019 \u201cfast\u201d (instant), with the invoice on the table and no written test to settle it.",
+    principle:"Vague requirements are deferred arguments, and deferral moves them to delivery, where they are most expensive. Where nobody knows the right number, measure the current state \u2014 the awkward silence in scoping is the requirement telling you it has not been thought about yet.",
+    terms:[{t:"p95",d:"The time the 95th-slowest of 100 requests takes. Closer to lived experience than the average."},{t:"Testable requirement",d:"Written so someone could check it without asking what you meant."},{t:"Acceptance day",d:"When the work is checked against the brief. A stopwatch beats a mood."}] },
+  { id:"scope-freeze", units:["u36"], project:"Harbor Point member portal", when:"mid-build", group:"Saying what you mean",
+    context:"<b>Harbor Point</b>\u2019s portal is three weeks from launch. The membership director, who has been wonderful, asks for \u201cone small addition\u201d \u2014 family accounts, so parents manage children\u2019s bookings. It touches accounts, permissions and billing. You can absorb it into this build, or log it as the first item of phase two and hold the launch date.",
+    doorA:{k:"Log it for phase two", s:"The date holds, and the director hears a no today"},
+    doorB:{k:"Absorb the addition", s:"The director hears yes, and the launch quietly moves"},
+    chosen:"A", downstreamDraft:true,
+    downstream:"The no came wrapped in a date: \u201cfirst item of phase two, scoped properly \u2014 it touches billing, and I won\u2019t rush anything that touches billing.\u201d The launch held, family accounts shipped six weeks later with its own acceptance criteria, and the director now introduces you as the consultant whose dates mean something.",
+    otherDoorCost:"Absorbing it delights the director today and demonstrates flexibility. It also reopens accounts, permissions and billing \u2014 the three areas already tested \u2014 three weeks from launch, and it teaches every future stakeholder that the scope list is an opening position rather than a document.",
+    principle:"Protect the launch by giving the addition a home rather than a fight: a named place in phase two, with a date. The written out-of-scope list is what makes that answer a plan instead of a rejection \u2014 which is why it was worth writing before anyone asked.",
+    terms:[{t:"Scope creep",d:"Small additions, each reasonable, that in sum move the date nobody agreed to move."},{t:"Phase two",d:"A real, named destination for good ideas that arrive mid-build."},{t:"Change control",d:"The agreed route by which scope changes get priced and scheduled instead of absorbed."}] },
+  { id:"pilot-roi-honesty", units:["u37"], project:"Cedar &amp; Fig triage automation", when:"pilot review", group:"Making the case",
+    context:"<b>Cedar &amp; Fig</b>\u2019s pilot is done. The business case promised payback in nine months at 90% adoption; the pilot ran at 61%. Presenting to the board, you can lead with the measured 61% and the fourteen-month payback it implies, alongside the adoption plan \u2014 or present the model at 90% as designed, noting the pilot was \u201cearly days.\u201d",
+    doorA:{k:"Lead with the measured 61%", s:"A worse number, and it is yours to stand on"},
+    doorB:{k:"Present the 90% design case", s:"The number that got approval, ageing badly in a drawer"},
+    chosen:"A", downstreamDraft:true,
+    downstream:"The board spent five minutes on the payback and twenty on the adoption plan \u2014 which was the right conversation, since adoption was the lever. Two quarters later adoption hit 84%, and every model you have presented since has been taken at face value, which is the compounding asset.",
+    otherDoorCost:"The 90% case preserves the approved narrative and buys a quarter of calm. It also puts a number you have already seen fail into the minutes, converts next quarter\u2019s review into an ambush, and re-prices every future model you present at a discount.",
+    principle:"Present measured adoption, and bring the plan that closes the gap in the same breath. A model that survives contact with its own pilot data is the credential; the flattering version spends trust you will want later.",
+    terms:[{t:"Design case vs. measured",d:"What the model assumed, next to what the pilot showed. Present both, lead with measured."},{t:"Adoption gap",d:"The distance between assumed and actual usage — usually the whole story of the variance."},{t:"Credibility asset",d:"Models taken at face value because the last one survived its pilot."}] },
+  { id:"token-cost-ceiling", units:["u37"], project:"Northwind Logistics ticket triage", when:"scaling", group:"Making the case",
+    context:"<b>Northwind</b>\u2019s triage agent costs about $0.06 per ticket on the premium model \u2014 pennies at pilot volume. The company is onboarding two acquired depots, taking volume from 3,000 to 30,000 tickets a month. You can switch to a smaller model at roughly $0.01 now, accepting a measured accuracy drop from 94% to 90%, or keep the premium model and accept the new $1,800 monthly run cost.",
+    doorA:{k:"Route by difficulty \u2014 small model first, escalate the hard ones", s:"Most of the saving, most of the accuracy, one more moving part"},
+    doorB:{k:"Keep the premium model on everything", s:"Simple and best-quality, at 10x the run cost"},
+    chosen:"A", downstreamDraft:true,
+    downstream:"About 80% of tickets were routine and the small model handled those at 93%; the fifth it escalated went to the premium model, blending to $0.02 a ticket at 93.5% overall. The router itself became the thing to monitor \u2014 misrouting was invisible until someone added a weekly sample review of \u201ceasy\u201d tickets.",
+    otherDoorCost:"One premium model everywhere is one bill, one behaviour, no router to misroute. It also means paying top rate for the 80% of tickets a cheaper model handles almost as well \u2014 a $1,400 monthly subsidy of easy work, which is exactly the line a CFO finds.",
+    principle:"Per-unit costs that look like pennies deserve a re-read at ten times the volume. Match model cost to task difficulty rather than paying one rate for all of it \u2014 and once a router decides who handles what, the router joins the list of things you check.",
+    terms:[{t:"Token economics",d:"Per-use model cost. Trivial at pilot scale, a budget line at production scale."},{t:"Model routing",d:"Cheap model for routine work, expensive model for the hard slice."},{t:"Blended cost",d:"The average per-unit cost once routing splits the traffic."}] },
+  { id:"pilot-or-bigbang", units:["u38"], project:"Brightline Dental scheduling assistant", when:"rollout", group:"Landing it with people",
+    context:"<b>Brightline</b>\u2019s owner wants the AI scheduling assistant live in all twelve offices at once \u2014 \u201cif it works, it works; rip the bandaid off.\u201d You can run two offices for a month first, or go everywhere on day one with a bigger training push.",
+    doorA:{k:"Two offices for a month", s:"Slower, and mistakes stay the size of two offices"},
+    doorB:{k:"All twelve on day one", s:"One launch, one push \u2014 and twelve copies of every surprise"},
+    chosen:"A", downstreamDraft:true,
+    downstream:"The pilot surfaced two things no test had: the assistant mishandled a recurring-appointment pattern one hygienist relied on, and front desks needed a one-page cheat sheet more than the training deck. Both were fixed in week two. The other ten offices launched a month later into a system with the bugs already met.",
+    otherDoorCost:"Day one everywhere delivers the benefit twelve times faster and rides the launch energy once. It also runs the first real-world month as a twelve-site experiment \u2014 the recurring-appointment bug lands in every office simultaneously, and the story staff remember afterwards is the week it didn\u2019t work, told twelve ways.",
+    principle:"Size the first wave by the blast radius you can repair, and treat the pilot as the last stage of testing \u2014 real users find what test plans cannot. The month it costs is usually repaid by the launch the other sites get: a system whose surprises have already been met, and a cheat sheet written by people who needed one.",
+    terms:[{t:"Blast radius",d:"How far a mistake reaches before it is caught. Pilots keep it repairable."},{t:"Pilot cohort",d:"The sites or people who go first, chosen so their feedback is honest."},{t:"Wave rollout",d:"Launching in stages, each wave inheriting the last one\u2019s fixes."}] },
+  { id:"who-goes-first", units:["u38"], project:"Northwind Logistics dispatch rollout", when:"pilot selection", group:"Landing it with people",
+    context:"<b>Northwind</b>\u2019s new dispatch assistant needs a pilot team. The Tuesday crew are enthusiastic early adopters who volunteered. The Thursday crew are run by Dana, the most respected and most sceptical senior dispatcher in the company. You can pilot with the volunteers, or recruit Dana\u2019s crew.",
+    doorA:{k:"Recruit Dana\u2019s sceptical crew", s:"Harder feedback, and a verdict the whole floor will trust"},
+    doorB:{k:"Pilot with the volunteers", s:"An easy month, and a result everyone discounts"},
+    chosen:"A", downstreamDraft:true,
+    downstream:"Dana\u2019s crew found eleven real problems in three weeks and phrased them without mercy, which is what made the fixes right. When Dana told the floor \u201cit\u2019s actually useful now,\u201d the sentence did more than the training budget \u2014 sceptics converted by evidence become the best champions, because everyone knows what it took.",
+    otherDoorCost:"Volunteers give a smooth pilot, generous feedback, and a glowing writeup. The floor knows exactly who they are, though \u2014 and a tool endorsed by the people who like every tool arrives at the sceptics\u2019 desks with no credibility attached, which is where adoption actually stalls.",
+    principle:"Pilot where credibility lives rather than where enthusiasm lives. The sceptic\u2019s endorsement is transferable to the whole floor; the volunteer\u2019s is discounted on arrival \u2014 and the harder feedback is the better product input anyway.",
+    terms:[{t:"Champion",d:"The respected insider whose endorsement moves colleagues. Best when converted, since everyone saw it earned."},{t:"Selection bias",d:"Volunteers tell you how the tool lands among people who like tools."},{t:"Social proof",d:"Colleagues weigh who adopted before weighing what was adopted."}] },
+  { id:"stalled-adoption", units:["u38"], project:"Kestrel Fitness booking assistant", when:"week 3", group:"Landing it with people",
+    context:"<b>Kestrel</b>\u2019s booking assistant launched three weeks ago. Usage is stuck at 30% \u2014 front desks quietly keep using the spreadsheet. The owner wants it mandated: switch the spreadsheet off Monday. You can mandate, or spend two days at the desks watching people work before deciding anything.",
+    doorA:{k:"Two days at the front desk first", s:"A slower week, and you find out which stall this is"},
+    doorB:{k:"Mandate it Monday", s:"100% usage on paper, and the reason for the 30% goes underground"},
+    chosen:"A", downstreamDraft:true,
+    downstream:"Watching found it in an afternoon: the assistant took four taps for the walk-in booking that was two clicks in the spreadsheet, and the desk\u2019s busiest hour is exactly walk-ins. One workflow change later, usage crossed 80% without anyone being told to do anything \u2014 the stall was the product review nobody had scheduled.",
+    otherDoorCost:"The mandate delivers a compliant dashboard by Tuesday. The four-tap problem is still there, so the busiest hour now runs slower by decree; staff route around it with workarounds you can no longer see; and the owner reads the dashboard as success while the desks read it as management not listening.",
+    principle:"A stall is information, and mandates destroy it. Diagnose at the desk where the work happens \u2014 capability, trust, or incentive stall each with a different fix \u2014 and treat week three\u2019s number as the most honest product review you will get.",
+    terms:[{t:"Adoption stall",d:"Usage flat well below eligible work. Diagnosis comes before response."},{t:"Workaround",d:"The quiet route around a mandated tool. Harder to see than non-use."},{t:"Desk-level diagnosis",d:"Watching real work before changing anything. Usually finds it in an afternoon."}] },
+  { id:"displaced-work", units:["u38"], project:"Verity Legal intake automation", when:"pre-launch", group:"Landing it with people",
+    context:"<b>Verity</b>\u2019s intake agent will absorb about 70% of what Marisol, the intake paralegal, does. The partners want her redeployed to case preparation, which the firm genuinely needs. You can announce her new role in the same breath as the launch, or launch first and settle her move in the weeks after.",
+    doorA:{k:"Announce her role with the launch", s:"The plan is public before the fear can be"},
+    doorB:{k:"Launch first, settle it after", s:"A cleaner launch story, and weeks of a person reading tea leaves"},
+    chosen:"A", downstreamDraft:true,
+    downstream:"Marisol heard about the agent and her case-prep role in the same meeting, with a start date. She spent the transition training the agent\u2019s edge cases \u2014 nobody knew them better \u2014 and became its most credible advocate. The office read the launch as investment in people, because that is what it watched happen.",
+    otherDoorCost:"Launching first keeps the announcement simple and defers a hard conversation. It also leaves the person whose queue is visibly shrinking to draw her own conclusions in public, converts her colleagues into an audience for that, and burns the goodwill of the one person whose cooperation the agent\u2019s edge cases depend on.",
+    principle:"When automation absorbs someone\u2019s work, their next chapter is part of the launch plan, announced with it. The office watches what happens to the first affected person and files it as the precedent \u2014 and the displaced expert is the best trainer the system will ever have, if the transition earns their help.",
+    terms:[{t:"Displacement plan",d:"The named, dated next role for the person whose work the automation absorbs."},{t:"Precedent watching",d:"The office reads the first affected person\u2019s treatment as its own future."},{t:"Edge-case knowledge",d:"What the displaced expert knows that the system does not yet. Earn it."}] },
+  { id:"training-shape", units:["u38"], project:"Harbor Point portal rollout", when:"launch prep", group:"Landing it with people",
+    context:"<b>Harbor Point</b> are training forty staff on the new member portal. You can run one live two-hour workshop for everyone \u2014 a single date, done properly \u2014 or record six three-minute task videos and hold twice-weekly drop-in office hours for the first month.",
+    doorA:{k:"Short videos plus office hours", s:"Help arrives when the task does, and nobody remembers a workshop"},
+    doorB:{k:"One live workshop", s:"Everyone trained on the same Tuesday, forgetting on the same Thursday"},
+    chosen:"A", downstreamDraft:true,
+    downstream:"The videos got watched at the moment of need \u2014 the refund one, seventy times in week one \u2014 and office hours caught the questions no one predicts, which became the FAQ. What people needed was help shaped like the task in front of them, on the day it was in front of them.",
+    otherDoorCost:"The workshop is one calendar event, visible effort, and a room where questions get answered live. It also trains everyone two weeks before most of them touch the portal, decays on the usual forgetting curve, and leaves the staffer facing her first refund alone with a memory of slide nineteen.",
+    principle:"Shape training like the work: findable at the moment of need, sized to one task, with a human route open for the questions nobody predicted. A workshop marks the launch; the video someone watches mid-task is the one that changes the adoption number.",
+    terms:[{t:"Moment of need",d:"Training found when the task is in front of the person. The only timing that sticks."},{t:"Forgetting curve",d:"What happens to a Tuesday workshop by Thursday."},{t:"Office hours",d:"A standing human route for the questions no one predicted. Becomes the FAQ."}] },
+  { id:"shadow-workaround", units:["u38"], project:"Cedar &amp; Fig reporting rollout", when:"month 2", group:"Landing it with people",
+    context:"<b>Cedar &amp; Fig</b>\u2019s team got a governed dashboard two months ago. You discover three staff exporting its data to personal spreadsheets and doing their real analysis there. You can lock down exports, or sit with the three and find out what the spreadsheets do that the dashboard does not.",
+    doorA:{k:"Sit with the three first", s:"The workaround is a requirements document, if you read it"},
+    doorB:{k:"Lock down exports", s:"The governed path enforced, and the analysis moves somewhere darker"},
+    chosen:"A", downstreamDraft:true,
+    downstream:"The spreadsheets all did the same thing: a regional cut the dashboard did not offer, needed for a Monday meeting. One added view later, two of the three exports stopped on their own. The third turned out to be feeding a side process nobody had documented \u2014 which was worth knowing for entirely different reasons.",
+    otherDoorCost:"Locking exports enforces one version of the truth immediately and closes a genuine governance gap. It also answers a question you have not asked yet \u2014 the Monday meeting still needs its regional cut, so the work moves to retyped numbers and screenshots, further from governance than the exports ever were.",
+    principle:"A workaround is an unmet requirement wearing overalls. Read it before you block it \u2014 the fix that removes the need beats the lock that hides the behaviour, and the blocked version of the workaround is always harder to see than the tolerated one.",
+    terms:[{t:"Workaround-as-requirement",d:"What people build around your tool is a list of what the tool lacks."},{t:"Governed path",d:"The route where numbers stay defined, permissioned, and auditable."},{t:"Dark data flow",d:"Where blocked workarounds go: retyped, screenshotted, undocumented."}] },
+  { id:"vendor-data-use", units:["u39"], project:"Ridgeline Outfitters support platform", when:"vendor review", group:"Trust you can audit",
+    context:"<b>Ridgeline</b> are choosing a tier of an AI support platform. The standard tier\u2019s terms permit using customer content \u201cto improve services,\u201d which the vendor confirms includes model training; the enterprise tier is zero data retention at 40% more. The content in question is customer emails \u2014 names, orders, occasional payment disputes.",
+    doorA:{k:"Pay for the ZDR tier", s:"40% more, and the emails stay yours alone"},
+    doorB:{k:"Standard tier, with a policy of caution", s:"Cheaper, and every customer email is training data"},
+    chosen:"A", downstreamDraft:true,
+    downstream:"The 40% turned out to be the cheap part. When two enterprise customers sent security questionnaires the following quarter, \u201czero data retention, contractually\u201d was a one-line answer \u2014 and the deal that would have died on the other answer covered the difference for years.",
+    otherDoorCost:"The standard tier does the same job for less, and a \u201cbe careful what you paste\u201d policy feels like a control. Support staff cannot redact their way through forty emails an hour, though \u2014 so the policy is decoration, real customer content trains someone else\u2019s model, and the disclosure sits in the terms for any customer\u2019s lawyer to find.",
+    principle:"Price the data-use clause, and price it at the level of what actually flows through the system rather than what policy says should. Where real customer content is involved, the ZDR premium is usually cheaper than the first security questionnaire it answers.",
+    terms:[{t:"Data-use clause",d:"What the vendor may do with what you send. \u201cImprove our services\u201d can mean training."},{t:"ZDR tier",d:"The arrangement where the vendor keeps nothing. Often exactly what the price difference buys."},{t:"Security questionnaire",d:"The enterprise customer\u2019s audit of your vendors. Your tier choice is their finding."}] },
+  { id:"shadow-ai-response", units:["u39"], project:"Lantern House case team", when:"discovery", group:"Trust you can audit",
+    context:"<b>Lantern House</b>\u2019s director discovers staff have been pasting case notes \u2014 real names, real situations \u2014 into a free consumer chatbot to draft summaries. It saves each worker about an hour a day. She wants it blocked by Friday. You can block it, or stand up a sanctioned tool with ZDR terms first and then switch off the free one.",
+    doorA:{k:"Provision the sanctioned tool, then block", s:"Two weeks of exposure ending in a fix, and the hour a day survives"},
+    doorB:{k:"Block it Friday", s:"The leak stops on paper, and the demand goes hunting"},
+    chosen:"A", downstreamDraft:true,
+    downstream:"The sanctioned tool arrived with a one-page policy and the director\u2019s own summaries drafted in it. The free chatbot was blocked the same week, and compliance held \u2014 because nobody had to give the hour back. The next unsanctioned tool got reported by staff themselves, which is what a working policy looks like.",
+    otherDoorCost:"Friday\u2019s block ends the known leak immediately, which is a real and defensible good. The hour a day was real too, though \u2014 so the drafting moves to personal phones on the car-park wifi, outside every control the block was meant to assert, and the director\u2019s dashboard shows a problem solved that has in fact gone dark.",
+    principle:"Shadow AI is demand, and demand routes around bans. Meet it with a sanctioned alternative good enough to switch to, then close the door \u2014 the sequence matters, because a ban with no alternative converts visible risk into invisible risk while giving back the hour that motivated it.",
+    terms:[{t:"Shadow AI",d:"Unsanctioned AI tools doing real work with real data. A demand signal wearing a risk costume."},{t:"Sanctioned alternative",d:"The approved tool good enough that switching costs nothing. The load-bearing half of any ban."},{t:"Acceptable-use policy",d:"One page: what may go in, what may never, and who answers \u201ccan I use it for this\u201d within a day."}] },
 ];
 const SABOTAGE=[
  { id:"backup-overwrite", needs:["u7"], blurb:"The nightly backup job for a client\u2019s case system. Read it as a set of instructions.",
@@ -1864,7 +2086,7 @@ function todGreet(){
 const LS="app-savvy-v1";
 const GAS=(typeof google!=="undefined"&&google.script&&google.script.run);
 let AI_ON=false;
-const blank=()=>({streak:0,lastDay:null,faced:0,history:[],glossary:[],learned:[],xp:0,badges:[],profile:null,onboarded:false,pre:null,post:null,shippedIntegration:false,capSnapshot:null,aiRead:null,apiKey:"",resume:null,milestones:{},queries:[],sqlWeeks:[],labSolved:[],labAssisted:[],labRead:[],stamps:{},recName:"",recUrl:""});
+const blank=()=>({streak:0,lastDay:null,faced:0,history:[],glossary:[],learned:[],xp:0,badges:[],profile:null,onboarded:false,pre:null,post:null,shippedIntegration:false,capSnapshot:null,aiRead:null,apiKey:"",resume:null,milestones:{},queries:[],sqlWeeks:[],labSolved:[],labAssisted:[],labRead:[],stamps:{},recName:"",recUrl:"",briefs:[],roiDone:false});
 function gcall(fn){var a=[].slice.call(arguments,1);return new Promise(function(res,rej){var r=google.script.run.withSuccessHandler(res).withFailureHandler(rej);r[fn].apply(r,a);});}
 function loadStateAsync(){if(GAS){return gcall("loadState").then(function(r){return r?Object.assign(blank(),JSON.parse(r)):blank();}).catch(blank);}
   try{return Promise.resolve(Object.assign(blank(),JSON.parse(localStorage.getItem(LS)||"{}")));}catch(e){return Promise.resolve(blank());}}
@@ -1952,7 +2174,7 @@ const BADGES=[
  {id:"bug-hunter",e:"🐛",t:"Bug Hunter",d:"Caught a sabotage bug correctly.",test:s=>s.history.some(h=>h.type==="sab"&&h.correct)},
  {id:"week-one",e:"🔥",t:"Week One",d:"Kept a 7-day streak.",test:s=>s.streak>=7},
  {id:"well-read",e:"📖",t:"Well Read",d:"Read every lesson.",test:s=>s.learned.length>=UNITS.length},
- {id:"every-door",e:"🗝️",t:"Every Door",d:"Walked all fifteen doors.",test:s=>new Set(s.history.filter(h=>!h.type).map(h=>h.id)).size>=DECISIONS.length},
+ {id:"every-door",e:"🗝️",t:"Every Door",d:"Walked every decision door.",test:s=>new Set(s.history.filter(h=>!h.type).map(h=>h.id)).size>=DECISIONS.length},
  {id:"exterminator",e:"🧹",t:"Exterminator",d:"Cleared every sabotage round.",test:s=>new Set(s.history.filter(h=>h.type==="sab").map(h=>h.id)).size>=SABOTAGE.length},
  {id:"wordsmith",e:"✍️",t:"Wordsmith",d:"Earned 10 glossary terms.",test:s=>s.glossary.length>=10},
  {id:"fluent-vocab",e:"📚",t:"Fluent Vocabulary",d:"Earned 25 terms — a success milestone.",test:s=>s.glossary.length>=25},
@@ -1965,7 +2187,9 @@ const BADGES=[
  {id:"lab-first",e:"▸",t:"First Run",d:"Solved your first Lab exercise.",test:s=>(s.labSolved||[]).length>=1},
  {id:"lab-joins",e:"🔗",t:"Joined Up",d:"Cleared the joins stage in the Lab.",test:s=>LAB_EX.filter(e=>e.s==="s3").every(e=>(s.labSolved||[]).indexOf(e.id)>=0)},
  {id:"lab-window",e:"🪟",t:"Window Seat",d:"Cleared the window-function stage.",test:s=>LAB_EX.filter(e=>e.s==="s5").every(e=>(s.labSolved||[]).indexOf(e.id)>=0)},
- {id:"lab-all",e:"🗃️",t:"Lab Complete",d:"Solved every Lab exercise.",test:s=>(s.labSolved||[]).length>=LAB_EX.length}];
+ {id:"lab-all",e:"🗃️",t:"Lab Complete",d:"Solved every Lab exercise.",test:s=>(s.labSolved||[]).length>=LAB_EX.length},
+ {id:"brief-writer",e:"📋",t:"Spec Writer",d:"Drafted a full requirements brief and had it reviewed.",test:s=>(s.briefs||[]).length>=1},
+ {id:"case-maker",e:"🧮",t:"Case Maker",d:"Built a payback model and found the lever.",test:s=>!!s.roiDone}];
 function checkBadges(){let earned=[];BADGES.forEach(b=>{if(state.badges.indexOf(b.id)<0&&b.test(state)){state.badges.push(b.id);earned.push(b);}});return earned;}
 function commitProgress(prevXp){
   if(state.graceJustUsed){state.graceJustUsed=false;setTimeout(function(){wickSay("You missed a day, so I held the streak for you. <b>"+state.streak+" days</b> still standing. One free pass a week — use it without guilt.","cheer",11000);},700);}
@@ -2087,7 +2311,7 @@ function wickNudge(){
 let tourActive=false,tourI=0;
 const TOUR=[
  {tab:"home", sel:"#tabs button[data-tab='home']", t:"This is <b>Home</b>. Your stage, what you can do now, and the roles that fluency maps to. The three grey rows collapse \u2014 open them when you want detail."},
- {tab:"learn",sel:"#tabs button[data-tab='learn']",t:"<b>Learn</b> holds thirty-three lessons in six chapters. Each is a short read with a diagram, a bit of history, and the tools you will actually hear named at work."},
+ {tab:"learn",sel:"#tabs button[data-tab='learn']",t:"<b>Learn</b> holds thirty-five lessons in six chapters. Each is a short read with a diagram, a bit of history, and the tools you will actually hear named at work."},
  {tab:"practice",sel:"#tabs button[data-tab='practice']",t:"<b>Practice</b> is where it sticks. A door is a real client decision with two defensible answers \u2014 you pick one and defend it. There is no right answer, only a defensible one."},
  {tab:"reference",sel:"#tabs button[data-tab='reference']",t:"<b>Reference</b> keeps every term you have earned, plus the tradeoffs that keep recurring. You can edit or delete anything in here."},
  {tab:"lab",sel:"#tabs button[data-tab='lab']",t:"The <b>SQL Lab</b> runs a real database inside your browser. You write a query, it actually executes. Nothing to install."},
@@ -2150,7 +2374,7 @@ const DIAG=[
 
 /* ===== ENGINE ===== */
 const root=document.getElementById("root");
-let tab="home", learnUnit=null, sess=null, sab=null, quiz=null, teachSess=null;
+let tab="home", learnUnit=null, sess=null, sab=null, quiz=null, teachSess=null, briefSess=null, roiSess=null;
 let askState={thread:[],q:"",loading:false,suggest:null,img:null,big:false,ended:false};let askOpen=false;let glEdit=null;
 function esc(s){return(s||"").replace(/[&<>]/g,c=>({"&":"&amp;","<":"&lt;",">":"&gt;"}[c]));}
 function ring(pct,size,stroke){const r=(size-stroke)/2,c=2*Math.PI*r,off=c*(1-Math.max(0,Math.min(1,pct)));const h=size/2;return `<svg width="${size}" height="${size}" viewBox="0 0 ${size} ${size}"><circle cx="${h}" cy="${h}" r="${r}" fill="none" stroke="var(--line)" stroke-width="${stroke}"/><circle cx="${h}" cy="${h}" r="${r}" fill="none" stroke="var(--teal)" stroke-width="${stroke}" stroke-linecap="round" stroke-dasharray="${c.toFixed(1)}" stroke-dashoffset="${off.toFixed(1)}" transform="rotate(-90 ${h} ${h})"/></svg>`;}
@@ -2263,11 +2487,11 @@ function evoCard(){
 /* Chapters. Module scope: the map draws them and checkMilestones reads them. */
 const CHAPTERS=[
   {t:"Foundations",sub:"how software actually works",cls:"la",ids:["u1","u15","u28","u2","u16","u3","u4"]},
-  {t:"Building and running it",sub:"what happens after it works",cls:"lb",ids:["u5","u6","u17","u7","u18","u8"]},
+  {t:"Building and running it",sub:"what happens after it works",cls:"lb",ids:["u5","u6","u17","u7","u18","u39","u8"]},
   {t:"Working with data",sub:"answers you can defend",cls:"lc",ids:["u9","u10","u11","u12","u13","u14"]},
-  {t:"Turning work into systems",sub:"where this gets paid for",cls:"ld",ids:["u19","u20","u21","u22"]},
-  {t:"Holding your own",sub:"the technical half of the job",cls:"le",ids:["u23","u24","u25","u26","u27"]},
-  {t:"Building agents",sub:"the part where you make one",cls:"lf",ids:["u29","u30","u31","u32","u33"]}
+  {t:"Turning work into systems",sub:"where this gets paid for",cls:"ld",ids:["u19","u20","u21","u37","u22","u38"]},
+  {t:"Holding your own",sub:"the technical half of the job",cls:"le",ids:["u23","u24","u25","u26","u36","u27"]},
+  {t:"Building agents",sub:"the part where you make one",cls:"lf",ids:["u29","u30","u31","u32","u33","u34","u35"]}
  ];
 function journeyHTML(){
  var rec=recommendStart();
@@ -2656,7 +2880,7 @@ async function doAsk(){
  askState.api=askState.api||[];
  askState.api.push({role:"user",content:content});
  askState.q="";askState.img=null;askState.loading=true;renderAsk();
- const sys="You are App Savvy's built-in tutor. Answer two kinds of questions: (1) how software and apps work, in plain language for a business or client person becoming fluent by directing AI (not an engineer), and (2) how to use App Savvy itself. About the app: App Savvy builds architectural judgment. Its tabs are Home (a dashboard with your rank, XP, badges, streak, a readiness map across five capabilities, a personalized read, and a pre/post baseline check), Learn (thirty-three lesson units in six chapters — foundations, then building and running it, then working with data, then turning work into systems, then holding your own; read a lesson, then walk a Door to test it. The unit called “Asking data a question” opens the SQL chapter and carries a twelve-week practice plan you tick off week by week), Practice (a quick Door or a Sabotage debugging round, both earning XP), Reference (a glossary of terms you have earned, a concept map of recurring tradeoffs, a query log where you record real SQL you have written alongside the business question it answered, and the sourced thinking behind the app), and AI & Data (your API key and backups). A Door is a real decision with two defensible options; you pick one, justify it, and a reveal shows what was actually chosen and the tradeoff. You earn XP and move through seven stages named after real, posted job titles — Curious, Customer Success Manager, Implementation Analyst, Business Systems Analyst, Implementation Consultant, Technical Account Manager, AI Solutions Consultant — ordered by how much technical fluency each role asks for rather than by seniority or pay. Reaching a stage means the learner's fluency is in range for that kind of role; it does not by itself qualify them. Those stages name what the learner can do, and they are deliberately not job titles: the app builds technical judgment, and roles like Solutions Engineer additionally require hands-on scripting and demo-building that App Savvy does not teach. Be honest about that distinction if asked. Progress saves in your browser, and the sparkle marks AI features that use your key. Answer warmly and concretely in a few short paragraphs, no jargon dumps. If a question is off-topic, answer briefly and steer back. The user's message may include the text currently on their screen (marked [Context — ...]); when they ask about 'this' or 'what does this mean', use that on-screen text to answer specifically. The learner may ask follow-up questions; treat it as one continuing conversation and keep answers short after the first.";
+ const sys="You are App Savvy's built-in tutor. Answer two kinds of questions: (1) how software and apps work, in plain language for a business or client person becoming fluent by directing AI (not an engineer), and (2) how to use App Savvy itself. About the app: App Savvy builds architectural judgment. Its tabs are Home (a dashboard with your rank, XP, badges, streak, a readiness map across five capabilities, a personalized read, and a pre/post baseline check), Learn (thirty-five lesson units in six chapters — foundations, then building and running it, then working with data, then turning work into systems, then holding your own; read a lesson, then walk a Door to test it. The unit called “Asking data a question” opens the SQL chapter and carries a twelve-week practice plan you tick off week by week), Practice (a quick Door or a Sabotage debugging round, both earning XP), Reference (a glossary of terms you have earned, a concept map of recurring tradeoffs, a query log where you record real SQL you have written alongside the business question it answered, and the sourced thinking behind the app), and AI & Data (your API key and backups). A Door is a real decision with two defensible options; you pick one, justify it, and a reveal shows what was actually chosen and the tradeoff. You earn XP and move through seven stages named after real, posted job titles — Curious, Customer Success Manager, Implementation Analyst, Business Systems Analyst, Implementation Consultant, Technical Account Manager, AI Solutions Consultant — ordered by how much technical fluency each role asks for rather than by seniority or pay. Reaching a stage means the learner's fluency is in range for that kind of role; it does not by itself qualify them. Those stages name what the learner can do, and they are deliberately not job titles: the app builds technical judgment, and roles like Solutions Engineer additionally require hands-on scripting and demo-building that App Savvy does not teach. Be honest about that distinction if asked. Progress saves in your browser, and the sparkle marks AI features that use your key. Answer warmly and concretely in a few short paragraphs, no jargon dumps. If a question is off-topic, answer briefly and steer back. The user's message may include the text currently on their screen (marked [Context — ...]); when they ask about 'this' or 'what does this mean', use that on-screen text to answer specifically. The learner may ask follow-up questions; treat it as one continuing conversation and keep answers short after the first.";
  const out=await callClaudeThread(sys,askState.api,700);
  askState.loading=false;
  var ans=out||(state.apiKey?("Couldn't get an answer. "+lastAIError+(/credit|balance/i.test(lastAIError)?" \u2192 Add credits at console.anthropic.com under Plans & Billing.":"")):"Add your Anthropic key in the AI & Data tab to ask questions here.");
@@ -2720,6 +2944,8 @@ const CHECKS={
  "u31":["What are the three fields of a tool definition, and which one does the most work?","How would you test tool selection without writing any code?"],
  "u32":["Why is the whole conversation resent on every turn?","What should happen when a tool throws an error?"],
  "u33":["Name the five things that turn a working agent into one you can hand over.","Say the honest claim out loud, with all four clauses."],
+ "u34":["Name the four steps between a question arriving and an answer coming back.","What are the three questions that locate a retrieval project?"],
+ "u35":["Explain the M×N problem in one sentence.","What is the identity question to ask about any connector?"],
 };
 const EXTRAS={
  u28:{diagram:'<svg viewBox="0 0 340 158" xmlns="http://www.w3.org/2000/svg"><text x="170" y="15" text-anchor="middle" font-size="9" fill="#5f6f68">the cloud was a shape on a diagram — underneath it is buildings</text><rect x="16" y="24" width="308" height="76" rx="10" fill="none" stroke="#2f8a72" stroke-width="1.6" stroke-dasharray="5 3"/><text x="28" y="38" font-size="9" font-weight="600" fill="#2f8a72">region · us-east-1</text><rect x="30" y="46" width="86" height="44" rx="7" fill="#e9f4ef" stroke="#2f8a72" stroke-width="1.5"/><text x="73" y="64" text-anchor="middle" font-size="9" fill="#22302c">zone a</text><text x="73" y="79" text-anchor="middle" font-size="7.5" fill="#5f6f68">own power</text><rect x="126" y="46" width="86" height="44" rx="7" fill="#e9f4ef" stroke="#2f8a72" stroke-width="1.5"/><text x="169" y="64" text-anchor="middle" font-size="9" fill="#22302c">zone b</text><text x="169" y="79" text-anchor="middle" font-size="7.5" fill="#5f6f68">own power</text><rect x="222" y="46" width="86" height="44" rx="7" fill="#f6efe0" stroke="#c2913a" stroke-width="1.8"/><text x="265" y="64" text-anchor="middle" font-size="9" fill="#22302c">zone c</text><text x="265" y="79" text-anchor="middle" font-size="7.5" fill="#b0503b">having a bad day</text><text x="170" y="116" text-anchor="middle" font-size="9" fill="#22302c">your server is a slice of one machine in one of these</text><text x="170" y="132" text-anchor="middle" font-size="8.5" fill="#5f6f68">data in: free · data out: billed</text><text x="170" y="150" text-anchor="middle" font-size="9" fill="#c2913a">which is why leaving costs more than arriving did</text></svg>'},
@@ -2774,6 +3000,10 @@ function speakLesson(uid){
 /* Where each history beat comes from. Primary documents where one exists.
    Items marked "widely retold" are industry lore rather than sourced fact. */
 const SOURCES={
+ u34:[{t:"Lewis et al., \u201cRetrieval-Augmented Generation for Knowledge-Intensive NLP Tasks\u201d, NeurIPS 2020",u:"https://proceedings.neurips.cc/paper/2020/hash/6b493230205f780e1bc26945df7481e5-Abstract.html"},
+      {t:"The same paper on arXiv (2005.11401)",u:"https://arxiv.org/abs/2005.11401"}],
+ u35:[{t:"Anthropic, \u201cIntroducing the Model Context Protocol\u201d, 25 November 2024",u:"https://www.anthropic.com/news/model-context-protocol"},
+      {t:"The protocol specification and SDKs",u:"https://modelcontextprotocol.io"}],
  u29:[{t:"Yao et al., \u201cReAct: Synergizing Reasoning and Acting in Language Models\u201d, ICLR 2023 (arXiv 2022)",u:"https://arxiv.org/abs/2210.03629"},
       {t:"Anthropic, \u201cHow tool use works\u201d \u2014 the request/response cycle",u:"https://platform.claude.com/docs/en/agents-and-tools/tool-use/how-tool-use-works"}],
  u30:[{t:"Anthropic, \u201cStructured outputs\u201d \u2014 forcing a schema with tool_choice",u:"https://platform.claude.com/docs/en/build-with-claude/structured-outputs"},
@@ -2843,6 +3073,12 @@ function sourcesHTML(uid){
    Only text outside HTML tags is touched.
 ---------------------------------------------------------------- */
 const ACRONYMS=[
+ ["ZDR","zero data retention"],
+ ["DPIA","data protection impact assessment"],
+ ["NFR","non-functional requirement"],
+ ["SRS","software requirements specification"],
+ ["TCO","total cost of ownership"],
+ ["AI RMF","AI Risk Management Framework (NIST)"],
  ["PCI DSS","Payment Card Industry Data Security Standard"],
  ["CI/CD","continuous integration and continuous delivery"],
  ["SOC 2","System and Organization Controls, level 2"],
@@ -2885,8 +3121,8 @@ const ACRONYMS=[
  ["NRR","net revenue retention"],
  ["GRR","gross revenue retention"],
  ["QBR","quarterly business review"],
- ["MCP","model context protocol"],
- ["RAG","retrieval-augmented generation"],
+ ["MCP","Model Context Protocol — the standard for connecting AI to your systems"],
+ ["RAG","retrieval-augmented generation — find the relevant passages, then answer from them"],
  ["PII","personally identifiable information"],
  ["DPA","data processing agreement"],
  ["SLA","service level agreement"],
@@ -2950,6 +3186,24 @@ function wireLearn(){
 /* ===== PRACTICE ===== */
 /* Fallback bank — concrete client scenarios, used when there is no key. */
 const TEACH_FALLBACK={
+ "u34":["A Lantern House director asks how the assistant \u201cknows\u201d their manual when it was never trained on it. Explain retrieval in plain words.",
+  "Brightline Dental\u2019s manager asks why the assistant gave a confidently wrong fee. Explain what a stale index is and what you would change.",
+  "A Verity Legal partner asks whether you should fine-tune a model on their documents. Explain what fine-tuning does and does not do."],
+ "u35":["A Ridgeline exec heard the team should \u201cjust use MCP\u201d. Explain what it is and what problem it solves.",
+  "Explain to a Harbor Point director what a security review should ask before a connector is switched on.",
+  "A colleague wants to connect an AI tool to the shared drive this afternoon. Explain the identity question, without being obstructive."],
+ "u36":["A Kestrel Fitness owner says the brief feels like paperwork \u2014 \u201cyou know what we want.\u201d Explain what the one page prevents, concretely.",
+  "A builder asks what \u201cthe system should be fast\u201d means. Rewrite it as a requirement someone could test, and explain the difference out loud.",
+  "Mid-build, a Harbor Point manager asks for \u201cone small addition.\u201d Use the out-of-scope list to answer without damaging the relationship."],
+ "u37":["A Cedar &amp; Fig director asks whether the triage automation pays for itself. Walk through payback in plain words, naming your assumptions.",
+  "Finance re-ran your savings using loaded cost and got a smaller number. Explain what loaded cost is and why their figure is the right one to present.",
+  "A sceptical CFO says every automation pitch promises the same savings. Explain sensitivity \u2014 which assumption moves your number most, and what you\u2019d do about it."],
+ "u38":["Brightline\u2019s owner wants all twelve offices live at once \u2014 \u201crip the bandaid off.\u201d Explain what a pilot cohort buys, in her terms.",
+  "Usage stalled at 30% in week three. Explain how you\u2019d find out which kind of stall it is before changing anything.",
+  "A manager proposes mandating the tool. Explain what mandates do to the information you need, and what you\u2019d do instead."],
+ "u39":["A Ridgeline exec asks what \u201cwe may use customer content to improve our services\u201d means in a vendor contract. Explain, and say what to ask for.",
+  "Staff at Lantern House are pasting case notes into a free chatbot. Explain shadow AI to their director \u2014 and why a ban is the weaker move.",
+  "A client asks what the EU AI Act means for them as a user of AI rather than a builder. Explain the deployer idea in plain words."],
  "u29":["A Kestrel Fitness owner asks what makes something \u201can agent\u201d rather than just a chatbot. Explain the loop in plain words.",
   "A Cedar &amp; Fig manager is worried the AI will \u201cdo something on its own\u201d. Explain what the model can and cannot actually do by itself.",
   "Northwind\u2019s ops director asks what stops the thing running forever. Explain."],
@@ -4156,14 +4410,99 @@ function wireRecordCard(){
 }
 
 function renderPractice(){
+ if(briefSess){root.innerHTML=renderBriefHTML();wireBrief();return;}
+ if(roiSess){root.innerHTML=renderRoiHTML();wireRoi();return;}
  if(teachSess){root.innerHTML=renderTeachHTML();wireTeach();return;}
  if(sab&&sab.ownerTab==="practice"){root.innerHTML=renderSabotageHTML();wireSabotage();return;}
  if(sess&&sess.ownerTab==="practice"){root.innerHTML=renderDoorHTML();wireDoor();return;}
- root.innerHTML=`<div class="card"><span class="pilltag">🎯 Practice</span><h2>Build the missing muscle</h2><p class="sub">Each rep strengthens a specific capability on your readiness map.</p>${(state.profile&&state.profile.cap_read!=null)?growthEdgeHTML():''}<div class="prow" style="margin-top:16px"><button class="btn" id="pDoor">🚪 A decision door</button>${sabReady()?'<button class="btn ghost" id="pSab">🔍 A sabotage round</button>':''}<button class="btn ghost" id="pTeach">🗣 Teach it back</button></div>${sabReady()?'':sabLockHTML()}<p class="muted small" style="margin-top:10px">Doors build <b>Name the tradeoff</b>. Sabotage rounds build debugging fluency — part of speaking the language.</p><p class="muted small" style="margin-top:8px">🔎 See a term you do not know? Tap <b>💡 Wick</b> in the corner and ask — leaning on him is how fluency builds, not a shortcut.</p></div>`;
+ root.innerHTML=`<div class="card"><span class="pilltag">🎯 Practice</span><h2>Build the missing muscle</h2><p class="sub">Each rep strengthens a specific capability on your readiness map.</p>${(state.profile&&state.profile.cap_read!=null)?growthEdgeHTML():''}<div class="prow" style="margin-top:16px"><button class="btn" id="pDoor">🚪 A decision door</button>${sabReady()?'<button class="btn ghost" id="pSab">🔍 A sabotage round</button>':''}<button class="btn ghost" id="pTeach">🗣 Teach it back</button><button class="btn ghost" id="pBrief">📋 The brief room</button><button class="btn ghost" id="pRoi">🧮 The payback room</button></div>${sabReady()?'':sabLockHTML()}<p class="muted small" style="margin-top:10px">Doors build <b>Name the tradeoff</b>. Sabotage rounds build debugging fluency — part of speaking the language.</p><p class="muted small" style="margin-top:8px">🔎 See a term you do not know? Tap <b>💡 Wick</b> in the corner and ask — leaning on him is how fluency builds, not a shortcut.</p></div>`;
  root.querySelector("#pDoor").onclick=()=>startDoor(pickDoor(null),null);
  var ps=root.querySelector("#pSab");if(ps)ps.onclick=()=>startSabotage(null);
  var g7=root.querySelector("#goSab7");if(g7)g7.onclick=()=>{learnUnit="u7";setTab("learn");};
  root.querySelector("#pTeach").onclick=()=>startTeach();
+ var pb=root.querySelector("#pBrief");if(pb)pb.onclick=()=>startBrief();
+ var pr=root.querySelector("#pRoi");if(pr)pr.onclick=()=>startRoi();
+}
+
+
+/* ===== BRIEF ROOM — draft a requirements brief, get it reviewed (u36) ===== */
+const BRIEF_SCENARIOS=[
+ {client:"Kestrel Fitness", title:"Class booking, off the spreadsheet",
+  ask:"Kestrel Fitness (four studios) want members to book, cancel and join waitlists from their phones, with the front desk keeping an override. Bookings live today in a shared spreadsheet updated by hand. The owner\u2019s words: \u201cmake booking stop eating our mornings.\u201d"},
+ {client:"Northwind Logistics", title:"Carrier status in the dispatch tool",
+  ask:"Northwind\u2019s dispatchers phone carriers for shipment status. The carrier offers a nightly SFTP status file now, or a live API in about six weeks. Dispatch runs on an internal tool a contractor maintains. The ops lead\u2019s words: \u201cI want status on the screen they already look at.\u201d"}];
+const BRIEF_SECTIONS=[
+ {k:"fn",  t:"Functional requirements",  p:"What must it do? Numbered. One behaviour per line, each one testable."},
+ {k:"nfr", t:"Non-functional requirements", p:"How well must it work? Speed, volumes, devices, availability \u2014 with numbers."},
+ {k:"data",t:"Data requirements", p:"What data is involved, where it lives today, who owns it, what moves where."},
+ {k:"integ",t:"Integration inventory", p:"Every system this touches, and how: API, file, or a person retyping."},
+ {k:"acc", t:"Acceptance criteria", p:"How you\u2019ll know it\u2019s done \u2014 observable checks the client could run without you."}];
+function startBrief(){var i=Math.floor(Math.random()*BRIEF_SCENARIOS.length);briefSess={sc:i,secs:{fn:"",nfr:"",data:"",integ:"",acc:""},fb:null,loading:false,ownerTab:"practice"};tab="practice";syncTabs();render();window.scrollTo(0,0);}
+function renderBriefHTML(){
+ var S=BRIEF_SCENARIOS[briefSess.sc];
+ var body=BRIEF_SECTIONS.map(function(x){return '<div class="q"><b>'+esc(x.t)+'</b><p class="muted small" style="margin-bottom:8px">'+esc(x.p)+'</p><textarea data-bsec="'+x.k+'" rows="4" style="width:100%;box-sizing:border-box;font:inherit;padding:9px 11px;border:1px solid var(--line);border-radius:9px;background:var(--mint2)">'+esc(briefSess.secs[x.k])+'</textarea></div>';}).join("");
+ var fb=briefSess.loading?'<p class="thinking" style="margin-top:12px">\u2728 Wick is reading the brief\u2026</p>':(briefSess.fb?'<div class="q" style="margin-top:12px"><b>\ud83d\udca1 Wick\u2019s review</b><div class="small" style="white-space:pre-wrap">'+esc(briefSess.fb)+'</div></div>':'');
+ return '<div class="card actcard"><button class="exitbtn" id="exitBrief" title="Leave \u2014 your draft is kept for this session">\u2715 exit</button><span class="pilltag">\ud83d\udccb The brief room</span><h2>'+esc(S.client)+': '+esc(S.title)+'</h2><p class="sub">'+S.ask+'</p><p class="muted small">Draft each section, then have it reviewed. The test for every line: <b>could someone check this without asking what you meant?</b></p>'+body+
+ '<div class="prow" style="margin-top:14px"><button class="btn" id="briefReview">\u2728 Ask Wick to review</button><button class="btn ghost" id="briefExport">\u2b07 Export the brief</button><button class="btn ghost mini" id="briefSwap">Try the other scenario</button></div>'+fb+'</div>';
+}
+function briefText(){var S=BRIEF_SCENARIOS[briefSess.sc];return "CLIENT: "+S.client+" \u2014 "+S.title+"\n\n"+BRIEF_SECTIONS.map(function(x){return x.t.toUpperCase()+"\n"+(briefSess.secs[x.k]||"(empty)");}).join("\n\n");}
+async function briefReview(){
+ briefSess.loading=true;briefSess.fb=null;renderPractice();
+ var sys="You review one-page software requirements briefs written by an operations consultant in training. Score each of the five sections 0-2 (0 missing/vague, 1 partial, 2 testable and specific) on testability, specificity and scope discipline. Format exactly:\nSECTION NAME \u2014 score/2. One sentence on what works or fails. One concrete rewrite of their weakest line.\nAfter the five sections: VERDICT \u2014 one sentence. STRONGEST LINE \u2014 quote it. FIRST FIX \u2014 the single edit that most improves the page. Plain text, no markdown. Be specific to what they wrote; never generic.";
+ var out=await callClaude(sys,briefText(),900);
+ briefSess.loading=false;
+ briefSess.fb=out||("Wick couldn\u2019t review just now"+(state.apiKey?" \u2014 "+lastAIError:" \u2014 add your Anthropic key in AI & Data, or self-review: could a stranger check each line without asking what you meant? Does every NFR carry a number? Does acceptance read like checks, or like hopes?"));
+ renderPractice();
+}
+function briefExport(){
+ var S=BRIEF_SCENARIOS[briefSess.sc];
+ var filled=BRIEF_SECTIONS.every(function(x){return (briefSess.secs[x.k]||"").trim().length>=20;});
+ if(!filled){briefSess.fb="Every section needs a real draft before export \u2014 a brief with empty sections is the argument you were trying to prevent.";renderPractice();return;}
+ var w=window.open("","_blank");
+ if(w){var h='<html><head><title>Requirements brief \u2014 '+esc(S.client)+'</title><style>body{font-family:Georgia,serif;max-width:720px;margin:40px auto;color:#22302c;line-height:1.6;padding:0 20px}h1{font-size:24px}h2{font-size:15px;letter-spacing:.12em;text-transform:uppercase;color:#2f8a72;margin-top:26px}p.meta{color:#7c8a84;font-size:13px}div.sec{white-space:pre-wrap;border-left:3px solid #dfe9e4;padding-left:14px}@media print{body{margin:16px auto}}</style></head><body><h1>Requirements brief \u2014 '+esc(S.client)+'</h1><p class="meta">'+esc(S.title)+' \u00b7 drafted '+todayStr()+' in App Savvy\u2019s brief room</p><p>'+S.ask+'</p>';
+  BRIEF_SECTIONS.forEach(function(x){h+='<h2>'+esc(x.t)+'</h2><div class="sec">'+esc(briefSess.secs[x.k])+'</div>';});
+  h+='</body></html>';w.document.write(h);w.document.close();}
+ state.briefs=state.briefs||[];state.briefs.push({d:todayStr(),sc:briefSess.sc});recStamp("brief:"+briefSess.sc);
+ var p=state.xp;addXP(30);commitProgress(p);
+}
+function wireBrief(){
+ root.querySelectorAll("[data-bsec]").forEach(function(t){t.oninput=function(){briefSess.secs[t.dataset.bsec]=t.value;};});
+ root.querySelector("#exitBrief").onclick=function(){briefSess=null;renderPractice();};
+ root.querySelector("#briefReview").onclick=briefReview;
+ root.querySelector("#briefExport").onclick=briefExport;
+ root.querySelector("#briefSwap").onclick=function(){briefSess={sc:1-briefSess.sc,secs:{fn:"",nfr:"",data:"",integ:"",acc:""},fb:null,loading:false,ownerTab:"practice"};renderPractice();};
+}
+
+/* ===== PAYBACK ROOM — the ROI model with a lever to find (u37) ===== */
+function startRoi(){roiSess={adopt:60,answered:null,ownerTab:"practice"};tab="practice";syncTabs();render();window.scrollTo(0,0);}
+function roiCalc(adopt){
+ var tickets=950, mins=9, rate=34, autoShare=0.62, build=14000, runPer=0.05, errRate=0.03, errCost=25;
+ var handled=tickets*autoShare*(adopt/100);
+ var gross=handled*(mins/60)*rate;
+ var run=handled*runPer;
+ var errs=handled*errRate*errCost;
+ var net=gross-run-errs;
+ return {handled:Math.round(handled),gross:gross,run:run,errs:errs,net:net,payback:net>0?(build/net):Infinity};
+}
+function roiFmt(n){return "$"+Math.round(n).toLocaleString();}
+function renderRoiHTML(){
+ var a=roiSess.adopt,r=roiCalc(a),r60=roiCalc(60),r90=roiCalc(90);
+ var q=roiSess.answered==null?
+  '<div class="q"><b>Find the lever</b><p class="muted small" style="margin-bottom:10px">Moved a realistic amount, which assumption changes the payback most here?</p><div class="prow"><button class="btn ghost" data-roi="adopt">Adoption rate</button><button class="btn ghost" data-roi="run">Per-ticket run cost</button><button class="btn ghost" data-roi="err">Error cost</button></div></div>'
+  :'<div class="q"><b>'+(roiSess.answered==="adopt"?"\u2713 Adoption \u2014 the lever.":"The lever here is adoption.")+'</b><p class="small">Slide adoption from 60% to 90% and payback moves by months \u2014 it multiplies the entire saving. Run cost is pennies against a $5 handled ticket, and the error line is small at these rates: double either and payback barely moves. Which is why the rollout plan from the next unit is part of the ROI, and why a model presented with its own sensitivity \u2014 \u201cadoption is the lever, here\u2019s the plan\u201d \u2014 is the one a board trusts.</p></div>';
+ return '<div class="card actcard"><button class="exitbtn" id="exitRoi">\u2715 exit</button><span class="pilltag">\ud83e\uddee The payback room</span><h2>Cedar &amp; Fig: does triage automation pay for itself?</h2><p class="sub">Seeded numbers: 950 tickets/mo \u00b7 9 min each \u00b7 $34/hr loaded \u00b7 automation resolves 62% of eligible tickets \u00b7 $14,000 build \u00b7 $0.05/ticket run \u00b7 3% error rate at $25/error.</p>'+
+ '<div class="q"><b>Adoption: <span id="roiA">'+a+'</span>% of eligible work goes through the new path</b><input type="range" id="roiSlide" min="40" max="100" step="5" value="'+a+'" style="width:100%;margin:10px 0">'+
+ '<p class="small">Tickets automated: <b>'+r.handled+'</b>/mo \u00b7 Gross saving: <b>'+roiFmt(r.gross)+'</b> \u00b7 Run cost: '+roiFmt(r.run)+' \u00b7 Error cost: '+roiFmt(r.errs)+' \u00b7 Net: <b>'+roiFmt(r.net)+'</b>/mo</p>'+
+ '<p class="small">Payback on the $14,000 build: <b>'+(isFinite(r.payback)?r.payback.toFixed(1)+" months":"never at this adoption")+'</b> \u2014 at 60% it\u2019s '+r60.payback.toFixed(1)+', at 90% it\u2019s '+r90.payback.toFixed(1)+'.</p></div>'+q+'</div>';
+}
+function wireRoi(){
+ root.querySelector("#exitRoi").onclick=function(){roiSess=null;renderPractice();};
+ var s=root.querySelector("#roiSlide");if(s)s.oninput=function(){roiSess.adopt=+s.value;renderPractice();};
+ root.querySelectorAll("[data-roi]").forEach(function(b){b.onclick=function(){
+  roiSess.answered=b.dataset.roi;
+  if(!state.roiDone){state.roiDone=true;recStamp("roi:cedarfig");var p=state.xp;addXP(25);commitProgress(p);}
+  renderPractice();
+ };});
 }
 
 /* ===== DOOR LOOP ===== */
@@ -4173,6 +4512,10 @@ function countGroup(group){const inHist=state.history.filter(h=>h.group===group)
 const SCAFFOLD='<div class="scaffold"><span class="caps">How to weigh it</span><ul><li>Who relies on this, and what matters most to them?</li><li>How does each door fail, and how much would that hurt?</li><li>What does each door cost over time?</li></ul></div>';
 /* Per-door scaffolding: concrete weighing questions + the real-world stake for that specific scenario. */
 const DOORAID={
+ "connector-identity":{stake:"Every member of staff able to reach, through an assistant, whatever a single service account can reach \u2014 with the log naming the connector rather than the person.",q:["Whose permissions apply once the assistant is in the middle?","If someone accessed a file they should not have, what does the audit log say?","Which staff will lose access they had informally, and is that a bug or the point?"]},
+ "corpus-scope":{stake:"An assistant that answers confidently from a 2019 draft, with no way for the reader to tell it is not the current policy.",q:["What happens the first time it cites something superseded, and who hears about it?","Is there anyone who could say which forty documents are authoritative?","What does it do with a question the corpus does not cover?"]},
+ "stale-retrieval":{stake:"A coordinator quoting this morning\u2019s superseded fee to a patient, because the index rebuilds tonight.",q:["Which documents change fastest, and what does a wrong answer cost for those?","If the indexing job failed tonight, what would tell you?","Would a busy person actually read a date stamped on the answer?"]},
+ "rag-or-context":{stake:"Either paying for sixty pages on every call forever, or maintaining a retrieval system for a manual that changes twice a year.",q:["What does sending the whole thing cost per call, times your real volume?","How often does the corpus actually change, and by how much?","What breaks in the retrieval version that cannot break in the simple one?"]},
  "agent-or-workflow":{stake:"Either paying agent prices to answer \u201cwhat time do you open\u201d, or a rigid path that fails the member with an unusual problem.",q:["How much of this volume is genuinely the same every time?","What does a run cost, times the number of enquiries a week?","Which is easier to debug at 8am \u2014 a wrong branch, or a wrong decision?"]},
  "prompt-or-code":{stake:"A partner has been told twice that this is fixed, and the capability to do it again is still there.",q:["Does the agent still have the ability to do this after your fix?","What is an acceptable failure rate here \u2014 and is anything above zero acceptable?","Who checks the drafts while the prompt-only version settles?"]},
  "tool-granularity":{stake:"An agent with reach nobody can enumerate, running unreviewed queries against a live database.",q:["Could you list every action this agent can take, on one page?","What does the log show a month from now \u2014 capabilities used, or queries you have to read?","Which unanticipated question is worth the reach, and could it be its own tool?"]},
@@ -4473,6 +4816,25 @@ const AGENT_TOOLS={
      var r=labRun(db,"SELECT source, COUNT(*) AS leads FROM leads GROUP BY source ORDER BY leads DESC");
      return r.values.map(function(v){return v[0]+": "+v[1];}).join("\n");
    } },
+ live_weather:{ name:"live_weather",
+   description:"Fetch the current temperature and conditions for a city, live from the Open-Meteo public API. Use when a task needs real weather. This is a real external call over the internet.",
+   input_schema:{type:"object",properties:{city:{type:"string",description:"City name, for example Chicago"}},required:["city"]},
+   write:false, live:true,
+   run:async function(a){
+     try{
+       var g=await fetch("https://geocoding-api.open-meteo.com/v1/search?count=1&name="+encodeURIComponent(String(a.city||"")));
+       if(!g.ok)return "Geocoding request failed with status "+g.status+".";
+       var gj=await g.json();
+       if(!gj.results||!gj.results.length)return "No city found matching \""+a.city+"\".";
+       var c=gj.results[0];
+       var w=await fetch("https://api.open-meteo.com/v1/forecast?latitude="+c.latitude+"&longitude="+c.longitude+"&current=temperature_2m,weather_code&temperature_unit=fahrenheit");
+       if(!w.ok)return "Weather request failed with status "+w.status+".";
+       var wj=await w.json(); var cur=wj.current||{};
+       var codes={0:"clear",1:"mostly clear",2:"partly cloudy",3:"overcast",45:"fog",48:"fog",51:"drizzle",53:"drizzle",55:"drizzle",61:"light rain",63:"rain",65:"heavy rain",71:"light snow",73:"snow",75:"heavy snow",80:"showers",81:"showers",82:"heavy showers",95:"thunderstorm",96:"thunderstorm",99:"thunderstorm"};
+       AGENT.liveHit=true;
+       return c.name+", "+(c.admin1||c.country||"")+": "+cur.temperature_2m+"\u00b0F, "+(codes[cur.weather_code]||("weather code "+cur.weather_code))+".";
+     }catch(e){return "The live weather call failed: "+e.message+". The internet is a dependency, and this is what that looks like.";}
+   } },
  send_email:{ name:"send_email",
    description:"Send an email to a person. Use only when the person has explicitly asked for a message to be sent.",
    input_schema:{type:"object",properties:{
@@ -4492,7 +4854,10 @@ const AGENT_PRESETS={
    tools:["today","count_leads_by_source"], task:"Write this week's lead summary." },
  outreach:{ label:"Outreach drafter (has a write tool)",
    system:"You help an enrollment advisor follow up with leads.\n\nLook up the lead before drafting anything, so the message is specific.\n\nYou may draft freely. You may not send anything without explicit confirmation from the advisor.",
-   tools:["today","lookup_lead","send_email"], task:"Follow up with lead 1042 about their application." }
+   tools:["today","lookup_lead","send_email"], task:"Follow up with lead 1042 about their application." },
+ capstone:{ label:"\ud83c\udf93 Capstone \u2014 an agent that touches the real world",
+   system:"You help an enrollment advisor draft warm, specific outreach.\n\nLook up the lead before drafting, so the message is grounded in their record. Use the live weather tool for the lead\u2019s city so the opening line lands today rather than any day.\n\nIf a tool fails, say plainly what failed and continue with what you have. Draft only \u2014 never claim anything was sent.",
+   tools:["today","lookup_lead","live_weather"], task:"Look up lead 1042 and draft a two-line outreach that opens with something true about the current weather in Chicago." }
 };
 
 function agentApply(p){
@@ -4521,7 +4886,7 @@ async function agentCall(messages){
 async function agentRun(resumeWith){
  if(AGENT.running)return;
  AGENT.running=true; AGENT.err=""; AGENT.final="";
- if(!resumeWith){AGENT.turns=[];AGENT.usage={in:0,out:0};AGENT.pending=null;}
+ if(!resumeWith){AGENT.turns=[];AGENT.usage={in:0,out:0};AGENT.pending=null;AGENT.liveHit=false;}
  renderAgent();
  var messages=resumeWith||[{role:"user",content:AGENT.task}];
  try{
@@ -4534,7 +4899,7 @@ async function agentRun(resumeWith){
     AGENT.turns.push({n:turn+1,stop:reply.stop_reason,says:says,calls:calls.map(function(c){return {name:c.name,input:c.input};}),results:[]});
     renderAgent();
 
-    if(reply.stop_reason!=="tool_use"){AGENT.final=says||"(no text returned)";break;}
+    if(reply.stop_reason!=="tool_use"){AGENT.final=says||"(no text returned)";if(AGENT.liveHit&&!state.shippedIntegration){state.shippedIntegration=true;recStamp("capstone:live");var pxp=state.xp;addXP(40);commitProgress(pxp);}break;}
 
     /* A write tool pauses for confirmation instead of executing. */
     if(AGENT.confirm){
