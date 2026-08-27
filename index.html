@@ -76,11 +76,12 @@
   html[data-tod="night"] .fold>summary:hover{background:#1a2130}
   html[data-tod]{transition:background .8s ease}
   /* --- wide-desktop layout: use the screen, keep reading comfortable --- */
-  /* Prose is capped near 78 characters; research on line length puts sustained
-     reading comfort in the 60-90 range, and the shell above is far wider now. */
+  /* Prose runs the full width of the shell, by preference. */
   .lessonbody p,.lessonbody ul,.lessonbody ol,.lessonbody .lsetup,
-  .lessonbody .histbeat p,.lessonbody .toolbox p,.lessonbody .diagram{max-width:78ch}
-  .card>p.sub,.card>p.lede{max-width:88ch}
+  .lessonbody .histbeat p,.lessonbody .toolbox p,.lessonbody .diagram{max-width:none}
+  .card>p.sub,.card>p.lede{max-width:none}
+  /* Slightly looser line spacing, which keeps long lines easier to track. */
+  .lessonbody p,.lessonbody li{line-height:1.75}
   /* The banner is width:100%, so a wider shell makes it tall enough to eat the fold. */
   .topbanner{max-height:420px;object-fit:cover;object-position:center 30%}
   @media(max-width:1100px){.topbanner{max-height:none;object-fit:fill}}
