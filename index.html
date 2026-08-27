@@ -4754,8 +4754,12 @@ function finishSession(){
  state.history.push({id:d.id,group:d.group,pick:sess.pick,chosen:d.chosen,score:sess.score,date:todayStr()});
  d.terms.forEach(t=>{if(!state.glossary.some(g=>g.t===t.t))state.glossary.push({t:t.t,d:t.d,from:d.id,fromLabel:`${d.project} · ${d.when}`,group:d.group});});
  commitProgress(prevXp);sess=null;
- root.innerHTML=`<div class="card"><span class="pilltag">✓ Door walked</span><h2>Nicely done.</h2><p class="lede">You reasoned it through and earned XP toward your next rank.</p><div class="prow">${fu?`<button class="btn ghost" id="back">← Back to the lesson</button>`:`<button class="btn ghost" id="again">Another →</button>`}<button class="btn" id="home2">See your progress →</button></div></div>`;
+ const fuIdx=fu?UNITS.findIndex(function(u){return u.id===fu;}):-1;
+ const nextU=(fuIdx>=0&&fuIdx<UNITS.length-1)?UNITS[fuIdx+1]:null;
+ root.innerHTML=`<div class="card"><span class="pilltag">✓ Door walked</span><h2>Nicely done.</h2><p class="lede">You reasoned it through and earned XP toward your next rank.</p><div class="prow">${nextU?`<button class="btn" id="nextU">Next lesson: ${esc(nextU.title)} →</button>`:""}${fu?`<button class="btn${nextU?" ghost":""}" id="back">← Back to the lesson</button>`:`<button class="btn ghost" id="again">Another →</button>`}<button class="btn ghost" id="toPath">🗺️ Learning path</button><button class="btn ghost" id="home2">See your progress →</button></div></div>`;
+ const nx=root.querySelector("#nextU");if(nx)nx.onclick=()=>{tab="learn";learnUnit=nextU.id;sess=null;sab=null;syncTabs();render();window.scrollTo(0,0);};
  const bk=root.querySelector("#back");if(bk)bk.onclick=()=>{tab="learn";learnUnit=fu;syncTabs();render();window.scrollTo(0,0);};
+ const tp=root.querySelector("#toPath");if(tp)tp.onclick=goToPath;
  const ag=root.querySelector("#again");if(ag)ag.onclick=()=>{tab="practice";syncTabs();renderPractice();};
  const hm=root.querySelector("#home2");if(hm)hm.onclick=()=>setTab("home");
 }
