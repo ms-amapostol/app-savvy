@@ -1350,7 +1350,7 @@ GROUP BY cohort_term, pt.seq - start_seq</pre>
 
   ];
 const DECISIONS = [
-  { id:"connector-identity", units:["u35"], project:"Harbor Point member portal", when:"connector review", group:"APIs &amp; secrets",
+  { id:"connector-identity", units:["u35"], project:"Harbor Point member portal", when:"connector review", group:"APIs & secrets",
     context:"<b>Harbor Point</b> want their AI assistant connected to the document store so it can answer from member files. The connector can run as a single service account that can see everything, which works for every member of staff on day one, or as each individual user, which means each person only reaches what their own permissions already allow \u2014 and several staff will find the assistant unhelpfully blind to files they assumed it could see.",
     doorA:{k:"Each user, with their own permissions", s:"Setup per person, and some staff see less than they expected"},
     doorB:{k:"One service account that sees everything", s:"Works for everyone immediately, and permissions stop meaning anything"},
@@ -1404,7 +1404,7 @@ const DECISIONS = [
     otherDoorCost:"Rewording is fast, free, and often works. It also leaves the capability in place, so the failure rate drops without reaching zero, and each recurrence costs you credibility with the partner who has now been told twice that it is fixed.",
     principle:"Where a mistake must not happen, remove the ability rather than restating the rule. Wording lowers the frequency of a behaviour; taking away the tool or the data ends it, and only one of those is something you can promise a client.",
     terms:[{t:"Authority problem",d:"A failure wording cannot fix, because the capability itself is the issue."},{t:"Capability removal",d:"Taking away the tool or data, so the action stops being possible."},{t:"Residual rate",d:"How often a prompt-only fix still fails. Lower than before, above zero."}] },
-  { id:"tool-granularity", units:["u31"], project:"Northwind Logistics dispatch agent", when:"design", group:"APIs &amp; secrets",
+  { id:"tool-granularity", units:["u31"], project:"Northwind Logistics dispatch agent", when:"design", group:"APIs & secrets",
     context:"<b>Northwind Logistics</b> want an agent that answers dispatch questions from their database. You can give it one broad tool that runs any query it writes, or eight narrow tools \u2014 look up a shipment, list today\u2019s exceptions, check a carrier\u2019s status, and so on \u2014 each with fixed parameters.",
     doorA:{k:"Eight narrow tools", s:"More to write, and it can only do what you listed"},
     doorB:{k:"One tool that runs any query", s:"Answers anything, including things you did not intend"},
@@ -1422,7 +1422,7 @@ const DECISIONS = [
     otherDoorCost:"A higher ceiling lets the difficult research complete unattended, which is the case that most justifies the agent existing. It also means a run that misunderstands the task explores for twenty turns, and the first sign is a bill rather than an error.",
     principle:"Set the ceiling from the distribution of real runs rather than the worst case, and treat hitting it as a signal to read rather than a failure to suppress. Raise it deliberately when the logs show work being cut off, which is a decision with evidence behind it.",
     terms:[{t:"Turn ceiling",d:"The maximum rounds a loop may run before stopping."},{t:"Runaway cost",d:"Spend from looping, which shows up on a bill rather than as an error."},{t:"Ceiling-hit rate",d:"How often runs stop at the cap \u2014 the signal that it is set too low."}] },
-  { id:"agent-key-hosting", units:["u33"], project:"Lantern House intake assistant", when:"handover", group:"APIs &amp; secrets",
+  { id:"agent-key-hosting", units:["u33"], project:"Lantern House intake assistant", when:"handover", group:"APIs & secrets",
     context:"<b>Lantern House</b> want the intake assistant you built available to their coordinators. It currently runs as a single HTML file with your key in it, which works today. You can ship it as-is and ask them not to share the file, or spend a week putting a small server in front so the key stays with you and each coordinator signs in.",
     doorA:{k:"A small server holding the key", s:"A week, a hosting bill, and something to maintain"},
     doorB:{k:"Ship the file with the key in it", s:"Working this afternoon, and the key is now theirs"},
@@ -1431,7 +1431,7 @@ const DECISIONS = [
     otherDoorCost:"Shipping the file gets a working tool into their hands the same day, at no cost, which for a stretched team is worth a great deal. It also means the key is readable by anyone who opens the file, it cannot be attributed or capped per person, and revoking it breaks the tool for everyone at once.",
     principle:"A credential in something you hand to someone else is a credential you have given away. Where the tool is going past the person who built it, the key belongs behind a server \u2014 and if that cannot be justified yet, use a separate key with its own spend limit so the blast radius is bounded.",
     terms:[{t:"Client-side secret",d:"A credential in code the user can read. Effectively published."},{t:"Attribution",d:"Knowing which person\u2019s usage produced which cost or action."},{t:"Blast radius",d:"What a leaked key can reach, and what revoking it breaks."}] },
-  { id:"api-or-file", units:["u3"], project:"Northwind Logistics carrier integration", when:"scoping", group:"Data locality &amp; sync",
+  { id:"api-or-file", units:["u3"], project:"Northwind Logistics carrier integration", when:"scoping", group:"Data locality & sync",
     context:"<b>Northwind Logistics</b> need carrier status in their dispatch tool. The carrier offers two ways in: a live API their system can call whenever it wants, which the carrier\u2019s IT will take about six weeks to approve and provision; or a status file dropped to an SFTP folder every night at 2am, which they can switch on this week. Dispatchers currently phone the carrier when they need to know.",
     doorA:{k:"The nightly file", s:"Live this week, and the picture is always yesterday\u2019s"},
     doorB:{k:"The live API", s:"Status on demand, six weeks and an approval away"},
