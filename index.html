@@ -2618,7 +2618,7 @@ const METAS={home:"Your dashboard — how far you've come, and where to go next.
 function setMeta(){const m=document.getElementById("meta");if(quiz){m.style.display="none";return;}m.style.display="block";m.textContent=METAS[tab]||"";}
 function syncTabs(){document.querySelectorAll("#tabs button").forEach(x=>x.classList.toggle("on",x.dataset.tab===tab));}
 function exitActivity(){if(window.speechSynthesis)window.speechSynthesis.cancel();sess=null;sab=null;teachSess=null;state.resume=null;save();render();}
-function setTab(t){if(!state.onboarded)return;if(window.speechSynthesis)window.speechSynthesis.cancel();if(t==="learn"&&tab!=="learn"&&!sess&&!sab)learnUnit=null;tab=t;quiz=null;syncTabs();render();window.scrollTo(0,0);}
+function setTab(t){if(!state.onboarded)return;if(t==="lab"&&tab!=="lab"){LAB.fromUnit=null;LAB.free=false;}if(window.speechSynthesis)window.speechSynthesis.cancel();if(t==="learn"&&tab!=="learn"&&!sess&&!sab)learnUnit=null;tab=t;quiz=null;syncTabs();render();window.scrollTo(0,0);}
 function persistResume(){if(!(sess||sab||teachSess)&&!state.resume)return;if(sess)state.resume={kind:"door",tab:tab,learnUnit:learnUnit,sess:sess};else if(sab)state.resume={kind:"sab",tab:tab,learnUnit:learnUnit,sab:sab};else if(teachSess)state.resume={kind:"teach",tab:tab,teachSess:teachSess};else state.resume=null;save();}
 function restoreResume(){var R=state.resume;if(!R)return;try{if(R.kind==="door"){sess=R.sess;if(sess&&sess.d){var dd=DECISIONS.find(function(x){return x.id===sess.d.id;});if(dd)sess.d=dd;}tab=R.tab||"practice";learnUnit=R.learnUnit;}else if(R.kind==="sab"){sab=R.sab;if(sab&&sab.r){var rr=SABOTAGE.find(function(x){return x.id===sab.r.id;});if(rr)sab.r=rr;}tab=R.tab||"practice";learnUnit=R.learnUnit;}else if(R.kind==="teach"){teachSess=R.teachSess;if(teachSess&&teachSess.u){var uu=UNITS.find(function(x){return x.id===teachSess.u.id;});if(uu)teachSess.u=uu;}tab=R.tab||"practice";}syncTabs();}catch(e){state.resume=null;}}
 function render(){setMeta();persistResume();var tb=document.getElementById("tabs");if(tb){tb.classList.toggle("locked",!state.onboarded);tb.querySelectorAll("button").forEach(function(b){var isKey=b.dataset&&b.dataset.tab==="key";b.style.pointerEvents=(state.onboarded||isKey)?"auto":"none";b.style.opacity=(state.onboarded||isKey)?"":"1";});}var wk=document.getElementById("wick");if(wk)wk.style.display=state.onboarded?"flex":"none";if(!state.onboarded)toggleAsk(false);if(quiz&&tab!=="key"){renderQuiz();return;}if(tab==="home")renderHome();else if(tab==="learn")renderLearn();else if(tab==="practice")renderPractice();else if(tab==="reference")renderReference();else if(tab==="lab")renderLab();else if(tab==="agent"){if(!AGENT.system)agentApply("support");renderAgent();}
@@ -3195,7 +3195,7 @@ function expandAcronyms(html){
   }
   return parts.join("");
 }
-function lessonHTML(u){const doors=doorsForUnit(u.id),dc=doneCountUnit(u.id),learned=state.learned.indexOf(u.id)>=0;const x=EXTRAS[u.id]||{};const obj=x.obj||u.objective;const next=UNITS[UNITS.indexOf(u)+1];return `<div class="card"><button class="pathbtn" data-topath="1">\u2190 Learning path</button><span class="pilltag">${u.emoji} Unit ${UNITS.indexOf(u)+1} · Lesson</span><h2>${esc(u.title)}</h2><div class="objbox"><span class="caps">By the end, you'll be able to</span><div>${esc(obj)}</div></div><h3 style="font-size:18px;margin:22px 0 8px">Key terms</h3><div class="vgrid">${u.vocab.map(v=>`<div class="vcard"><b>${esc(v.t)}</b><div class="d">${esc(v.d)}</div></div>`).join("")}</div><div class="lessonhead"><h3 style="margin:0;font-size:18px">The concept</h3><button class="btn ghost mini" id="listenBtn" data-u="${u.id}">🔊 Listen</button></div>${x.diagram?`<div class="diagram">${x.diagram}</div>`:""}<div class="lessonbody">${expandAcronyms(u.lesson)}</div>${sourcesHTML(u.id)}${x.example?`<h3 style="font-size:18px;margin:22px 0 8px">Worked example</h3><div class="example">${esc(x.example)}</div>`:""}${(u.tries&&u.tries.length)?`<h3 style="font-size:18px;margin:22px 0 8px">Try it in the Lab</h3><p class="muted small" style="margin:0 0 10px">These run against the Lab\u2019s database. Reading them is not the same as running them.</p><div class="labtry">${u.tries.map((t,i)=>`<div class="labtryrow"><div><p>${esc(t.d)}</p><pre>${esc(t.q)}</pre></div><button class="btn ghost mini" data-labtry="${u.id}:${i}">Run it in the Lab ▸</button></div>`).join("")}</div>`:""}<div class="mentor"><span class="caps">\u{1F9ED} Before you walk the door</span><p class="mlead">Quick sense-check — if either of these is fuzzy, the lesson is worth a second pass.</p><ul class="mchk">${(CHECKS[u.id]||[]).map(c=>`<li>${esc(c)}</li>`).join("")}</ul><div class="msay"><span class="caps">And when it comes up, say it like this</span><p>${esc(u.unlock)}</p></div></div><div class="actions"><button class="btn ghost mini" data-learned="${u.id}">${learned?'✓ Marked as learned':'Mark as learned (+15 XP)'}</button>${u.sabotage?`<button class="btn" data-sabotage="${u.id}">Try a sabotage round → <span class="small" style="opacity:.8">(${sabDoneCount()}/${sabPool().length})</span></button>`:`<button class="btn" data-door-unit="${u.id}">Walk through a door → <span class="small" style="opacity:.8">(${dc}/${doors.length})</span></button>`}${next?`<button class="btn ghost mini" data-nextunit="${next.id}">Next lesson →</button>`:""}</div></div>`;}
+function lessonHTML(u){const doors=doorsForUnit(u.id),dc=doneCountUnit(u.id),learned=state.learned.indexOf(u.id)>=0;const x=EXTRAS[u.id]||{};const obj=x.obj||u.objective;const next=UNITS[UNITS.indexOf(u)+1];return `<div class="card"><button class="pathbtn" data-topath="1">\u2190 Learning path</button><span class="pilltag">${u.emoji} Unit ${UNITS.indexOf(u)+1} · Lesson</span><h2>${esc(u.title)}</h2><div class="objbox"><span class="caps">By the end, you'll be able to</span><div>${esc(obj)}</div></div><h3 style="font-size:18px;margin:22px 0 8px">Key terms</h3><div class="vgrid">${u.vocab.map(v=>`<div class="vcard"><b>${esc(v.t)}</b><div class="d">${esc(v.d)}</div></div>`).join("")}</div><div class="lessonhead"><h3 style="margin:0;font-size:18px">The concept</h3><button class="btn ghost mini" id="listenBtn" data-u="${u.id}">🔊 Listen</button></div>${x.diagram?`<div class="diagram">${x.diagram}</div>`:""}<div class="lessonbody">${expandAcronyms(u.lesson)}</div>${sourcesHTML(u.id)}${x.example?`<h3 style="font-size:18px;margin:22px 0 8px">Worked example</h3><div class="example">${esc(x.example)}</div>`:""}${(u.tries&&u.tries.length)?`<h3 style="font-size:18px;margin:22px 0 8px">Run these yourself</h3><p class="muted small" style="margin:0 0 10px">The lesson\u2019s own examples, run against the Lab\u2019s real database. Nothing is graded and nothing has to be unlocked \u2014 press the button, watch the rows come back, then come straight back here. The graded exercises are separate, and they open after you walk this unit\u2019s door.</p><div class="labtry">${u.tries.map((t,i)=>`<div class="labtryrow"><div><p>${esc(t.d)}</p><pre>${esc(t.q)}</pre></div><button class="btn ghost mini" data-labtry="${u.id}:${i}">Run this query ▸</button></div>`).join("")}</div>`:""}<div class="mentor"><span class="caps">\u{1F9ED} Before you walk the door</span><p class="mlead">Quick sense-check — if either of these is fuzzy, the lesson is worth a second pass.</p><ul class="mchk">${(CHECKS[u.id]||[]).map(c=>`<li>${esc(c)}</li>`).join("")}</ul><div class="msay"><span class="caps">And when it comes up, say it like this</span><p>${esc(u.unlock)}</p></div></div><div class="actions"><button class="btn ghost mini" data-learned="${u.id}">${learned?'✓ Marked as learned':'Mark as learned (+15 XP)'}</button>${u.sabotage?`<button class="btn" data-sabotage="${u.id}">Try a sabotage round → <span class="small" style="opacity:.8">(${sabDoneCount()}/${sabPool().length})</span></button>`:`<button class="btn" data-door-unit="${u.id}">Walk through a door → <span class="small" style="opacity:.8">(${dc}/${doors.length})</span></button>`}${next?`<button class="btn ghost mini" data-nextunit="${next.id}">Next lesson →</button>`:""}</div></div>`;}
 /* Display number for a unit. UNITS is sorted into CHAPTERS order at load, so this
    is the same number the lesson header and the journey map show. Never hardcode it. */
 function labStageLabel(st){return unitLabel(st.u);}
@@ -3216,8 +3216,8 @@ function wireLearn(){
  root.querySelectorAll("[data-labtry]").forEach(b=>b.onclick=()=>{
    const parts=b.dataset.labtry.split(":"),u=UNITS.find(x=>x.id===parts[0]);
    if(!u||!u.tries||!u.tries[+parts[1]])return;
-   LAB.free=true;LAB.lesson=null;LAB.sql=u.tries[+parts[1]].q;LAB.res=null;LAB.err="";LAB.verdict=null;
-   setTab("lab");window.scrollTo(0,0);
+   LAB.free=true;LAB.lesson=null;LAB.fromUnit=u.id;LAB.sql=u.tries[+parts[1]].q;LAB.res=null;LAB.err="";LAB.verdict=null;
+   tab="lab";quiz=null;syncTabs();render();labBoot();window.scrollTo(0,0);
    var t=setInterval(function(){if(LAB.db){clearInterval(t);labDoRun();}},120);
    setTimeout(function(){clearInterval(t);},9000);
  });
@@ -3418,7 +3418,7 @@ function wireTeach(){
  ensureScenario();const s=root.querySelector("#teachSubmit");if(s)s.onclick=async()=>{const t=root.querySelector("#teachT");teachSess.text=t?t.value.trim():"";if(!teachSess.text){if(t)t.focus();return;}s.textContent="✨ Reading…";s.disabled=true;const u=teachSess.u,x=EXTRAS[u.id]||{};teachSess.fb=await teachFeedback(u.title,(x.obj||u.objective),teachSess.text);renderPractice();};const a=root.querySelector("#teachAgain");if(a)a.onclick=()=>startTeach();const dn=root.querySelector("#teachDone");if(dn)dn.onclick=()=>{const p=state.xp;state.resume=null;bumpStreak();addXP(15);commitProgress(p);teachSess=null;renderPractice();};var sn=root.querySelector("#scenNew");if(sn)sn.onclick=reshuffleScenario;var ex=root.querySelector("#exitAct");if(ex)ex.onclick=function(){exitActivity();};var tt=root.querySelector("#teachT");if(tt)tt.oninput=function(){teachSess.text=tt.value;persistResume();};}
 /* ===== SQL LAB ===== */
 const LAB_CDN="https://cdnjs.cloudflare.com/ajax/libs/sql.js/1.10.3/";
-let LAB={db:null,loading:false,error:"",ex:null,sql:"",res:null,err:"",verdict:null,hint:false,shown:false,free:false,stage:null};
+let LAB={db:null,loading:false,error:"",ex:null,sql:"",res:null,err:"",verdict:null,hint:false,shown:false,free:false,fromUnit:null,stage:null};
 
 function labLoadFrom(base){return new Promise(function(res,rej){
   function boot(){ if(typeof initSqlJs!=="function"){rej(new Error("script loaded but engine missing"));return;}
@@ -3790,8 +3790,12 @@ function renderLab(){
     return;
   }
   if(LAB.free){
-    body='<div class="card"><button class="exitbtn" id="labExitFree">✕ exit</button><span class="pilltag">🔓 Free query</span><h2>Ask it anything</h2>'+
-     '<p class="sub">No checking, no grading. Poke at the data until it makes sense.</p>'+
+    var fromU=LAB.fromUnit?UNITS.filter(function(x){return x.id===LAB.fromUnit;})[0]:null;
+    body='<div class="card">'+(fromU?'':'<button class="exitbtn" id="labExitFree">✕ exit</button>')+
+     (fromU?'<button class="pathbtn" id="labBackUnit">\u2190 Back to '+unitLabel(fromU.id)+'</button>':'')+
+     '<span class="pilltag">'+(fromU?'\u25b8 Example from the lesson':'🔓 Free query')+'</span>'+
+     '<h2>'+(fromU?esc(fromU.title):'Ask it anything')+'</h2>'+
+     '<p class="sub">'+(fromU?'One of '+unitLabel(fromU.id)+'\u2019s examples, running for real. Nothing here is graded \u2014 change it, break it, run it again. The graded exercises live on the Lab\u2019s own page and open once you have walked this unit\u2019s door.':'No checking, no grading. Poke at the data until it makes sense.')+'</p>'+
      '<textarea class="labed" id="labSql" spellcheck="false" placeholder="SELECT channel, COUNT(*) FROM leads GROUP BY channel">'+esc(LAB.sql)+'</textarea>'+
      '<div class="actions"><button class="btn ghost mini" id="labAskAI">✨ Ask about this</button><button class="btn" id="labRunBtn">Run ▸</button></div>'+
      (LAB.err?'<div class="laberr">'+esc(LAB.err)+"</div>":"")+
@@ -3837,8 +3841,9 @@ function renderLab(){
        '<div class="actions" style="margin-top:12px"><button class="btn ghost mini" id="labPrev">\u2039 previous</button><button class="btn ghost mini" id="labSkip">next \u203a</button></div></div>';
     }
   }
-  root.innerHTML=head+body;
+  root.innerHTML=(LAB.free&&LAB.fromUnit?"":head)+body;
   labWireHead();labWireBody();
+  var bu=document.getElementById("labBackUnit");if(bu)bu.onclick=function(){var uid=LAB.fromUnit;LAB.free=false;LAB.fromUnit=null;LAB.sql="";LAB.res=null;LAB.err="";learnUnit=uid;sess=null;sab=null;tab="learn";syncTabs();render();window.scrollTo(0,0);};
   var g9=document.getElementById("labGoU9");if(g9)g9.onclick=function(){learnUnit="u9";sess=null;sab=null;tab="learn";syncTabs();render();window.scrollTo(0,0);};
 }
 function labBoot(){
@@ -3848,16 +3853,16 @@ function labBoot(){
 }
 function labWireHead(){
   var a=document.getElementById("labSchema");if(a)a.onclick=function(){LAB.showSchema=!LAB.showSchema;render();};
-  var f=document.getElementById("labFree");if(f)f.onclick=function(){LAB.free=true;LAB.res=null;LAB.err="";LAB.verdict=null;LAB.sql="";render();};
+  var f=document.getElementById("labFree");if(f)f.onclick=function(){LAB.free=true;LAB.fromUnit=null;LAB.res=null;LAB.err="";LAB.verdict=null;LAB.sql="";render();};
   document.querySelectorAll("[data-stage]").forEach(function(b){b.onclick=function(){
     var sid=b.dataset.stage;
-    LAB.free=false;LAB.lesson=null;
+    LAB.free=false;LAB.fromUnit=null;LAB.lesson=null;
     if(!labOpen(sid)){LAB.locked=sid;render();return;}
     LAB.locked=null;
     var list=labStageEx(sid),nx=list.filter(function(e){return !labIsDone(e.id);})[0]||list[0];
     labGo(nx);};});
 }
-function labGo(ex){LAB.ex=ex;LAB.lesson=null;LAB.locked=null;LAB.free=false;LAB.sql="";LAB.res=null;LAB.err="";LAB.verdict=null;LAB.hint=false;LAB.shown=false;render();}
+function labGo(ex){LAB.ex=ex;LAB.lesson=null;LAB.locked=null;LAB.free=false;LAB.fromUnit=null;LAB.sql="";LAB.res=null;LAB.err="";LAB.verdict=null;LAB.hint=false;LAB.shown=false;render();}
 function labWireBody(){
   var ta=document.getElementById("labSql");
   if(ta){ta.oninput=function(){LAB.sql=ta.value;};
