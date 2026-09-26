@@ -557,6 +557,8 @@
   .askimg img{width:52px;height:52px;object-fit:cover;border-radius:7px;border:1px solid var(--mintline)}
   .askimg .aif{flex:1;font-size:12.5px;color:var(--muted)}
   .askimg button{background:none;border:none;color:var(--bad);cursor:pointer;font-family:inherit;font-size:12.5px;padding:4px}
+  .rungwick{background:var(--mint2);border:1px solid var(--mintline);border-left:3px solid var(--teal);border-radius:0 12px 12px 0;padding:11px 15px;margin:0 0 16px}
+  .rungwick p{margin:6px 0 0;font-size:14px;line-height:1.6;color:var(--muted)}
   .rungnav{display:flex;flex-wrap:wrap;gap:8px;margin:0 0 16px}
   .rungchip{display:flex;flex-direction:column;gap:2px;align-items:flex-start;background:var(--surface);border:1px solid var(--mintline);border-radius:11px;padding:7px 13px;cursor:pointer;font-family:inherit;text-align:left;color:var(--muted)}
   .rungchip:hover{border-color:var(--teal)}
@@ -956,8 +958,8 @@ LIMIT    how many to return</pre>
     `,
     vocab:[{t:"SQL",d:"The language for asking a database a question."},{t:"Row / column",d:"A record, and a fact about that record. A table is rows of them."},{t:"SELECT / FROM",d:"Which columns you want, and which table they live in."},{t:"WHERE",d:"Keeps only the rows that pass a test. Text in single quotes, one equals sign, case-sensitive."},{t:"ORDER BY",d:"Sorts the result. Without it, a database promises nothing about order."},{t:"LIMIT",d:"Caps how many rows come back \u2014 a habit, not a nicety, against a big table."},{t:"DISTINCT",d:"Collapses duplicate rows so each value appears once."},{t:"Metric definition",d:"The agreed formula behind a number \u2014 the one thing that must not vary by tool."}],
     tries:[{d:"Every column, five rows, just to see the shape of it",q:"SELECT * FROM leads LIMIT 5",n:"Five rows, every column. This is the move you make first on any table you have never seen — before writing a single condition, look at what is actually in there. Note the column names; you will be typing them for the rest of the unit."},
-      {d:"Two columns, filtered, sorted, capped",q:"SELECT id, created_date\nFROM leads\nWHERE channel = 'Events'\nORDER BY created_date DESC\nLIMIT 8",a:"List the id and created_date of the 8 most recent Events leads, newest first.",n:"Eight rows, newest first, events only. Every clause did one job: WHERE narrowed, ORDER BY sorted, LIMIT capped. Take LIMIT off and you get every events lead; take ORDER BY off and the eight you get are arbitrary."},
-      {d:"The silent failure \u2014 wrong case, zero rows, no error",q:"SELECT id FROM leads WHERE channel = 'events'",a:"Return the id of every lead whose channel is <b>'events'</b> \u2014 lowercase, exactly as written here. Run it, then look hard at what comes back and at what does not happen.",n:"Zero rows, and no error anywhere. The channel is stored as 'Events', so lowercase matched nothing — and a query that finds nothing looks exactly like a query that correctly found nothing. This is the failure to fear: it does not announce itself, it just quietly reports zero."}],
+      {d:"Two columns, filtered, sorted, capped",q:"SELECT id, created_date\nFROM leads\nWHERE channel = 'Events'\nORDER BY created_date DESC\nLIMIT 8",a:"List the id and created_date of the 8 most recent leads whose <b>channel</b> is <b>\u2018Events\u2019</b> \u2014 newest date first.",n:"Eight rows, newest first, events only. Every clause did one job: WHERE narrowed, ORDER BY sorted, LIMIT capped. Take LIMIT off and you get every events lead; take ORDER BY off and the eight you get are arbitrary."},
+      {d:"The silent failure \u2014 wrong case, zero rows, no error",q:"SELECT id FROM leads WHERE channel = 'events'",a:"Return the id of every lead whose <b>channel</b> is <b>'events'</b> \u2014 lowercase, exactly as written here. Run it, then look hard at what comes back and at what does not happen.",n:"Zero rows, and no error anywhere. The channel is stored as 'Events', so lowercase matched nothing — and a query that finds nothing looks exactly like a query that correctly found nothing. This is the failure to fear: it does not announce itself, it just quietly reports zero."}],
     unlock:"“Let me open the query before we put that number in the deck.”" },
 
   { id:"u10", emoji:"📊", title:"Rows into a number",
@@ -2793,7 +2795,7 @@ function renderAsk(){
  const disabled=!AI_ON;
  var t=askState.thread,body="";
  if(!t.length){
-  body='<p class="muted small" style="margin:0 0 10px">Ask me about any concept, or about App Savvy itself. I can see what is on your screen, so \u201cwhat does this mean?\u201d works. Keep asking follow-ups \u2014 I remember the conversation.'+(disabled?' <b>Add your key in AI &amp; Data to switch this on.</b>':'')+'</p>';
+  body='<p class="muted small" style="margin:0 0 10px">Ask me about any concept, or about App Savvy itself. I can see what is on your screen, so \u201cwhat does this mean?\u201d works. Keep asking follow-ups \u2014 I remember the conversation, and the box stays empty so you can just keep going. Press <b>Done \u2713</b> when you want to close this one out and start a fresh conversation.'+(disabled?' <b>Add your key in AI &amp; Data to switch this on.</b>':'')+'</p>';
  } else {
   body='<div class="athread" id="athread">'+t.map(function(m){
     var cls=m.role==="user"?"me":"ai";
@@ -2803,7 +2805,7 @@ function renderAsk(){
  }
  var composer="";
  if(!askState.ended){
-  composer='<textarea id="askQ" placeholder="'+(t.length?"Ask a follow-up\u2026":"e.g. What is Postgres, and do I need to care?")+'" style="min-height:56px">'+esc(askState.q)+'</textarea>'
+  composer='<textarea id="askQ" placeholder="'+(t.length?"Ask Wick a follow-up\u2026":"Ask Wick for help \u2014 e.g. what goes next to WHERE?")+'" style="min-height:56px">'+esc(askState.q)+'</textarea>'
    +askImgHTML()
    +'<div class="actions askrow"><label class="btn ghost mini" for="askImgIn">📷 Picture</label>'
    +(t.length?'<button class="btn ghost mini" id="askDone">Done \u2713</button>':'')
@@ -3873,11 +3875,32 @@ function rungQuiz(q){
     return {ask:c[1],ans:c[0],opts:opts};
   });
 }
+/* The clause quiz asks which keyword does each job. These are the small words that
+   ride along inside a clause and decide the answer — the ones a beginner cannot guess. */
+const SQL_MODIFIERS=[
+ [/\bDESC\b/,"ORDER BY","<b>DESC</b> goes on the end of ORDER BY and flips the sort: newest, largest, or Z first. Leave it off and you get the default, which is oldest or smallest first."],
+ [/\bDISTINCT\b/i,"SELECT / COUNT","<b>DISTINCT</b> means \u201ccount or list each value once.\u201d COUNT(DISTINCT lead_id) counts people; COUNT(lead_id) counts rows."],
+ [/IS\s+NULL/i,"WHERE","<b>IS NULL</b> is how you test for nothing. Not = NULL \u2014 that matches nothing at all, silently."],
+ [/\*\s*1\.0|1\.0\s*\*/,"the division","<b>\u00d7 1.0</b> turns whole-number division into decimal division. Without it, 538 / 1320 comes back as 0."],
+ [/PARTITION\s+BY/i,"OVER","<b>PARTITION BY</b> sits inside OVER() and restarts the calculation for each group."],
+ [/\bLAG\(/i,"OVER","<b>LAG(x)</b> reaches back one row in the order you set, so last period sits beside this one."],
+ [/ROW_NUMBER\(/i,"OVER","<b>ROW_NUMBER()</b> numbers the rows 1, 2, 3 in the order you give OVER()."],
+ [/CASE\s+WHEN/i,"SELECT","<b>CASE WHEN \u2026 THEN 1 ELSE 0 END</b> writes a 1 or a 0 per row, so SUM() of it counts a subset."],
+ [/ROUND\(/i,"SELECT","<b>ROUND(x, 3)</b> trims to three decimals \u2014 a rate is unreadable without it."],
+ [/COUNT\(\s*\*/,"SELECT","<b>COUNT(*)</b> counts rows. COUNT(a_column) skips the rows where that column is empty."]
+];
+function rungModsHTML(q){
+  var hits=[];
+  SQL_MODIFIERS.forEach(function(m){if(hits.length<3&&m[0].test(q))hits.push(m);});
+  if(!hits.length)return "";
+  return '<div class="labkeys" style="margin-top:14px">'+hits.map(function(m){
+    return '<div class="labkey"><b>'+esc(m[1])+'</b><span>'+m[2]+'</span></div>';}).join("")+'</div>';
+}
 function rungQuizHTML(q){
   var qs=rungQuiz(q);
   if(!qs.length)return "";
   return '<div class="labhow"><span class="caps">\ud83e\udde0 Before you write it</span>'+
-   '<p class="muted small" style="margin:8px 0 10px">Which keyword does each job? Tap one.</p>'+
+   '<p class="muted small" style="margin:8px 0 10px">Which keyword does each job? Tap one. The notes at the bottom are the small words that live <i>inside</i> a clause \u2014 the ones you cannot guess.</p>'+
    qs.map(function(x,i){
      var picked=(LAB.quiz||{})["q"+i];
      return '<div class="rungq"><p class="rungask">'+esc(x.ask)+'</p><div class="rungopts">'+
@@ -3887,7 +3910,7 @@ function rungQuizHTML(q){
        }).join("")+'</div>'+
        (picked?'<p class="rungfb">'+(picked===x.ans?"\u2713 ":"The answer is <b>"+esc(x.ans)+"</b>. ")+esc(x.ask)+'</p>':"")+
      '</div>';
-   }).join("")+'</div>';
+   }).join("")+rungModsHTML(q)+'</div>';
 }
 /* Check a rung answer against the reference query's own result. */
 function labDemoCheck(ref){
@@ -4006,6 +4029,7 @@ function renderLab(){
      (fromU?rungNavHTML(fromU):"")+
      '<h2>'+(fromU?esc(rung>1?fromU.title:(demoTry&&demoTry.d?demoTry.d:fromU.title)):'Ask it anything')+'</h2>'+
      '<p class="sub">'+(meta?meta.lead:'No checking, no grading. Poke at the data until it makes sense.')+'</p>'+
+     ((rung>1)?'<div class="rungwick"><span class="caps">\ud83d\udca1 Getting stuck here is the design</span><p>These rungs are meant to sit just past what you already know \u2014 if you find yourself short a word, that is the rung working, not you failing. Tap <b>\u2728 Ask about this</b> below or the <b>\ud83d\udca1 Wick</b> bulb in the corner and ask in plain words: <i>what goes next to WHERE?</i> Leaning on Wick is how the fluency builds.</p></div>':"")+
      ((rung>1&&demoTry&&demoTry.a)?'<div class="rungask2"><span class="caps">\ud83d\udcdd What to write</span><p>'+demoTry.a+'</p></div>':"")+
      ((rung>1)?rungTablesHTML(ref):"")+
      /* rung 1 — the query to copy, plus the line-by-line table */
@@ -4137,7 +4161,11 @@ function labWireBody(){
     if(LAB.err)parts.push("The database gave me this error: "+LAB.err);
     else if(LAB.verdict&&!LAB.verdict.ok)parts.push("It runs, but the lab says: "+LAB.verdict.msg);
     parts.push("Explain what is going wrong and nudge me toward the fix. Please don't just hand me the finished query.");
-    askState.q=parts.join("\n\n");askState.a="";askState.suggest=null;toggleAsk(true);};
+    /* Only write the starter prompt into an empty conversation. Mid-thread, leave the
+       box alone so a follow-up does not arrive with boilerplate stuck to the front. */
+    if(!askState.thread.length&&!askState.ended){askState.q=parts.join("\n\n");askState.suggest=null;}
+    else if(!askState.q.trim()&&askState.ended){askState.q=parts.join("\n\n");}
+    toggleAsk(true);};
 }
 function labDoRun(){
   if(!LAB.db)return;
