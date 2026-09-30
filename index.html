@@ -1940,6 +1940,22 @@ function bumpStreak(){const t=todayStr();if(state.lastDay===t)return;
 function graceAvailable(){if(!state.graceUsed)return true;return (new Date(todayStr()+"T00:00:00")-new Date(state.graceUsed+"T00:00:00"))/864e5>=7;}
 
 /* ===== AI ===== */
+/* The API marks a reply that ran out of room with stop_reason "max_tokens".
+   When that happens, cut back to the last complete sentence so nobody ever reads
+   a thought that stops mid-word. lastStopReason lets a caller retry if it needs
+   the ending (a scenario's question lives in its last sentence). */
+var lastStopReason="";
+function trimToSentence(txt){
+  var t=String(txt||"").trim();
+  var m=t.match(/^[\s\S]*[.!?\u2026](?:["\u201d\u2019')\]]*)(?=\s|$)/);
+  if(m&&m[0].length>=t.length*0.4)return m[0].trim();
+  return t.replace(/[\s,;:\u2014-]+\S*$/,"").trim()+"\u2026";
+}
+function finishReply(j,txt){
+  lastStopReason=(j&&j.stop_reason)||"";
+  if(txt&&lastStopReason==="max_tokens")txt=trimToSentence(txt);
+  return txt;
+}
 async function callClaudeThread(system,messages,maxTokens){
  if(GAS){var flat=messages.map(function(m){return (m.role==="user"?"Q: ":"A: ")+(typeof m.content==="string"?m.content:m.content.filter(function(b){return b.type==="text";}).map(function(b){return b.text;}).join(" "));}).join("\n\n");
   try{var t=await gcall("aiCall",system,flat,maxTokens||300);return t||null;}catch(e){return null;}}
@@ -1948,10 +1964,11 @@ async function callClaudeThread(system,messages,maxTokens){
   if(!r.ok){var msg="";try{var e=await r.json();msg=(e.error&&e.error.message)?e.error.message:JSON.stringify(e);}catch(_){msg=r.statusText||"";}lastAIError="Error "+r.status+": "+msg;return null;}
   const j=await r.json();lastAIError="";var txt="";
   if(j.content&&j.content.length){for(var i=0;i<j.content.length;i++){if(j.content[i]&&j.content[i].type==="text"&&j.content[i].text){txt=j.content[i].text;break;}}}
+  txt=finishReply(j,txt);
   return txt?txt.trim():null;
  }catch(e){lastAIError="Could not reach Anthropic (network or CORS): "+e.message;return null;}
 }
-let lastAIError="";async function callClaude(system,user,maxTokens){if(GAS&&Array.isArray(user)){user=user.filter(function(b){return b.type==="text";}).map(function(b){return b.text;}).join("\n");}if(GAS){try{var t=await gcall("aiCall",system,user,maxTokens||300);return t||null;}catch(e){return null;}} if(!state.apiKey){lastAIError="No API key set.";return null;} try{const r=await fetch("https://api.anthropic.com/v1/messages",{method:"POST",headers:{"content-type":"application/json","x-api-key":state.apiKey,"anthropic-version":"2023-06-01","anthropic-dangerous-direct-browser-access":"true"},body:JSON.stringify({model:"claude-sonnet-5",max_tokens:maxTokens||300,system:system,messages:[{role:"user",content:user}]})}); if(!r.ok){var msg="";try{var e=await r.json();msg=(e.error&&e.error.message)?e.error.message:JSON.stringify(e);}catch(_){msg=r.statusText||"";}lastAIError="Error "+r.status+": "+msg;return null;} const j=await r.json();lastAIError="";var txt="";if(j.content&&j.content.length){for(var i=0;i<j.content.length;i++){if(j.content[i]&&j.content[i].type==="text"&&j.content[i].text){txt=j.content[i].text;break;}}}if(!txt){lastAIError="Got a reply but found no text block. Blocks: "+(j.content?j.content.map(function(b){return b.type;}).join(", "):"none");}return txt?txt.trim():null; }catch(e){lastAIError="Could not reach Anthropic (network or CORS): "+e.message;return null;}}
+let lastAIError="";async function callClaude(system,user,maxTokens){if(GAS&&Array.isArray(user)){user=user.filter(function(b){return b.type==="text";}).map(function(b){return b.text;}).join("\n");}if(GAS){try{var t=await gcall("aiCall",system,user,maxTokens||300);return t||null;}catch(e){return null;}} if(!state.apiKey){lastAIError="No API key set.";return null;} try{const r=await fetch("https://api.anthropic.com/v1/messages",{method:"POST",headers:{"content-type":"application/json","x-api-key":state.apiKey,"anthropic-version":"2023-06-01","anthropic-dangerous-direct-browser-access":"true"},body:JSON.stringify({model:"claude-sonnet-5",max_tokens:maxTokens||300,system:system,messages:[{role:"user",content:user}]})}); if(!r.ok){var msg="";try{var e=await r.json();msg=(e.error&&e.error.message)?e.error.message:JSON.stringify(e);}catch(_){msg=r.statusText||"";}lastAIError="Error "+r.status+": "+msg;return null;} const j=await r.json();lastAIError="";var txt="";if(j.content&&j.content.length){for(var i=0;i<j.content.length;i++){if(j.content[i]&&j.content[i].type==="text"&&j.content[i].text){txt=j.content[i].text;break;}}}if(!txt){lastAIError="Got a reply but found no text block. Blocks: "+(j.content?j.content.map(function(b){return b.type;}).join(", "):"none");}txt=finishReply(j,txt);return txt?txt.trim():null; }catch(e){lastAIError="Could not reach Anthropic (network or CORS): "+e.message;return null;}}
 
 /* ===== GAMIFICATION ===== */
 const SQLPLAN=[{"w":"Week 1","t":"Fundamentals I","d":"SELECT, WHERE, ORDER BY. Mode Analytics' free tutorial or the DataCamp SQL track. An hour a sitting is plenty."},{"w":"Week 2","t":"Fundamentals II","d":"GROUP BY, the aggregate functions, HAVING. This is where a table of rows turns into a summary."},{"w":"Week 3","t":"Fundamentals III","d":"JOINs and CTEs. With these you can already answer most questions a business role asks."},{"w":"Week 4","t":"Get access","d":"Ask for a sandbox or a read replica behind the dashboards. This week is a request rather than a lesson, so start it early."},{"w":"Week 5","t":"Rebuild a number you know","d":"Pick one metric you can state from memory and reproduce it. You will spot a wrong answer instantly, which is the whole point of starting here."},{"w":"Week 6","t":"Split it by segment","d":"The same metric by channel, region, or product. Watch what happens to the denominator each time."},{"w":"Week 7","t":"Reconcile a disagreement","d":"Find two sources quoting one metric differently and prove which is right. This is the skill in its purest form."},{"w":"Week 8","t":"Save it as a view","d":"Turn your best query into something another tool can read. Now you have shipped a definition rather than an answer."},{"w":"Week 9","t":"Window functions I","d":"ROW_NUMBER, RANK, LAG. This is the line between knowing SQL and doing analytics."},{"w":"Week 10","t":"Window functions II","d":"Running totals and period-over-period change, without ever leaving the query."},{"w":"Week 11","t":"Cohort retention","d":"The most-asked pattern in interviews, and the same math as logo retention at any subscription business."},{"w":"Week 12","t":"Write two of them up","d":"Problem, query, what it showed, what changed. Two pages that make the skill visible to somebody who was not in the room."}];
@@ -3200,11 +3217,14 @@ function reshuffleScenario(){
  else if(teachSess){teachSess.scenario=null;teachSess.scenLoading=false;renderPractice();ensureScenario();}
 }
 async function makeScenario(uid,concept){
- var sys="You write short, vivid role-play prompts for an adult learning app that teaches software judgment to business-side people. Output ONE scenario, 2-3 sentences, no preamble and no quotation marks around it. Requirements: the situation MUST be about the specific concept given \u2014 if the concept is about DNS, the scenario is about a domain or a cutover; if it is about data residency, the scenario is about where data physically lives. Do not substitute a generic build-versus-patch or spreadsheet-outgrown-itself story. Name a specific small or mid-size company and one named person with a job title; give a concrete reason they are asking right now; include a real consequence or deadline; end by asking the learner to explain that concept in plain words. Never use technical jargon in the ask itself. Vary the industry each time. Write in second person to the learner.";
+ var sys="You write short, vivid role-play prompts for an adult learning app that teaches software judgment to business-side people. Output ONE scenario of three sentences at most and under 80 words, no preamble and no quotation marks around it. The last sentence must be the question to the learner. Requirements: the situation MUST be about the specific concept given \u2014 if the concept is about DNS, the scenario is about a domain or a cutover; if it is about data residency, the scenario is about where data physically lives. Do not substitute a generic build-versus-patch or spreadsheet-outgrown-itself story. Name a specific small or mid-size company and one named person with a job title; give a concrete reason they are asking right now; include a real consequence or deadline; end by asking the learner to explain that concept in plain words. Never use technical jargon in the ask itself. Vary the industry each time. Write in second person to the learner.";
  var usr="Concept to be explained: "+concept+". The learner works in: "+roleLine()+". Write the scenario.";
- var out=await callClaude(sys,usr,300);
- if(!out)return fallbackScenario(uid,concept);
- return out.replace(/^["\u201c]|["\u201d]$/g,"").trim();
+ /* A scenario is only usable if it arrives whole and ends on its question.
+    Ask once more if the first attempt ran long, then fall back to a written one. */
+ var ok=function(t){t=(t||"").replace(/^["\u201c]|["\u201d]$/g,"").trim();return t&&lastStopReason!=="max_tokens"&&/[?]["\u201d\u2019)]*$/.test(t)?t:null;};
+ var out=ok(await callClaude(sys,usr,600));
+ if(!out)out=ok(await callClaude(sys+" Keep it short: two sentences, the second one the question.",usr,600));
+ return out||fallbackScenario(uid,concept);
 }
 async function teachFeedback(concept,model,text){const sys="You are a warm teaching coach for a business person becoming fluent in software (not an engineer). They just explained a concept to a non-technical client (a business owner) on a call. In 2-3 short sentences: praise what landed, then one concrete way to make it clearer or more accurate. Plain language, encouraging, no jargon. End with a short verdict line.";const usr="Concept: "+concept+". A strong explanation would get across: "+model+". Their explanation: "+text;const out=await callClaude(sys,usr,450);return out||((state.apiKey&&lastAIError)?("(AI feedback unavailable — "+lastAIError+") "):"")+"Nice work. The real test: would a non-technical friend get it from what you wrote? Check that you named the core idea and why it matters, in plain words — if yes, you have it.";}
 function startTeach(){const cands=UNITS.filter(u=>!u.sabotage);const learned=cands.filter(u=>state.learned.indexOf(u.id)>=0);const pool=learned.length?learned:cands;const u=pool[Math.floor(Math.random()*pool.length)];teachSess={u:u,text:"",fb:"",ownerTab:"practice",scenario:null,loadingScenario:true};tab="practice";syncTabs();render();window.scrollTo(0,0);makeScenario(u.id,u.title).then(function(sc){if(teachSess){teachSess.scenario=sc;teachSess.loadingScenario=false;persistResume();if(tab==="practice")renderPractice();}});}
