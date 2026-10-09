@@ -685,7 +685,12 @@
   .rungask2{background:var(--goldbg,var(--mint2));border:1px solid var(--mintline);border-left:3px solid var(--gold,#c2913a);border-radius:0 12px 12px 0;padding:12px 16px;margin:0 0 14px}
   .rungask2 p{margin:6px 0 0;font-size:15.5px;line-height:1.65}
   .rungref{background:var(--mint2);border:1px solid var(--mintline);border-radius:12px;padding:12px 15px;margin-bottom:14px}
-  .rungref pre{font-family:ui-monospace,SFMono-Regular,Menlo,monospace;font-size:13px;line-height:1.7;white-space:pre-wrap;margin:8px 0 0;color:var(--teal-deep);overflow-x:auto}
+  .rungprevs{display:grid;gap:8px;margin:0 0 12px}
+.rungprev{border:1px dashed var(--mintline);border-radius:10px;padding:8px 12px;background:var(--surface)}
+.rungprev summary{cursor:pointer;font-size:13.5px;font-weight:600;color:var(--teal-deep)}
+.rungprev pre{font-family:ui-monospace,SFMono-Regular,Menlo,monospace;font-size:12.5px;line-height:1.65;white-space:pre-wrap;margin:8px 0 2px;color:var(--ink);overflow-x:auto}
+.rungwipe{display:flex;flex-wrap:wrap;align-items:center;gap:8px;margin:6px 0 2px}
+.rungref pre{font-family:ui-monospace,SFMono-Regular,Menlo,monospace;font-size:13px;line-height:1.7;white-space:pre-wrap;margin:8px 0 0;color:var(--teal-deep);overflow-x:auto}
   .rungmatch{font-size:13px;color:var(--muted);margin:8px 2px 0}
   .rungmatch.ok{color:var(--teal-deep);font-weight:600}
   .rungq{padding:10px 0;border-top:1px solid var(--line)}
@@ -3379,7 +3384,7 @@ function wireLearn(){
    const parts=b.dataset.labtry.split(":"),u=UNITS.find(x=>x.id===parts[0]);
    if(!u||!u.tries||!u.tries[+parts[1]])return;
    LAB.free=true;LAB.lesson=null;LAB.fromUnit=u.id;LAB.fromTry=+parts[1];LAB.rung=demoRung(+parts[1]);LAB.quiz={};LAB.hint=false;LAB.shown=false;
-   LAB.sql="";LAB.res=null;LAB.err="";LAB.verdict=null;
+   LAB.sql=rungSaved(u.id,+parts[1]);LAB.res=null;LAB.err="";LAB.verdict=null;LAB.wipe=false;
    tab="lab";quiz=null;syncTabs();render();labBoot();window.scrollTo(0,0);
    var t=setInterval(function(){if(LAB.db){clearInterval(t);labDoRun();}},120);
    setTimeout(function(){clearInterval(t);},9000);
@@ -3738,8 +3743,9 @@ function rungTablesHTML(q){
 function labGoRung(ni){
   var u=UNITS.filter(function(x){return x.id===LAB.fromUnit;})[0];
   if(!u||!u.tries||!u.tries[ni])return;
+  rungKeep();
   LAB.fromTry=ni;LAB.rung=demoRung(ni);LAB.quiz={};LAB.hint=false;LAB.shown=false;LAB.peek=true;
-  LAB.sql="";LAB.res=null;LAB.err="";LAB.verdict=null;render();window.scrollTo(0,0);
+  LAB.sql=rungSaved(u.id,ni);LAB.res=null;LAB.err="";LAB.verdict=null;LAB.wipe=false;render();window.scrollTo(0,0);
 }
 function rungNavHTML(u){
   if(!u||!u.tries||u.tries.length<2)return "";
@@ -3753,6 +3759,23 @@ function rungNavHTML(u){
   (ladderDone(u)?'<span class="rungall">\ud83e\ude9c Ladder complete</span>':'<span class="rungcount">'+u.tries.filter(function(_,i){return rungIsDone(u.id,i);}).length+" of "+u.tries.length+" done</span>")+'</div>';
 }
 function rungKey(uid,i){return uid+":"+i;}
+/* What you typed on each rung, kept until you choose Start over. */
+function rungSaved(uid,i){return ((state.rungSql||{})[rungKey(uid,i)])||"";}
+var rungSaveT=null;
+function rungKeep(){
+  if(!LAB.fromUnit||LAB.fromTry==null)return;
+  state.rungSql=state.rungSql||{};var k=rungKey(LAB.fromUnit,LAB.fromTry);
+  if((LAB.sql||"").trim())state.rungSql[k]=LAB.sql;else delete state.rungSql[k];
+  clearTimeout(rungSaveT);rungSaveT=setTimeout(save,400);
+}
+/* Earlier rungs of this ladder, as read-only references above the editor. The one just before is open. */
+function rungRefsHTML(u){
+  if(!u||!u.tries||!LAB.fromTry)return "";
+  var out=[];
+  for(var i=LAB.fromTry-1;i>=0;i--){var s=rungSaved(u.id,i);if(!s)continue;
+    out.push('<details class="rungprev"'+(i===LAB.fromTry-1?" open":"")+'><summary>\ud83d\udcce Your query from step '+(i+1)+' \u2014 '+esc(u.tries[i].d||"")+'</summary><pre>'+esc(s)+'</pre></details>');}
+  return out.length?'<div class="rungprevs">'+out.join("")+'</div>':"";
+}
 function rungIsDone(uid,i){return (state.rungsDone||[]).indexOf(rungKey(uid,i))>=0;}
 function ladderDone(u){return !!(u&&u.tries&&u.tries.length&&u.tries.every(function(_,i){return rungIsDone(u.id,i);}));}
 /* Record a finished rung. The whole ladder finishing gets the confetti. */
@@ -3975,7 +3998,9 @@ function renderLab(){
      ((rung===3)?'<p class="muted small" style="margin:-4px 0 12px">Stuck? Take a hint before the answer \u2014 the hint is the shape, and the shape is usually enough.</p>'+
         (LAB.hint?'<div class="rungref"><span class="caps">The shape it takes</span><pre>'+esc(sqlShape(ref))+'</pre></div>':"")+
         (LAB.shown?'<div class="rungref"><span class="caps">One way to write it</span><pre>'+esc(ref)+'</pre></div>'+sqlBreakdown(ref):""):"")+
+     (fromU?rungRefsHTML(fromU):"")+
      '<textarea class="labed" id="labSql" spellcheck="false" placeholder="'+(rung===1?"Type the query above, line by line":"Write your query here")+'">'+esc(LAB.sql)+'</textarea>'+
+     ((fromU&&(LAB.sql||"").trim())?'<div class="rungwipe">'+(LAB.wipe?'<span class="muted small">Clear what you typed on this step?</span> <button class="btn ghost mini" id="rungWipeYes">Yes, start over</button> <button class="btn ghost mini" id="rungWipeNo">Keep it</button>':'<span class="muted small">Your query is saved for this step.</span> <button class="btn ghost mini" id="rungWipe">\u21ba Start over</button>')+'</div>':"")+
      ((rung===1)?'<p class="rungmatch'+(matches?" ok":"")+'" id="rungMatch">'+(matches?"\u2713 That matches. Run it.":(typed?"Keep going \u2014 it does not match yet.":"Nothing typed yet."))+'</p>':"")+
      '<div class="actions"><span>'+
        ((rung===3&&!LAB.hint)?'<button class="btn ghost mini" id="rungHint">Hint: the shape</button> ':"")+
@@ -4042,6 +4067,9 @@ function renderLab(){
   var pk=document.getElementById("peekToggle");if(pk)pk.onclick=function(){LAB.peek=(LAB.peek===false);render();};
   var rh=document.getElementById("rungHint");if(rh)rh.onclick=function(){LAB.hint=true;render();};
   var rs=document.getElementById("rungShow");if(rs)rs.onclick=function(){LAB.shown=true;render();};
+  var rw=document.getElementById("rungWipe");if(rw)rw.onclick=function(){LAB.wipe=true;render();};
+  var rwn=document.getElementById("rungWipeNo");if(rwn)rwn.onclick=function(){LAB.wipe=false;render();};
+  var rwy=document.getElementById("rungWipeYes");if(rwy)rwy.onclick=function(){LAB.sql="";LAB.res=null;LAB.err="";LAB.verdict=null;LAB.wipe=false;rungKeep();save();render();var t=document.getElementById("labSql");if(t)t.focus();};
   var rc=document.getElementById("labCheckBtn");if(rc)rc.onclick=function(){
     var u=UNITS.filter(function(x){return x.id===LAB.fromUnit;})[0];
     var t=(u&&u.tries&&LAB.fromTry!=null)?u.tries[LAB.fromTry]:null;
@@ -4071,7 +4099,8 @@ function labGo(ex){LAB.ex=ex;LAB.lesson=null;LAB.locked=null;LAB.free=false;LAB.
 function labWireBody(){
   var ta=document.getElementById("labSql");
   if(ta){ta.oninput=function(){LAB.sql=ta.value;};
-    ta.oninput=function(){LAB.sql=ta.value;
+    ta.oninput=function(){LAB.sql=ta.value;rungKeep();
+      var rw=document.querySelector(".rungwipe");if(LAB.fromUnit&&!rw&&ta.value.trim()){var d=document.createElement("div");d.className="rungwipe";d.innerHTML='<span class="muted small">Your query is saved for this step.</span> <button class="btn ghost mini" id="rungWipe">\u21ba Start over</button>';ta.insertAdjacentElement("afterend",d);d.querySelector("#rungWipe").onclick=function(){LAB.wipe=true;render();};}
       var m=document.getElementById("rungMatch");
       if(m&&LAB.rung===1){var u=UNITS.filter(function(x){return x.id===LAB.fromUnit;})[0];
         var t=(u&&u.tries)?u.tries[LAB.fromTry]:null;
