@@ -2278,6 +2278,36 @@ function wickSay(msg,mood,ms,acts){
  clearTimeout(wickTimer);
  if(ms!==0)wickTimer=setTimeout(wickHide,ms||14000);
 }
+/* ===== STUCK CHECK-INS — on SQL rungs 2 and 3, Wick offers a hint at 8 minutes and the answer at 15.
+   The clock runs only while the rung is on screen and unsolved, and each offer comes once per rung. ===== */
+var STUCK={key:null,secs:0,done:{},HINT:8*60,ANSWER:15*60,STEP:5};
+function stuckAskWick(q){wickHide();askState.q=q;toggleAsk(true);setTimeout(function(){var t=document.getElementById("askQ");if(t){t.value=q;doAsk();}},60);}
+function stuckTick(){
+ if(document.visibilityState!=="visible"||tab!=="lab"||typeof LAB==="undefined"||!LAB.free||!LAB.fromUnit||LAB.fromTry==null)return;
+ var rung=demoRung(LAB.fromTry);if(rung<2)return;
+ var k=rungKey(LAB.fromUnit,LAB.fromTry);
+ if(k!==STUCK.key){STUCK.key=k;STUCK.secs=0;}
+ if(rungIsDone(LAB.fromUnit,LAB.fromTry)||(LAB.verdict&&LAB.verdict.ok))return;
+ STUCK.secs+=STUCK.STEP;
+ if(askOpen)return;                       /* already talking to Wick: no need to interrupt */
+ var d=STUCK.done[k]||(STUCK.done[k]={});
+ if(STUCK.secs>=STUCK.ANSWER&&!d.answer){
+  d.answer=d.hint=true;
+  wickSay("<b>Fifteen minutes on this one.</b> This is step 2 of the plan: ask for the answer, then type it out yourself and say what each line does.","think",0,[
+   {id:"stuckAns",t:"\ud83d\udd13 Show me the answer",go:true,fn:function(){
+     if(!AI_ON&&rung===3){wickHide();LAB.hint=true;LAB.shown=true;render();return;}
+     stuckAskWick("I have been stuck on this step for a while. Please give me the full answer, then explain each line in one short sentence so I can type it out myself.");}},
+   {id:"stuckKeep",t:"Keep trying",fn:wickHide}]);
+ }else if(STUCK.secs>=STUCK.HINT&&!d.hint){
+  d.hint=true;
+  wickSay("<b>You have been on this one about eight minutes.</b> Want a hint? I will point you at the next piece and leave the rest to you.","think",0,[
+   {id:"stuckHint",t:"\ud83d\udca1 Give me a hint",go:true,fn:function(){
+     if(!AI_ON&&rung===3){wickHide();LAB.hint=true;render();return;}
+     stuckAskWick("I'm stuck on this step. Give me one hint for the next piece of the query, without the full answer.");}},
+   {id:"stuckNot",t:"Not yet",fn:wickHide}]);
+ }
+}
+setInterval(stuckTick,STUCK.STEP*1000);
 function wickHide(){var b=document.querySelector("#wick .bub");if(b)b.classList.remove("show");clearTimeout(wickTimer);}
 const WICK_DONE=[
  "That is one more decision you could defend in a real room.",
