@@ -685,7 +685,8 @@
   .rungask2{background:var(--goldbg,var(--mint2));border:1px solid var(--mintline);border-left:3px solid var(--gold,#c2913a);border-radius:0 12px 12px 0;padding:12px 16px;margin:0 0 14px}
   .rungask2 p{margin:6px 0 0;font-size:15.5px;line-height:1.65}
   .rungref{background:var(--mint2);border:1px solid var(--mintline);border-radius:12px;padding:12px 15px;margin-bottom:14px}
-  .asknudge{font-size:13px;line-height:1.5;color:var(--muted);background:var(--mint2);border:1px solid var(--line);border-radius:10px;padding:8px 11px;margin:0 0 10px}
+  .rungsteps{margin:6px 0 0 1.25em;padding:0}.rungsteps li{margin:3px 0;line-height:1.5}
+.asknudge{font-size:13px;line-height:1.5;color:var(--muted);background:var(--mint2);border:1px solid var(--line);border-radius:10px;padding:8px 11px;margin:0 0 10px}
 .asknudge.on{color:var(--ink);border-color:var(--gold);background:var(--gold-bg)}
 .askdone{border-color:var(--teal);color:var(--teal-deep);font-weight:700}
 .rungprevs{display:grid;gap:8px;margin:0 0 12px}
@@ -4034,7 +4035,11 @@ function renderLab(){
      (fromU?rungNavHTML(fromU):"")+
      '<h2>'+(fromU?esc(rung>1?fromU.title:(demoTry&&demoTry.d?demoTry.d:fromU.title)):'Ask it anything')+'</h2>'+
      '<p class="sub">'+(meta?meta.lead:'No checking, no grading. Poke at the data until it makes sense.')+'</p>'+
-     ((rung>1)?'<div class="rungwick"><span class="caps">\ud83d\udca1 Getting stuck here is the design</span><p>These rungs are meant to sit just past what you already know \u2014 if you find yourself short a word, that is the rung working, not you failing. Tap <b>\u2728 Ask about this</b> below or the <b>\ud83d\udca1 Wick</b> bulb in the corner and ask in plain words: <i>what goes next to WHERE?</i> Leaning on Wick is how the fluency builds.</p></div>':"")+
+     ((rung>1)?'<div class="rungwick"><span class="caps">\ud83d\udca1 Stuck? Here is the order that makes it stick</span><ol class="rungsteps">'+
+       '<li>Ask Wick for a hint first: tap <b>\u2728 Ask about this</b> or the <b>\ud83d\udca1 Wick</b> bulb and ask in plain words, like <i>what goes after FROM?</i></li>'+
+       '<li>Still stuck? Ask Wick for the answer. That is allowed.</li>'+
+       '<li>Type it out yourself, and say what each line does.</li>'+
+       '<li>Come back tomorrow, press <b>\u21ba Start over</b>, and write it cold.</li></ol></div>':"")+
      ((rung>1&&demoTry&&demoTry.a)?'<div class="rungask2"><span class="caps">\ud83d\udcdd What to write</span><p>'+demoTry.a+'</p></div>':"")+
      ((rung>1)?rungTablesHTML(ref):"")+
      /* rung 1 — the query to copy, plus the line-by-line table */
