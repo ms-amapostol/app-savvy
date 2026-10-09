@@ -685,7 +685,10 @@
   .rungask2{background:var(--goldbg,var(--mint2));border:1px solid var(--mintline);border-left:3px solid var(--gold,#c2913a);border-radius:0 12px 12px 0;padding:12px 16px;margin:0 0 14px}
   .rungask2 p{margin:6px 0 0;font-size:15.5px;line-height:1.65}
   .rungref{background:var(--mint2);border:1px solid var(--mintline);border-radius:12px;padding:12px 15px;margin-bottom:14px}
-  .rungprevs{display:grid;gap:8px;margin:0 0 12px}
+  .asknudge{font-size:13px;line-height:1.5;color:var(--muted);background:var(--mint2);border:1px solid var(--line);border-radius:10px;padding:8px 11px;margin:0 0 10px}
+.asknudge.on{color:var(--ink);border-color:var(--gold);background:var(--gold-bg)}
+.askdone{border-color:var(--teal);color:var(--teal-deep);font-weight:700}
+.rungprevs{display:grid;gap:8px;margin:0 0 12px}
 .rungprev{border:1px dashed var(--mintline);border-radius:10px;padding:8px 12px;background:var(--surface)}
 .rungprev summary{cursor:pointer;font-size:13.5px;font-weight:600;color:var(--teal-deep)}
 .rungprev pre{font-family:ui-monospace,SFMono-Regular,Menlo,monospace;font-size:12.5px;line-height:1.65;white-space:pre-wrap;margin:8px 0 2px;color:var(--ink);overflow-x:auto}
@@ -2775,12 +2778,19 @@ function finishQuiz(){
 }
 
 /* ===== LEARN ===== */
+function askPlace(){
+ var k=[tab];
+ if(tab==="learn")k.push(learnUnit||"");
+ if(tab==="lab"&&typeof LAB!=="undefined")k.push(LAB.fromUnit||"",LAB.fromTry==null?"":LAB.fromTry,LAB.ex&&!LAB.free?LAB.ex.id:"");
+ if(tab==="practice"){if(typeof sess!=="undefined"&&sess&&sess.d)k.push(sess.d.id);if(typeof sab!=="undefined"&&sab&&sab.r)k.push(sab.r.id);}
+ return k.join("|");
+}
 function renderAsk(){
  const el=document.getElementById("askBody");if(!el)return;
  const disabled=!AI_ON;
  var t=askState.thread,body="";
  if(!t.length){
-  body='<p class="muted small" style="margin:0 0 10px">Ask me about any concept, or about App Savvy itself. I can see what is on your screen, so \u201cwhat does this mean?\u201d works. Keep asking follow-ups \u2014 I remember the conversation, and the box stays empty so you can just keep going. Press <b>Done \u2713</b> when you want to close this one out and start a fresh conversation.'+(disabled?' <b>Add your key in AI &amp; Data to switch this on.</b>':'')+'</p>';
+  body='<p class="muted small" style="margin:0 0 10px"><b>One topic per conversation.</b> Ask me about any concept, or about App Savvy itself. I can see what is on your screen, so \u201cwhat does this mean?\u201d works, and I remember everything you ask until you close the conversation. When you have it, press <b>\u2713 Done</b>: I save the new terms to your glossary, and your next question starts fresh.'+(disabled?' <b>Add your key in AI &amp; Data to switch this on.</b>':'')+'</p>';
  } else {
   body='<div class="athread" id="athread">'+t.map(function(m){
     var cls=m.role==="user"?"me":"ai";
@@ -2789,11 +2799,17 @@ function renderAsk(){
   }).join("")+(askState.loading?'<div class="abub ai"><span class="thinking">\u2728 Thinking\u2026</span></div>':"")+'</div>';
  }
  var composer="";
+ if(!askState.ended&&t.length>=2){
+  var moved=askState.place&&askState.place!==askPlace();
+  composer+=moved
+   ?'<div class="asknudge on">\ud83d\udd04 <b>Looks like you have moved on to something new.</b> Press <b>\u2713 Done</b> to save the terms from this conversation, then ask about the new one fresh.</div>'
+   :'<div class="asknudge">Got it? Press <b>\u2713 Done</b> to save the terms and start your next topic fresh.</div>';
+ }
  if(!askState.ended){
-  composer='<textarea id="askQ" placeholder="'+(t.length?"Ask Wick a follow-up\u2026":"Ask Wick for help \u2014 e.g. what goes next to WHERE?")+'" style="min-height:56px">'+esc(askState.q)+'</textarea>'
+  composer+='<textarea id="askQ" placeholder="'+(t.length?"Ask Wick a follow-up\u2026":"Ask Wick for help \u2014 e.g. what goes next to WHERE?")+'" style="min-height:56px">'+esc(askState.q)+'</textarea>'
    +askImgHTML()
    +'<div class="actions askrow"><label class="btn ghost mini" for="askImgIn">📷 Picture</label>'
-   +(t.length?'<button class="btn ghost mini" id="askDone">Done \u2713</button>':'')
+   +(t.length?'<button class="btn ghost mini askdone" id="askDone" title="Save the terms from this conversation and start a new one">\u2713 Done \u00b7 save terms</button>':'')
    +'<button class="btn" id="askBtn"'+(disabled?' disabled title="Add an API key in AI &amp; Data to switch Wick on"':"")+'>\u2728 '+(t.length?"Send":"Ask")+'</button></div>'
    +(disabled?'<span class="askoff">\u2728 Asking is off until you add an API key. <a href="#" id="askToKey">Open AI &amp; Data \u2192</a></span>':"")
    +'<input type="file" id="askImgIn" accept="image/*" style="display:none">';
@@ -2919,6 +2935,7 @@ async function doAsk(){
  const t=document.getElementById("askQ");const qv=t?t.value.trim():"";
  if(!qv&&!askState.img)return;
  const first=askState.thread.length===0;
+ if(first)askState.place=askPlace();
  askState.thread.push({role:"user",text:qv||"(picture)",img:askState.img?askState.img.preview:null});
  var payload=qv;
  var ctx=screenContext();
@@ -2930,7 +2947,7 @@ async function doAsk(){
  askState.api=askState.api||[];
  askState.api.push({role:"user",content:content});
  askState.q="";askState.img=null;askState.loading=true;renderAsk();
- const sys="You are App Savvy's built-in tutor. Answer two kinds of questions: (1) how software and apps work, in plain language for a business or client person becoming fluent by directing AI (not an engineer), and (2) how to use App Savvy itself. About the app: App Savvy builds architectural judgment. Its tabs are Home (a dashboard with your rank, XP, badges, streak, a readiness map across five capabilities, a personalized read, and a pre/post baseline check), Learn (thirty-five lesson units in six chapters — foundations, then building and running it, then working with data, then turning work into systems, then holding your own; read a lesson, then walk a Door to test it. The unit called “Asking data a question” opens the SQL chapter and carries a twelve-week practice plan you tick off week by week), Practice (a quick Door or a Sabotage debugging round, both earning XP), Reference (a glossary of terms you have earned, a concept map of recurring tradeoffs, a query log where you record real SQL you have written alongside the business question it answered, and the sourced thinking behind the app), and AI & Data (your API key and backups). A Door is a real decision with two defensible options; you pick one, justify it, and a reveal shows what was actually chosen and the tradeoff. You earn XP and move through seven stages named after real, posted job titles — Curious, Customer Success Manager, Implementation Analyst, Business Systems Analyst, Implementation Consultant, Technical Account Manager, AI Solutions Consultant — ordered by how much technical fluency each role asks for rather than by seniority or pay. Reaching a stage means the learner's fluency is in range for that kind of role; it does not by itself qualify them. Those stages name what the learner can do, and they are deliberately not job titles: the app builds technical judgment, and roles like Solutions Engineer additionally require hands-on scripting and demo-building that App Savvy does not teach. Be honest about that distinction if asked. Progress saves in your browser, and the sparkle marks AI features that use your key. Answer warmly and concretely in a few short paragraphs, no jargon dumps. If a question is off-topic, answer briefly and steer back. The user's message may include the text currently on their screen (marked [Context — ...]); when they ask about 'this' or 'what does this mean', use that on-screen text to answer specifically. The learner may ask follow-up questions; treat it as one continuing conversation and keep answers short after the first. Their screen is attached again whenever it changes; the newest [Context — ...] block is what they are looking at now, so never ask them to paste what is on their screen. A LAB FOCUS line names the exact SQL step, task, tables and their query; use it first.";
+ const sys="You are App Savvy's built-in tutor. Answer two kinds of questions: (1) how software and apps work, in plain language for a business or client person becoming fluent by directing AI (not an engineer), and (2) how to use App Savvy itself. About the app: App Savvy builds architectural judgment. Its tabs are Home (a dashboard with your rank, XP, badges, streak, a readiness map across five capabilities, a personalized read, and a pre/post baseline check), Learn (thirty-five lesson units in six chapters — foundations, then building and running it, then working with data, then turning work into systems, then holding your own; read a lesson, then walk a Door to test it. The unit called “Asking data a question” opens the SQL chapter and carries a twelve-week practice plan you tick off week by week), Practice (a quick Door or a Sabotage debugging round, both earning XP), Reference (a glossary of terms you have earned, a concept map of recurring tradeoffs, a query log where you record real SQL you have written alongside the business question it answered, and the sourced thinking behind the app), and AI & Data (your API key and backups). A Door is a real decision with two defensible options; you pick one, justify it, and a reveal shows what was actually chosen and the tradeoff. You earn XP and move through seven stages named after real, posted job titles — Curious, Customer Success Manager, Implementation Analyst, Business Systems Analyst, Implementation Consultant, Technical Account Manager, AI Solutions Consultant — ordered by how much technical fluency each role asks for rather than by seniority or pay. Reaching a stage means the learner's fluency is in range for that kind of role; it does not by itself qualify them. Those stages name what the learner can do, and they are deliberately not job titles: the app builds technical judgment, and roles like Solutions Engineer additionally require hands-on scripting and demo-building that App Savvy does not teach. Be honest about that distinction if asked. Progress saves in your browser, and the sparkle marks AI features that use your key. Answer warmly and concretely in a few short paragraphs, no jargon dumps. If a question is off-topic, answer briefly and steer back. The user's message may include the text currently on their screen (marked [Context — ...]); when they ask about 'this' or 'what does this mean', use that on-screen text to answer specifically. The learner may ask follow-up questions; treat it as one continuing conversation and keep answers short after the first. Their screen is attached again whenever it changes; the newest [Context — ...] block is what they are looking at now, so never ask them to paste what is on their screen. A LAB FOCUS line names the exact SQL step, task, tables and their query; use it first. When the learner signals they understand (\u201cgot it\u201d, \u201cthat makes sense\u201d, \u201cthanks\u201d), or their next question is about a different topic, end with one short line suggesting they press \u2713 Done to save the terms and start the next topic fresh.";
  var out=await callClaudeThread(sys,askState.api,1600);
  if(out&&lastStopReason==="max_tokens")out+=CUT_NOTE;
  askState.loading=false;
